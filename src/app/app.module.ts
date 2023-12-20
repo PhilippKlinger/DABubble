@@ -14,7 +14,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    provideFirebaseApp(() => initializeApp({"projectId":"dabubble-5ec88","appId":"1:540601189295:web:7f3ece8c1beefd7ba9655a","storageBucket":"dabubble-5ec88.appspot.com","apiKey":"AIzaSyBwQtoQFZ1UWiUgbOSwrfARsckBgdqZjXA","authDomain":"dabubble-5ec88.firebaseapp.com","messagingSenderId":"540601189295"})),
+    provideFirebaseApp(() => initializeApp({ "projectId": "dabubble-5ec88", "appId": "1:540601189295:web:7f3ece8c1beefd7ba9655a", "storageBucket": "dabubble-5ec88.appspot.com", "apiKey": "AIzaSyBwQtoQFZ1UWiUgbOSwrfARsckBgdqZjXA", "authDomain": "dabubble-5ec88.firebaseapp.com", "messagingSenderId": "540601189295" })),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())
   ],
