@@ -25,6 +25,7 @@ import { DialogEditProfileComponent } from './dialogs/dialog-edit-profile/dialog
 import { DialogCreateChannelComponent } from './dialogs/dialog-create-channel/dialog-create-channel.component';
 import { DialogEditChannelComponent } from './dialogs/dialog-edit-channel/dialog-edit-channel.component';
 import { DialogDummyComponent } from './dialogs/dialog-dummy/dialog-dummy.component';
+import { OpenDialogService } from './shared-services/open-dialog.service';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,9 @@ import { DialogDummyComponent } from './dialogs/dialog-dummy/dialog-dummy.compon
     MatTooltipModule,
 
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [OpenDialogService,
+  ],
+  bootstrap: [AppComponent,
+  ]
 })
 export class AppModule { }
