@@ -1,0 +1,89 @@
+.dialog-content {
+    box-sizing: border-box;
+    padding: 40px;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 45px;
+}
+
+.dialog-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    span {
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+}
+
+.avatar {
+    display: flex;
+    justify-content: center;
+
+    img {
+        border-radius: 100%;
+    }
+}
+
+.username {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    span {
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+}
+
+.status {
+    span {
+        color: #92C83E;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        margin-left: 15px;
+    }
+}
+
+.user-email {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: flex-start;
+    
+    span {
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        margin-top: 3px;
+    }
+
+    p {
+        color: #1381FF;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
+}
+
+.email {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+}
