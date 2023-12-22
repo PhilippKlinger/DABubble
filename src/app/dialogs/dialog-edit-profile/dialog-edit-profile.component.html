@@ -1,1 +1,29 @@
-<p>dialog-edit-profile works!</p>
+<div class="dialog-content">
+    <div class="dialog-head">
+        <span>Profil</span>
+        <button mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="avatar">
+        <img src="../../../assets/avatars/char_1.png">
+    </div>
+    <div class="name-input">
+        <div class="name">
+            <img src="../../../assets/icons/account_circle.svg">
+            <span>Vollständiger Name</span>
+        </div>
+        <input matInput placeholder="Steffen Hoffmann">
+    </div>
+    <div class="name-input">
+        <div class="name">
+            <img src="../../../assets/icons/mail.svg">
+            <span>E-Mail-Adresse</span>
+        </div>
+        <input matInput placeholder="thehoffman@beispiel.com">
+    </div>
+    <div class="buttons">
+        <button mat-raised-button>Abbrechen</button>
+        <button mat-raised-button color="primary">Speichern</button>
+    </div>
+</div>

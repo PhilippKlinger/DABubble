@@ -6,6 +6,7 @@ import { DialogShowProfileComponent } from '../dialogs/dialog-show-profile/dialo
 import { DialogEditProfileComponent } from '../dialogs/dialog-edit-profile/dialog-edit-profile.component';
 import { DialogCreateChannelComponent } from '../dialogs/dialog-create-channel/dialog-create-channel.component';
 import { DialogEditChannelComponent } from '../dialogs/dialog-edit-channel/dialog-edit-channel.component';
+import { DialogMenuProfileComponent } from '../dialogs/dialog-menu-profile/dialog-menu-profile.component';
 
 
 @Injectable({
@@ -16,6 +17,7 @@ export class OpenDialogService {
 
   dialogComponents: Record<string, ComponentType<unknown>> = {
     'showProfile': DialogShowProfileComponent,
+    'menuProfile': DialogMenuProfileComponent,
     'editProfile': DialogEditProfileComponent,
     'createChannel': DialogCreateChannelComponent,
     'editChannel': DialogEditChannelComponent,
