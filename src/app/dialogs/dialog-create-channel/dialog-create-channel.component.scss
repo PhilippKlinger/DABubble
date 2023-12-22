@@ -1,0 +1,24 @@
+.dialog-content {
+    width: 872px !important;
+    gap: 30px !important;
+}
+
+.button {
+    justify-content: flex-end !important;
+}
+
+.name {
+    span {
+        margin-left: 0px !important;
+        font-size: 18px !important;
+    }
+}
+
+.caption {
+    span {
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;  
+    }
+}
