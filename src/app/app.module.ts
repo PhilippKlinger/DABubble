@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -21,10 +20,20 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { DialogShowProfileComponent } from './dialogs/dialog-show-profile/dialog-show-profile.component';
+import { DialogEditProfileComponent } from './dialogs/dialog-edit-profile/dialog-edit-profile.component';
+import { DialogCreateChannelComponent } from './dialogs/dialog-create-channel/dialog-create-channel.component';
+import { DialogEditChannelComponent } from './dialogs/dialog-edit-channel/dialog-edit-channel.component';
+import { DialogDummyComponent } from './dialogs/dialog-dummy/dialog-dummy.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DialogCreateChannelComponent,
+    DialogShowProfileComponent,
+    DialogEditProfileComponent,
+    DialogEditChannelComponent,
+    DialogDummyComponent
   ],
   imports: [
     BrowserModule,

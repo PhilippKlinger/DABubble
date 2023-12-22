@@ -1,0 +1,11 @@
+.btn-dummys {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 50px;
+
+    button {
+        width: 150px;
+    }
+}
