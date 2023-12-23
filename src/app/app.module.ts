@@ -29,6 +29,7 @@ import { OpenDialogService } from './shared-services/open-dialog.service';
 import { DialogMenuProfileComponent } from './dialogs/dialog-menu-profile/dialog-menu-profile.component';
 import { MainContentComponent } from './main-content/main-content.component';
 import { MainContentSearchbarComponent } from './main-content/main-content-searchbar/main-content-searchbar.component';
+import { MainContentMainChatComponent } from './main-content/main-content-main-chat/main-content-main-chat.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { MainContentSearchbarComponent } from './main-content/main-content-searc
     DialogDummyComponent,
     DialogMenuProfileComponent,
     MainContentComponent,
-    MainContentSearchbarComponent
+    MainContentSearchbarComponent,
+    MainContentMainChatComponent
   ],
   imports: [
     BrowserModule,
