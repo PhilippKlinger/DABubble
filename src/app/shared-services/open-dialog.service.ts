@@ -13,8 +13,11 @@ import { DialogMenuProfileComponent } from '../dialogs/dialog-menu-profile/dialo
   providedIn: 'root'
 })
 export class OpenDialogService {
-  constructor(private dialog: MatDialog) { }
-
+  /**
+   * Mapping of component keys to their corresponding Angular component types.
+   *
+   * @type {Record<string, ComponentType<unknown>>}
+   */
   dialogComponents: Record<string, ComponentType<unknown>> = {
     'showProfile': DialogShowProfileComponent,
     'menuProfile': DialogMenuProfileComponent,
@@ -23,9 +26,22 @@ export class OpenDialogService {
     'editChannel': DialogEditChannelComponent,
   };
 
+  /**
+   * Creates an instance of OpenDialogService.
+   *
+   * @constructor
+   * @param {MatDialog} dialog - Angular Material dialog service.
+   */
+  constructor(private dialog: MatDialog) { }
+
+  /**
+   * Opens a dialog with the specified component key.
+   *
+   * @param {string} componentKey - Key corresponding to the desired dialog component.
+   * @returns {void}
+   */
   openDialog(componentKey: string): void {
     const selectedComponent = this.dialogComponents[componentKey];
-
     if (selectedComponent) {
       this.dialog.open(selectedComponent);
     } else {
