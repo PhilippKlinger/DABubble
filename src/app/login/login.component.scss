@@ -1,0 +1,145 @@
+@import './../../styles.scss';
+
+section {
+    width: 100vw;
+    height: 100vh;
+    background-color: $Bg-color; 
+}
+
+
+.start-animation {
+    @include dFlex($g: 60px);
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, $Purple-1, $Purple-2, $Purple-3);
+    img {
+        width: 186.98px;
+        height: 184px;
+        z-index: 1;
+        animation: fadeRight 2s
+    }
+    p {
+        animation: fadeRight 2s;
+    color: #FFFAFA;    
+    font-size: 76px;
+    }
+}
+
+.d-none {
+    display: none;
+}
+
+.header {
+    @include dFlex($jc: space-between);
+    padding:75px;
+}
+
+.create-profile {
+    @include dFlex($g: 16px, $fd: column);
+}
+
+
+.login {
+    @include dFlex();
+    width: 100%;
+}
+
+form {
+    width: 100%;
+    span {
+        @include fonts($fw: 400, $fs: 18px);
+    }
+    a {
+        cursor: pointer;
+        margin-bottom: 35px;
+        @include fonts($fw: 400, $fs: 18px);
+        @include dFlex();
+    }
+}
+
+.container { 
+    @include dFlex($fd: column);
+    max-width: 606px;
+    min-height: 769px;
+    padding: 50px 60px;
+    border-radius: 30px;
+    p {
+        @include fonts($fw: 400, $fs: 20px)
+    }
+    h1 {
+        @include fonts($fs: 46px);
+        color: $Purple-1; 
+        margin-block-end: 0; 
+        margin-bottom: 30px;
+    }
+}
+
+.bg-white {
+    background-color: $White;
+}
+
+.input-container {
+    width: 100%; 
+    @include dFlex();
+    background-color: $Bg-color;
+    margin: 60px 0px;
+    border-radius: 100px;
+    border: 1px solid $Bg-color;
+    cursor: pointer;
+    img {
+        margin: 0px 20px;
+        width: 24px;
+        height: 24px;
+    }  
+    span {
+        color: $Purple-1;
+        padding: 20px;
+    }
+    &:hover {
+        border: 1px solid #000000;
+    }
+}
+
+
+input {
+    background-color: $Bg-color;
+    height: 60px;
+    font-size: 20px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    width: calc(100% - 20px);
+    border-top-right-radius: 100px;
+    border-bottom-right-radius: 100px;
+}
+
+@keyframes fadeRight {
+    from {
+        transform: translateX(-110%);
+    }
+}
+
+.forgot-pass-container:hover {
+    background-color: $Bg-color;
+    border: 1px solid #000000;
+}
+
+.forgot-pass {
+    @include fonts($fw: 400, $fs: 18px);
+    color: $Purple-2;
+}
+
+.or-box {
+    @include dFlex();
+}
+
+.bottom-line {
+    border-bottom: 2px solid #B7BADD;
+    width: 45%;
+    margin: 10px;
+}
+
+.google-img {
+    width: 38px !important;
+    height: 38px !important;
+}

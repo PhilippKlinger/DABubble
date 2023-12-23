@@ -42,12 +42,26 @@ $Purple-2: #797EF3;
 $Purple-3: #535AF1;
 $online-green: #92C83E;
 $Rosa-error: #ED1E79;
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
+$Background-Login: #545BEC;
+$White: #FFFFFF;
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 30px !important;
+}
+
+@mixin dFlex($jc:center, $ai:center, $g: 0px , $fd: row) {
+  display: flex; 
+  justify-content: $jc; 
+  align-items: $ai; 
+  gap: $g;
+  flex-direction: $fd;
+}
+
+@mixin fonts($fw: 700, $fs: 16px, $lh: normal, $ta: center) {
+  font-weight: $fw;
+  font-size: $fs;
+  line-height: $lh;
+  text-align: $ta;
 }
