@@ -1,0 +1,43 @@
+.name {
+    justify-content: space-between;
+
+    p {
+        color: #535AF1;
+        margin: 0;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+    }
+}
+
+.name-input {
+    gap: 20px !important;
+}
+
+.show-border {
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid #ADB0D9;
+}
+
+.dialog-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.name-bottom {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 20px;
+}
+
+.divider {
+    display: flex;
+    justify-content: center;
+}
+
+.mat-divider {
+    width: 739px !important;
+}

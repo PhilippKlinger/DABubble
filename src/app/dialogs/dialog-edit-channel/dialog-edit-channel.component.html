@@ -1,1 +1,42 @@
-<p>dialog-edit-channel works!</p>
+<div class="dialog-content">
+    <div class="dialog-head">
+        <span># Entwicklerteam</span>
+        <button mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="name-input" [ngClass]="{'show-border': !isEditingName}">
+        <div class="name">
+            <span>Channel-Name</span>
+            <p *ngIf="!isEditingName" (click)="toggleEditing('name')">Bearbeiten</p>
+            <p *ngIf="isEditingName" (click)="saveChanges('name')">Speichern</p>
+        </div>
+        <span *ngIf="!isEditingName"># Entwicklerteam</span>
+        <input *ngIf="isEditingName" matInput placeholder="# Entwicklerteam">
+    </div>
+    <div class="dialog-bottom" [ngClass]="{'show-border': !isEditingDescription}">
+        <div class="name-input">
+            <div class="name">
+                <span>Beschreibung</span>
+                <p *ngIf="!isEditingDescription" (click)="toggleEditing('description')">Bearbeiten</p>
+                <p *ngIf="isEditingDescription" (click)="saveChanges('description')">Speichern</p>
+            </div>
+            <span *ngIf="!isEditingDescription">Dieser Channel ist für alles rund um #dfsdf vorgesehen.
+                Hier kannst du zusammen mit deinem Team Meetings abhalten, Dokumente teilen und Entscheidungen
+                treffen.</span>
+            <input *ngIf="isEditingDescription" matInput placeholder="Dein Text hier">
+        </div>
+
+        <div class="divider">
+            <mat-divider></mat-divider>
+        </div>
+        <div class="name name-bottom">
+            <span>Erstellt von</span>
+            <p>Noah Braun</p>
+        </div>
+    </div>
+
+    <div class="button">
+        <button mat-raised-button color="primary">Channel verlassen</button>
+    </div>
+</div>
