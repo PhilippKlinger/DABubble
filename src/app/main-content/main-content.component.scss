@@ -1,27 +1,18 @@
-body {
-    height: unset !important;
-}
-
-html {
-    height: unset !important;
-}
+$Bg-color: #ECEEFE;
 
 .grid {
     display: grid;
     height: calc(100vh - 30px);
-    width: calc(100vw - 60px);
-    grid-template-columns: 20% 50% 30%; //values for column-width/ 3 values = 3 columns
+    width: calc(100vw - 30px);
+    grid-template-columns: 0.6fr 2fr 1fr; //values for column-width/ 3 values = 3 columns
     grid-template-rows: 70px; //values for row-width/ 1 value = first row's value
-    grid-gap: 15px;
-    margin: 15px;
+    padding: 15px;
+    gap: 15px;
+    background-color: $Bg-color;
 }
 
 #main-content-logo {
     background-color: rgb(1, 92, 1);
-}
-
-#main-content-searchbar {
-    background-color: rgba(1, 92, 1, 0.89);
 }
 
 #main-content-profile-selector {
