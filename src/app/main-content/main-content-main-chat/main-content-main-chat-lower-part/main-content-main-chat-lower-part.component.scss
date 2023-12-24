@@ -1,6 +1,9 @@
 $Purple-2: #797EF3;
+$Purple-1: #444DF2;
+$Purple-3: #535AF1;
 $Text-gray: #686868;
 $Bg-color: #ECEEFE;
+$Light-purple: #ADB0D9;
 
 .chat {
     height: 100%;
@@ -11,13 +14,17 @@ $Bg-color: #ECEEFE;
     height: calc(100% - 210px);
     width: 100%;
     display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
+    flex-direction: column;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        display: none
+    }
 }
 
 .user-message {
     width: -webkit-fill-available;
-    padding: 5px 20px 5px 100px;
+    padding: 5px 30px 5px 130px;
     gap: 30px;
     display: flex;
     flex-direction: row-reverse;
@@ -30,9 +37,68 @@ $Bg-color: #ECEEFE;
     }
 }
 
+.anon-user-message {
+    width: -webkit-fill-available;
+    padding: 5px 130px 5px 30px;
+    gap: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    background-color: white;
+    transition: 0.1s ease-in;
+
+    &:hover {
+        background-color: $Bg-color;
+        cursor: pointer;
+    }
+
+    &:hover .anon-speech-bubble-user {
+        background-color: white !important;
+    }
+}
+
+.flex-end {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
 .user-message-time-name {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+    width: fit-content;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    h3 {
+        color: black;
+        font-size: 18px;
+        font-weight: 700px !important;
+        transition: 0.2ms;
+        margin-block-start: 0;
+        margin-block-end: 0;
+
+        &:hover {
+            color: $Purple-1;
+        }
+    }
+
+    span {
+        color: $Text-gray;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 0;
+    }
+}
+
+.anon-user-message-time-name {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row-reverse;
     align-items: center;
     gap: 20px;
 
@@ -49,7 +115,7 @@ $Bg-color: #ECEEFE;
         margin-block-end: 0;
 
         &:hover {
-            color: $Purple-2;
+            color: $Purple-1;
         }
     }
 
@@ -71,6 +137,16 @@ $Bg-color: #ECEEFE;
     line-height: 24.55px;
 }
 
+.anon-speech-bubble-user {
+    background-color: $Bg-color;
+    color: black;
+    padding: 15px;
+    border-radius: 0px 30px 30px 30px;
+    font-size: 18px;
+    font-weight: 400 !important;
+    line-height: 24.55px;
+}
+
 .user-message-avatar {
     height: 70px;
     width: 70px;
@@ -82,6 +158,7 @@ $Bg-color: #ECEEFE;
     justify-content: flex-end;
     align-items: center;
     padding: 5px 0px;
+    gap: 10px;
 
     mat-icon {
         padding: 5px;
@@ -93,7 +170,97 @@ $Bg-color: #ECEEFE;
         &:hover {
             color: $Purple-2;
             background-color: $Bg-color;
+            scale: 1.1;
         }
+    }
+}
+
+.anon-user-message-emojis {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 0px;
+    gap: 10px;
+
+    mat-icon {
+        padding: 5px;
+        border-radius: 100%;
+        background-color: white;
+        cursor: pointer;
+        transition: 0.2s ease-in;
+
+        &:hover {
+            color: $Purple-2;
+            background-color: $Bg-color;
+            scale: 1.1;
+        }
+    }
+}
+
+.user-message-emojis-showcase {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+    border: 1px solid #ADB0D9;
+    border-radius: 20px;
+    background-color: white;
+    font-size: 16px;
+    transition: 0.1s ease-in;
+    cursor: pointer;
+
+    &:hover {
+        border: 1px solid $Purple-2;
+    }
+}
+
+.anon-user-answer-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-right: 20px;
+
+    h3 {
+        margin-block-start: 0;
+        margin-block-end: 0;
+        font-size: 18px;
+        font-weight: 400;
+        color: $Purple-3;
+
+        &:hover {
+            font-weight: 500;
+            color: $Purple-1;
+        }
+    }
+
+    span {
+        letter-spacing: 0;
+    }
+}
+
+.chat-timestamp {
+    padding: 0px 30px;
+    width: -webkit-fill-available;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0px;
+
+    span {
+        position: absolute;
+        z-index: 1;
+        background-color: white;
+        padding: 5px 15px;
+        border: solid 1px $Light-purple;
+        border-radius: 30px;
+    }
+
+    div {
+        background-color: $Light-purple;
+        height: 1px;
+        width: -webkit-fill-available;
     }
 }
 
