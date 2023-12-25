@@ -33,6 +33,8 @@ import { MainContentMainChatComponent } from './main-content/main-content-main-c
 import { LoginComponent } from './login/login.component';
 import { MainContentMainChatUpperPartComponent } from './main-content/main-content-main-chat/main-content-main-chat-upper-part/main-content-main-chat-upper-part.component';
 import { MainContentMainChatLowerPartComponent } from './main-content/main-content-main-chat/main-content-main-chat-lower-part/main-content-main-chat-lower-part.component';
+import { MainContentProfileSelectorComponent } from './main-content/main-content-profile-selector/main-content-profile-selector.component';
+import { MainContentLogoComponent } from './main-content/main-content-logo/main-content-logo.component';
 
 
 @NgModule({
@@ -49,7 +51,9 @@ import { MainContentMainChatLowerPartComponent } from './main-content/main-conte
     MainContentMainChatComponent,
     LoginComponent,
     MainContentMainChatUpperPartComponent,
-    MainContentMainChatLowerPartComponent
+    MainContentMainChatLowerPartComponent,
+    MainContentProfileSelectorComponent,
+    MainContentLogoComponent
   ],
   imports: [
     BrowserModule,

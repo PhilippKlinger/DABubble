@@ -9,47 +9,73 @@
         </div>
         <div class="create-profile">
             <span>Neu bei DABubble?</span>
-            <a href="#">Konto erstellen</a>
+            <a class="link" href="#">Konto erstellen</a>
         </div>
     </header>
-    <div class="login ">
+    <div class="login">
         <div class="container bg-white">
           <h1>Anmeldung</h1>
-          <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
-    
+          <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>    
           <form>            
             <div>
-              <div class="input-container">
+              <div class="input-container cursor-pointer">
                 <img src="assets\icons\mail.svg">
                 <input type="email" matInput placeholder="beispielname@email.com" required>
-              </div>
-    
-              <div class="input-container">
-                <img src="assets\icons\password.svg">
+              </div>    
+              <div class="input-container cursor-pointer">
+                <img (click)="changeInputPasswordToTxt($event)" src="assets\icons\password.svg">
                 <input type="password" matInput placeholder="Passwort" required>
               </div>
-            </div>
-    
+            </div>    
             <div class="forgot-pass-container">
-                <a class="forgot-pass">Passwort vergessen?</a>
+                <a class="link forgot-password cursor-pointer">Passwort vergessen?</a>
             </div>
-
             <div class="or-box">
               <div class="bottom-line"></div>
               <span class="or">ODER</span>
               <div class="bottom-line"></div>
             </div>
-
-            <div mat-button class="input-container">
+            <div mat-button class="input-container cursor-pointer">
               <img class="google-img" src="assets\icons\Google.svg">
-              <span class="">Anmelden mit Google</span>
+              <span>Anmelden mit Google</span>
             </div>
-            <div class="">
-              <button mat-button class="main-button" type="submit">Anmelden</button>
-              <button mat-button class="main-button">Gäste-Login</button>
+            <div class="submit-buttons">
+              <button class="btn-submit" mat-button type="submit">Anmelden</button>
+              <button class="btn-guest" mat-button>Gäste-Login</button>
             </div>
           </form>
         </div>
-      </div>
 
+        <div class="container bg-white">
+          <img class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
+          <h1>Konto erstellen</h1>
+          <p>Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
+          <form>
+            <div>
+              <div class="input-container cursor-pointer">
+                <img src="assets/icons/person_filled.svg">
+                <input type="email" matInput placeholder="Vorname und Nachname" required>
+              </div>
+              <div class="input-container cursor-pointer">
+                <img src="assets\icons\mail.svg">
+                <input type="email" matInput placeholder="beispielname@email.com" required>
+              </div>    
+              <div class="input-container cursor-pointer">
+                <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/password.svg" alt="Toggle Password Visibility">
+                <input type="password" matInput placeholder="Passwort" required>
+              </div>
+              <div class="input-container cursor-pointer">
+                <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/password.svg" alt="Toggle Password Visibility">
+                <input type="password" matInput placeholder="Passwort bestätigen" required>
+              </div>              
+            </div> 
+            <div class="privacy-container">
+              <div (click)="changeCheckboxCheck($event)" class="checkbox"></div>
+              <p>Ich stimme der</p>
+              <a class="link privacy-policy" href="">Datenschutzerklärung</a>
+              <p>zu</p>
+            </div>
+          </form>
+        </div>
+    </div>
 </section>

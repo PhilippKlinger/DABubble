@@ -34,6 +34,9 @@ $DABubble-theme: mat.define-light-theme((
 @include mat.all-component-themes($DABubble-theme);
 
 /* You can add global styles to this file, and also import other style files */
+
+@import 'src/assets/fonts/fonts.css';
+
 $Bg-color: #ECEEFE;
 $Light-purple: #ADB0D9;
 $Text-gray: #686868;
@@ -45,7 +48,7 @@ $Rosa-error: #ED1E79;
 $Background-Login: #545BEC;
 $White: #FFFFFF;
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: 'Nunito', "Helvetica Neue", sans-serif !important; }
 
 .mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 30px !important;

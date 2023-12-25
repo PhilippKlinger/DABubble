@@ -20,18 +20,34 @@ section {
     }
     p {
         animation: fadeRight 2s;
-    color: #FFFAFA;    
-    font-size: 76px;
+        color: #FFFAFA;    
+        font-size: 76px;
     }
 }
 
 .d-none {
-    display: none;
+    display: none !important;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
 }
 
 .header {
     @include dFlex($jc: space-between);
     padding:75px;
+    span {
+        @include fonts($fw: 400, $fs: 18px);
+    }
+}
+
+.link {
+    @include fonts($fw: 400, $fs: 18px);
+    color: $Purple-2; 
+    text-decoration: none;
+    &:hover {
+    @include fonts($fs: 18px);
+    }
 }
 
 .create-profile {
@@ -49,15 +65,10 @@ form {
     span {
         @include fonts($fw: 400, $fs: 18px);
     }
-    a {
-        cursor: pointer;
-        margin-bottom: 35px;
-        @include fonts($fw: 400, $fs: 18px);
-        @include dFlex();
-    }
 }
 
 .container { 
+    position: relative;
     @include dFlex($fd: column);
     max-width: 606px;
     min-height: 769px;
@@ -68,6 +79,7 @@ form {
     }
     h1 {
         @include fonts($fs: 46px);
+        font-family: 'Nunito', sans-serif !important;
         color: $Purple-1; 
         margin-block-end: 0; 
         margin-bottom: 30px;
@@ -85,7 +97,6 @@ form {
     margin: 60px 0px;
     border-radius: 100px;
     border: 1px solid $Bg-color;
-    cursor: pointer;
     img {
         margin: 0px 20px;
         width: 24px;
@@ -113,20 +124,10 @@ input {
     border-bottom-right-radius: 100px;
 }
 
-@keyframes fadeRight {
-    from {
-        transform: translateX(-110%);
-    }
-}
-
-.forgot-pass-container:hover {
-    background-color: $Bg-color;
-    border: 1px solid #000000;
-}
-
-.forgot-pass {
+.forgot-password {
+    margin-bottom: 35px;
     @include fonts($fw: 400, $fs: 18px);
-    color: $Purple-2;
+    @include dFlex();
 }
 
 .or-box {
@@ -142,4 +143,79 @@ input {
 .google-img {
     width: 38px !important;
     height: 38px !important;
+}
+
+.submit-buttons {
+    @include dFlex();
+    gap: 30px;
+    button {
+        padding: 25px;   
+        border-radius: 25px; 
+        @include fonts($fs: 18px);
+        font-family: 'Nunito', sans-serif !important;
+
+    }
+    .btn-submit {
+        background-color: $Purple-1;
+        color: $White;
+        &:hover {
+            background-color: $Purple-2;
+        }
+    }
+    .btn-guest {
+        color: $Purple-1;
+        border: 1px solid $Purple-1;
+        &:hover {
+            background-color: $Purple-1;
+            color: $White;
+        }
+    }
+}
+
+
+
+.arrow-back {
+    position: absolute;
+    top: 57.5px;
+    left: 44px;
+    &:hover {
+        scale: 1.3;
+    }
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
+    background-image: url('/assets/icons/checkbox.svg');
+    &:hover {
+        background-image: url('/assets/icons/checkbox-hover.svg');
+    }
+}
+
+.checkbox.checked {
+    background-image: url('/assets/icons/checked.svg');
+    &:hover {
+        background-image: url('/assets/icons/checked-hover.svg');
+    }
+}
+
+.privacy-container {
+    @include dFlex($g: 4px);
+    p {
+        margin: 0;
+    }
+}
+
+.privacy-policy {
+    width: 190.5px;
+}
+
+
+
+
+
+@keyframes fadeRight {
+    from {
+        transform: translateX(-110%);
+    }
 }
