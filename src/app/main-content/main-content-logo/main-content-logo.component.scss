@@ -1,0 +1,19 @@
+section {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    gap: 10px;
+    padding-left: 20px;
+
+    img {
+        height: 60px;
+        width: 60px;
+    }
+
+    div {
+        font-size: 26px;
+        font-weight: 500;
+    }
+}
