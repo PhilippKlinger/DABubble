@@ -1,0 +1,52 @@
+$Bg-color: #ECEEFE;
+
+section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    height: 100%;
+
+    main {
+        width: max-content;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        cursor: pointer;
+    }
+
+    span {
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    mat-icon {
+        height: 30px;
+        width: 30px;
+        font-size: 30px;
+    }
+}
+
+.profile-selector-avatar {
+    position: relative;
+
+    img {
+        height: 70px;
+        width: 70px;
+        border-radius: 100%;
+    }
+
+    div {
+        position: absolute;
+        right: 0px;
+        bottom: 5px;
+        width: 14px;
+        height: 14px;
+        border-radius: 100%;
+        border: 2px solid $Bg-color;
+    }
+}
+
+.online {
+    background-color: #92C83E;
+}
