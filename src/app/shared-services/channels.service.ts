@@ -20,7 +20,7 @@ export class ChannelsService {
 
   async createChannel(item: Channel, colId: "channels"): Promise<string> {
     const collectionRef = collection(this.firestore, colId);
-    const docRef = await addDoc(collectionRef, item).catch(error => {
+    const docRef = await addDoc(collectionRef, item.toJSON()).catch(error => {
       console.error(error);
       throw error;
     });
