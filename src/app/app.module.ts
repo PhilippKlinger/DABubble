@@ -38,6 +38,7 @@ import { MainContentProfileSelectorComponent } from './main-content/main-content
 import { MainContentThreadChatComponent } from './main-content/main-content-thread-chat/main-content-thread-chat.component';
 import { MainContentThreadChatLowerPartComponent } from './main-content/main-content-thread-chat/main-content-thread-chat-lower-part/main-content-thread-chat-lower-part.component';
 import { MainContentThreadChatUpperPartComponent } from './main-content/main-content-thread-chat/main-content-thread-chat-upper-part/main-content-thread-chat-upper-part.component';
+import { MainContentSideBarComponent } from './main-content/main-content-side-bar/main-content-side-bar.component';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { MainContentThreadChatUpperPartComponent } from './main-content/main-con
     MainContentProfileSelectorComponent,
     MainContentThreadChatComponent,
     MainContentThreadChatLowerPartComponent,
-    MainContentThreadChatUpperPartComponent
+    MainContentThreadChatUpperPartComponent,
+    MainContentSideBarComponent,
   ],
   imports: [
     BrowserModule,
