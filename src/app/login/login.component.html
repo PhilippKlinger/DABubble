@@ -1,4 +1,4 @@
-<section>
+<section [ngSwitch]="switch_expression">
     <div class="start-animation d-none">
         <img src="assets/img/Logo.svg" alt="">
         <p>DABubble</p>
@@ -9,62 +9,62 @@
         </div>
         <div class="create-profile">
             <span>Neu bei DABubble?</span>
-            <a class="link" href="#">Konto erstellen</a>
+            <a class="link cursor-pointer" (click)="changeSwitchCase('signup')">Konto erstellen</a>
         </div>
     </header>
-    <div class="login">
-        <div class="container bg-white">
+    <div class="login d-flex-standard">
+        <div *ngSwitchCase="'login'" class="container bg-white">
           <h1>Anmeldung</h1>
           <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>    
           <form>            
             <div>
-              <div class="input-container cursor-pointer">
+              <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets\icons\mail.svg">
                 <input type="email" matInput placeholder="beispielname@email.com" required>
               </div>    
-              <div class="input-container cursor-pointer">
+              <div class="input-container d-flex-standard cursor-pointer">
                 <img (click)="changeInputPasswordToTxt($event)" src="assets\icons\password.svg">
                 <input type="password" matInput placeholder="Passwort" required>
               </div>
             </div>    
             <div class="forgot-pass-container">
-                <a class="link forgot-password cursor-pointer">Passwort vergessen?</a>
+                <a class="link forgot-password d-flex-standard cursor-pointer">Passwort vergessen?</a>
             </div>
-            <div class="or-box">
+            <div class="d-flex-standard">
               <div class="bottom-line"></div>
               <span class="or">ODER</span>
               <div class="bottom-line"></div>
             </div>
-            <div mat-button class="input-container cursor-pointer">
+            <div mat-button class="input-container d-flex-standard cursor-pointer">
               <img class="google-img" src="assets\icons\Google.svg">
               <span>Anmelden mit Google</span>
             </div>
-            <div class="submit-buttons">
+            <div class="submit-buttons d-flex-standard">
               <button class="btn-submit" mat-button type="submit">Anmelden</button>
               <button class="btn-guest" mat-button>Gäste-Login</button>
             </div>
           </form>
         </div>
 
-        <div class="container bg-white">
-          <img class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
+        <div *ngSwitchCase="'signup'" class="container bg-white">
+          <img (click)="changeSwitchCase('login')" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Konto erstellen</h1>
           <p>Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
           <form>
             <div>
-              <div class="input-container cursor-pointer">
+              <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets/icons/person_filled.svg">
-                <input type="email" matInput placeholder="Vorname und Nachname" required>
+                <input type="text" matInput placeholder="Vorname und Nachname" required>
               </div>
-              <div class="input-container cursor-pointer">
+              <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets\icons\mail.svg">
                 <input type="email" matInput placeholder="beispielname@email.com" required>
               </div>    
-              <div class="input-container cursor-pointer">
+              <div class="input-container d-flex-standard cursor-pointer">
                 <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/password.svg" alt="Toggle Password Visibility">
                 <input type="password" matInput placeholder="Passwort" required>
               </div>
-              <div class="input-container cursor-pointer">
+              <div class="input-container d-flex-standard cursor-pointer">
                 <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/password.svg" alt="Toggle Password Visibility">
                 <input type="password" matInput placeholder="Passwort bestätigen" required>
               </div>              
@@ -75,7 +75,33 @@
               <a class="link privacy-policy" href="">Datenschutzerklärung</a>
               <p>zu</p>
             </div>
+            <div class="btn-end submit-buttons d-flex-standard">
+              <button (click)="changeSwitchCase('avatar')" class="btn-submit" mat-button type="submit">Weiter</button>
+            </div>
           </form>
         </div>
+        
+
+        <div *ngSwitchCase="'avatar'" class="container bg-white">
+          <img (click)="changeSwitchCase('signup')" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
+          <h1>Wähle deinen Avatar</h1>
+          <img src="assets/avatars/avatar_0.svg" alt="">
+          <h2>Martin Unger</h2>
+          <p>Aus der Liste wählen</p>
+          <div>
+            <img *ngFor="let avatar of avatarPaths" src="{{ avatar }}" alt="Avatar">
+          </div>
+          <div>
+            <p>eigenes Bild verwenden</p>
+            <div class="submit-buttons btn-end">
+              <button class="btn-guest" mat-button>Datei hochladen</button>
+            </div>
+          </div>
+
+          <div class="btn-end submit-buttons">
+            <button (click)="changeSwitchCase('login')" class="btn-submit" mat-button type="submit">Weiter</button>
+          </div>
+        </div>
+
     </div>
 </section>

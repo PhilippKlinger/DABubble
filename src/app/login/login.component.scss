@@ -6,6 +6,10 @@ section {
     background-color: $Bg-color; 
 }
 
+.d-flex-standard {
+    @include dFlex();
+}
+
 
 .start-animation {
     @include dFlex($g: 60px);
@@ -56,7 +60,6 @@ section {
 
 
 .login {
-    @include dFlex();
     width: 100%;
 }
 
@@ -92,7 +95,6 @@ form {
 
 .input-container {
     width: 100%; 
-    @include dFlex();
     background-color: $Bg-color;
     margin: 60px 0px;
     border-radius: 100px;
@@ -127,11 +129,6 @@ input {
 .forgot-password {
     margin-bottom: 35px;
     @include fonts($fw: 400, $fs: 18px);
-    @include dFlex();
-}
-
-.or-box {
-    @include dFlex();
 }
 
 .bottom-line {
@@ -148,6 +145,7 @@ input {
 .submit-buttons {
     @include dFlex();
     gap: 30px;
+    width: 100%;
     button {
         padding: 25px;   
         border-radius: 25px; 
@@ -200,17 +198,20 @@ input {
 }
 
 .privacy-container {
-    @include dFlex($g: 4px);
+    @include dFlex($jc: flex-start, $g: 4px);
     p {
         margin: 0;
     }
+    margin-bottom: 30px;
 }
 
 .privacy-policy {
     width: 190.5px;
 }
 
-
+.btn-end {
+    @include dFlex($jc: flex-end);
+}
 
 
 
