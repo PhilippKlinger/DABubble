@@ -7,7 +7,7 @@
         <div>
             <img src="assets/img/logo-header.svg" alt="">
         </div>
-        <div class="create-profile">
+        <div *ngSwitchCase="'login'" class="create-profile">
             <span>Neu bei DABubble?</span>
             <a class="link cursor-pointer" (click)="changeSwitchCase('signup')">Konto erstellen</a>
         </div>
@@ -28,7 +28,7 @@
               </div>
             </div>    
             <div class="forgot-pass-container">
-                <a class="link forgot-password d-flex-standard cursor-pointer">Passwort vergessen?</a>
+                <a (click)="changeSwitchCase('forgotPassword')" class="link forgot-password d-flex-standard cursor-pointer">Passwort vergessen?</a>
             </div>
             <div class="d-flex-standard">
               <div class="bottom-line"></div>
@@ -82,26 +82,46 @@
         </div>
         
 
-        <div *ngSwitchCase="'avatar'" class="container bg-white">
+        <div *ngSwitchCase="'avatar'" class="container bg-white avatar-container">
           <img (click)="changeSwitchCase('signup')" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Wähle deinen Avatar</h1>
           <img src="assets/avatars/avatar_0.svg" alt="">
-          <h2>Martin Unger</h2>
+          <h2 class="mt-32">Martin Unger</h2>
           <p>Aus der Liste wählen</p>
-          <div>
-            <img *ngFor="let avatar of avatarPaths" src="{{ avatar }}" alt="Avatar">
+          <div class="avatar-img-container">
+            <img *ngFor="let avatar of avatarPaths" class="cursor-pointer" src="{{ avatar }}" alt="Avatar">
           </div>
-          <div>
+          <div class="d-flex-standard mt-32 own-img-container">
             <p>eigenes Bild verwenden</p>
             <div class="submit-buttons btn-end">
               <button class="btn-guest" mat-button>Datei hochladen</button>
             </div>
           </div>
 
-          <div class="btn-end submit-buttons">
+          <div class="btn-end submit-buttons mt-32">
             <button (click)="changeSwitchCase('login')" class="btn-submit" mat-button type="submit">Weiter</button>
           </div>
         </div>
+
+        <div *ngSwitchCase="'forgotPassword'" class="container bg-white">
+          <img (click)="changeSwitchCase('login')" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
+          <h1>Passwort zurücksetzen</h1>
+          <p>Bitte geben Sie Ihre E-Mail-Adresse ein.</p>
+          <form>            
+            <div>              
+              <div class="input-container d-flex-standard cursor-pointer">
+                <img (click)="changeInputPasswordToTxt($event)" src="assets\icons\password.svg">
+                <input type="password" matInput placeholder="Passwort" required>
+              </div>
+              <p>Wir senden Ihnen eine E-Mail, über die Sie Ihr Passwort ändern können.</p>   
+            </div>  
+          </form>
+          <div class="btn-end submit-buttons mt-32">
+            <button (click)="changeSwitchCase('login')" class="btn-submit" mat-button type="submit">E-Mail senden</button>
+          </div>
+        </div>
+
+        
 
     </div>
 </section>
