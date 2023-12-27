@@ -12,15 +12,15 @@
         <div class="name">
             <span>Channel-Name</span>
         </div>
-        <input matInput placeholder="# z.B. Kooperationsprojekte">
+        <input [(ngModel)]="channel.name" matInput placeholder="# z.B. Kooperationsprojekte">
     </div>
     <div class="name-input">
         <div class="name">
             <span>Beschreibung (optional)</span>
         </div>
-        <input matInput placeholder="Dein Text hier">
+        <input [(ngModel)]="channel.description" matInput placeholder="Dein Text hier">
     </div>
     <div class="button">
-        <button mat-raised-button color="primary">Erstellen</button>
+        <button mat-raised-button color="primary" (click)="createChannel()">Erstellen</button>
     </div>
 </div>
