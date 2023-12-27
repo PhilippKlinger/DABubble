@@ -4,10 +4,12 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { Subscription } from 'rxjs';
 
+
 @Component({
   selector: 'app-dialog-dummy',
   templateUrl: './dialog-dummy.component.html',
-  styleUrls: ['./dialog-dummy.component.scss']
+  styleUrls: ['./dialog-dummy.component.scss'],
+
 })
 export class DialogDummyComponent implements OnInit {
 
@@ -34,6 +36,18 @@ export class DialogDummyComponent implements OnInit {
 
   openDialog(componentKey: string): void {
     this.dialogService.openDialog(componentKey);
+  }
+
+  deleteChannel(channel: Channel): void {
+    this.channelsService.deleteChannel('channels', channel.id).then(() => {
+      console.log('Channel gelöscht:', channel.id);
+    }).catch(error => {
+      console.error('Fehler beim Löschen des Kanals:', error);
+    });
+  }
+
+  editChannel(channel: Channel): void {
+    this.dialogService.openDialog('editChannel');
   }
 
   ngOnDestroy() {
