@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./main-content.component.scss']
 })
 export class MainContentComponent {
+  workspace_open: boolean = true;
 
+  toggleWorkspace() {
+    this.workspace_open = !this.workspace_open;
+    console.log(this.workspace_open);
+  }
 }
