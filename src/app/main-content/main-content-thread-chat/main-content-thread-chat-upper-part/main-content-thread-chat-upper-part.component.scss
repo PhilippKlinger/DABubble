@@ -59,6 +59,11 @@ nav {
 
     &:hover {
         background-color: $Bg-color;
+
+        mat-icon {
+            color: $Purple-3;
+            scale: 1.1;
+        }
     }
 
     mat-icon {
@@ -67,11 +72,6 @@ nav {
         display: flex;
         justify-content: center;
         align-items: center;
-
-        &:hover {
-            color: $Purple-3;
-            scale: 1.1;
-        }
     }
 }
 

@@ -8,6 +8,7 @@ $Light-purple: #ADB0D9;
 .chat {
     height: 100%;
     width: 100%;
+    cursor: default;
 }
 
 .chat-content {
@@ -240,7 +241,7 @@ $Light-purple: #ADB0D9;
     }
 }
 
-.chat-timestamp {
+.answer-timestamp {
     padding: 0px 30px;
     width: -webkit-fill-available;
     position: relative;
@@ -248,14 +249,17 @@ $Light-purple: #ADB0D9;
     justify-content: center;
     align-items: center;
     margin: 30px 0px;
+    gap: 10px;
 
     span {
-        position: absolute;
-        z-index: 1;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
         background-color: white;
-        padding: 5px 15px;
-        border: solid 1px $Light-purple;
+        color: $Light-purple;
         border-radius: 30px;
+        font-size: 18px;
+        font-weight: 400;
     }
 
     div {
