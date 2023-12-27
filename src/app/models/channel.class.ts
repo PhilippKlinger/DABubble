@@ -4,7 +4,7 @@ export class Channel {
     description: string;
     members: any[];
     creator: string;
-    timestamp: number;
+    timestamp: string | number;
    
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
@@ -13,6 +13,14 @@ export class Channel {
         this.members = obj ? obj.members : '';
         this.creator = obj ? obj.creator : '';
         this.timestamp = obj ? obj.timestamp : '';
+    }
+
+    setTimestampNow(): void {
+        this.timestamp = Date.now();
+      }
+
+    setCreator(): void {
+        this.creator = 'Gast';
     }
 
     public toJSON() {

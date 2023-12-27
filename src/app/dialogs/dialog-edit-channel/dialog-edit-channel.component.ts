@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { ChannelsService } from 'src/app/shared-services/channels.service';
+import { Channel } from 'src/app/models/channel.class';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dialog-edit-channel',
@@ -11,6 +14,8 @@ import { Component } from '@angular/core';
 export class DialogEditChannelComponent {
   isEditingName: boolean = false;
   isEditingDescription: boolean = false;
+
+  constructor(private channelsService: ChannelsService, private dialogRef: MatDialogRef<DialogEditChannelComponent>) { }
 
   toggleEditing(field: 'name' | 'description'): void {
     if (field === 'name') {

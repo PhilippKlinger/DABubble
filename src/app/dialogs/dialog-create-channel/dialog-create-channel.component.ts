@@ -20,8 +20,8 @@ export class DialogCreateChannelComponent {
   constructor(private channelsService: ChannelsService, private dialogRef: MatDialogRef<DialogCreateChannelComponent>) { }
 
   createChannel(): void {
-    
-
+    this.channel.setCreator();
+    this.channel.setTimestampNow();
     this.channelsService.createChannel(this.channel, 'channels').then((channelId) => {
       console.log('Neuer Kanal erstellt mit ID:', channelId);
       this.dialogRef.close();

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { Channel } from '../models/channel.class';
 import { BehaviorSubject } from 'rxjs';
-
+import { formatDate } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,6 @@ export class ChannelsService {
 
   private channelsSubject = new BehaviorSubject<Channel[]>([]);
   channels$ = this.channelsSubject.asObservable();
-
   private unsubChannels;
 
   constructor(private firestore: Firestore) {
@@ -20,6 +19,7 @@ export class ChannelsService {
 
   async createChannel(item: Channel, colId: "channels"): Promise<string> {
     const collectionRef = collection(this.firestore, colId);
+    item.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US' )
     const docRef = await addDoc(collectionRef, item.toJSON()).catch(error => {
       console.error(error);
       throw error;
@@ -40,8 +40,20 @@ export class ChannelsService {
     });
   }
 
+  async deleteChannel(colId: string, docId: string) {
+    await deleteDoc(this.getSingleDocRef(colId, docId)).catch(
+      (error) => {
+        console.error(error)
+      }
+    )
+  }
+
   getChannelsRef() {
     return collection(this.firestore, 'channels');
+  }
+
+  getSingleDocRef(coldId: string, docID: string) {
+    return doc(collection(this.firestore, coldId), docID)
   }
 
   ngOnDestroy() {
