@@ -16,16 +16,17 @@ $Light-purple: #ADB0D9;
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
+    position: absolute;
 
     &::-webkit-scrollbar {
         display: none
     }
 }
 
-.user-message {
+.thread-user-message {
     width: -webkit-fill-available;
-    padding: 5px 30px 5px 130px;
-    gap: 30px;
+    padding: 5px 30px 5px 30px;
+    gap: 20px;
     display: flex;
     flex-direction: row-reverse;
     justify-content: flex-end;
@@ -37,10 +38,10 @@ $Light-purple: #ADB0D9;
     }
 }
 
-.anon-user-message {
+.thread-anon-user-message {
     width: -webkit-fill-available;
-    padding: 5px 130px 5px 30px;
-    gap: 30px;
+    padding: 5px 30px 5px 30px;
+    gap: 20px;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
