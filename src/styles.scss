@@ -54,6 +54,10 @@ body { margin: 0; font-family: 'Nunito', "Helvetica Neue", sans-serif !important
   border-radius: 30px !important;
 }
 
+h1, h2, h3 {
+  font-family: 'Nunito', sans-serif !important;
+}
+
 @mixin dFlex($jc:center, $ai:center, $g: 0px , $fd: row) {
   display: flex; 
   justify-content: $jc; 
