@@ -6,8 +6,7 @@
 
     <app-main-content-side-bar class="main1" [ngClass]="{'d-none': !workspace_open}"></app-main-content-side-bar>
     <app-main-content-main-chat class="main2"></app-main-content-main-chat>
-    <app-main-content-thread-chat (click)="updateThreadBoolean()" class="main3"
-        [ngClass]="{'d-none': !thread_open}"></app-main-content-thread-chat>
+    <app-main-content-thread-chat class="main3" [ngClass]="{'d-none': !thread_open}"></app-main-content-thread-chat>
 </div>
 
 <div class="close-workspace" (click)="toggleWorkspace()">

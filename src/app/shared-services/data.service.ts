@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  private thread_open: boolean = true;
+  public thread_open: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   getBooleanValue(): boolean {
-    return this.thread_open;
+    return this.thread_open.value;
   }
 
   setBooleanValue(newValue: boolean) {
-    this.thread_open = newValue;
+    this.thread_open.next(newValue);
   }
 }

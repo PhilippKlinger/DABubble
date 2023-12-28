@@ -10,10 +10,8 @@ export class MainContentThreadChatUpperPartComponent {
 
   constructor(private dataService: DataService) { }
 
-  thread_open: boolean = true;
-
   closeThreadChat() {
-    // this.thread_open = !this.thread_open;
+    //boolean wert wird in der data.service.ts geändert und bei veränderung wird eine funktion in main-content ausgelöst
     this.dataService.setBooleanValue(false);
   }
 }
