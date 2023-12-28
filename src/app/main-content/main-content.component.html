@@ -1,14 +1,15 @@
-<div class="grid">
-    <app-main-content-logo></app-main-content-logo>
-    <app-main-content-searchbar></app-main-content-searchbar>
-    <app-main-content-profile-selector></app-main-content-profile-selector>
+<div [ngClass]="{'grid': workspace_open,'grid-no-workspace': !workspace_open, 'grid-no-thread-chat': thread_open === false}"
+    class="grid-no-workspace" #grid>
+    <app-main-content-logo class="header1"></app-main-content-logo>
+    <app-main-content-searchbar class="header2"></app-main-content-searchbar>
+    <app-main-content-profile-selector class="header3"></app-main-content-profile-selector>
 
-    <app-main-content-side-bar [ngClass]="{'d-none': !workspace_open}"></app-main-content-side-bar>
-    <app-main-content-main-chat></app-main-content-main-chat>
-    <app-main-content-thread-chat></app-main-content-thread-chat>
+    <app-main-content-side-bar class="main1" [ngClass]="{'d-none': !workspace_open}"></app-main-content-side-bar>
+    <app-main-content-main-chat class="main2"></app-main-content-main-chat>
+    <app-main-content-thread-chat class="main3" [ngClass]="{'d-none': !thread_open}"></app-main-content-thread-chat>
 </div>
 
-<div class="close-workspace" (click)="toggleWorkspace()">
+<div class="close-workspace" (click)="displayData()">
     <span>Workspace-Menü schließen</span>
     <mat-icon>expand_less</mat-icon>
 </div>

@@ -18,10 +18,13 @@ $White: #FFFFFF;
     padding: 15px;
     gap: 15px;
     background-color: $Bg-color;
+    grid-template-areas:
+        "header1 header2 header3"
+        "main1 main2 main3";
 }
 
-.grid-noSideBar{
-        display: grid;
+.grid-no-workspace {
+    display: grid;
     height: calc(100vh - 30px);
     width: calc(100vw - 30px);
     grid-template-columns: 0.7fr 2fr 1fr; //values for column-width/ 3 values = 3 columns
@@ -29,6 +32,47 @@ $White: #FFFFFF;
     padding: 15px;
     gap: 15px;
     background-color: $Bg-color;
+    grid-template-areas:
+        "header1 header2 header3"
+        "main2 main2 main3";
+}
+
+.grid-no-thread-chat {
+    display: grid;
+    height: calc(100vh - 30px);
+    width: calc(100vw - 30px);
+    grid-template-columns: 0.7fr 2fr 1fr; //values for column-width/ 3 values = 3 columns
+    grid-template-rows: 70px; //values for row-width/ 1 value = first row's value
+    padding: 15px;
+    gap: 15px;
+    background-color: $Bg-color;
+    grid-template-areas:
+        "header1 header2 header3"
+        "main1 main2 main2";
+}
+
+.header1 {
+    grid-area: header1;
+}
+
+.header2 {
+    grid-area: header2;
+}
+
+.header3 {
+    grid-area: header3;
+}
+
+.main1 {
+    grid-area: main1;
+}
+
+.main2 {
+    grid-area: main2;
+}
+
+.main3 {
+    grid-area: main3;
 }
 
 .close-workspace {

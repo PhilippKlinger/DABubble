@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DataService } from 'src/app/shared-services/data.service';
 
 @Component({
   selector: 'app-main-content-thread-chat-upper-part',
@@ -7,4 +8,12 @@ import { Component } from '@angular/core';
 })
 export class MainContentThreadChatUpperPartComponent {
 
+  constructor(private dataService: DataService) { }
+
+  thread_open: boolean = true;
+
+  closeThreadChat() {
+    // this.thread_open = !this.thread_open;
+    this.dataService.setBooleanValue(false);
+  }
 }
