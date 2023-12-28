@@ -20,8 +20,7 @@ export class MainContentComponent implements OnInit {
     this.workspace_open = !this.workspace_open;
   }
 
-  displayData() {
+  updateThreadBoolean() {
     this.thread_open = this.dataService.getBooleanValue();
-    console.log(this.thread_open);
   }
 }
