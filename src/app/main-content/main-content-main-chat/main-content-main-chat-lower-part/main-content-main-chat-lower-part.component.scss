@@ -22,6 +22,86 @@ $Light-purple: #ADB0D9;
     }
 }
 
+.user-message-hover-options {
+    opacity: 0;
+    display: none;
+    z-index: 3;
+    position: absolute;
+    margin-top: -26px;
+    margin-left: -60px;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 200px;
+    height: 46px;
+    background-color: white;
+    border: 1px solid $Light-purple;
+    border-radius: 25px 25px 0px 25px;
+    padding: 0px 10px;
+    cursor: pointer;
+
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 450px;
+        margin-top: 60px;
+        background-color: white;
+        position: absolute;
+        box-shadow: 0px 6px 14px 0px #00000033;
+        width: 270px;
+        height: 60px;
+        border-radius: 0px 30px 30px 30px;
+    }
+
+    div {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+        }
+    }
+
+    mat-icon {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+            color: $Purple-1;
+            scale: 1.1;
+        }
+    }
+}
+
+.hover-options-edit-message {
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 30px;
+    width: fit-content;
+    text-wrap: nowrap;
+    margin-block-start: 0;
+    margin-block-end: 0;
+
+    &:hover {
+        background-color: $Bg-color;
+        font-weight: 700;
+        color: $Purple-1;
+    }
+}
+
 .user-message {
     width: -webkit-fill-available;
     padding: 5px 30px 5px 130px;
@@ -34,6 +114,12 @@ $Light-purple: #ADB0D9;
 
     &:hover {
         background-color: $Bg-color;
+        position: relative;
+    }
+
+    &:hover .user-message-hover-options {
+        display: flex;
+        opacity: 1;
     }
 }
 
