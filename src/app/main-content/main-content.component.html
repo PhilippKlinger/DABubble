@@ -1,4 +1,4 @@
-<div [ngClass]="{'grid': workspace_open,'grid-no-workspace': !workspace_open, 'grid-no-thread-chat': thread_open === false}"
+<div [ngClass]="{'grid': workspace_open,'grid-no-workspace': !workspace_open, 'grid-no-thread-chat': !thread_open, 'grid-only-main-chat': (!workspace_open && !thread_open)}"
     class="grid-no-workspace" #grid>
     <app-main-content-logo class="header1"></app-main-content-logo>
     <app-main-content-searchbar class="header2"></app-main-content-searchbar>
@@ -6,7 +6,8 @@
 
     <app-main-content-side-bar class="main1" [ngClass]="{'d-none': !workspace_open}"></app-main-content-side-bar>
     <app-main-content-main-chat class="main2"></app-main-content-main-chat>
-    <app-main-content-thread-chat (click)="updateThreadBoolean()" class="main3" [ngClass]="{'d-none': !thread_open}"></app-main-content-thread-chat>
+    <app-main-content-thread-chat (click)="updateThreadBoolean()" class="main3"
+        [ngClass]="{'d-none': !thread_open}"></app-main-content-thread-chat>
 </div>
 
 <div class="close-workspace" (click)="toggleWorkspace()">
