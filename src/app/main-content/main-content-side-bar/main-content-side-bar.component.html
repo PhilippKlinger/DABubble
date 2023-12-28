@@ -13,8 +13,8 @@
     <main>
         <div class="side-bar-channels">
             <div class="side-bar-channels-header">
-                <div class="side-bar-hover">
-                    <mat-icon>arrow_drop_down</mat-icon>
+                <div class="side-bar-hover" (click)="toggleChannels()">
+                    <mat-icon>{{ channel_icon }}</mat-icon>
                     <span>
                         <mat-icon>workspaces</mat-icon>
                         <span>Channels</span>
@@ -25,29 +25,30 @@
                 </div>
             </div>
 
-            <div class="side-bar-channels-list">
-                <div>
-                    <mat-icon class="tag">tag</mat-icon>
-                    <span>Entwicklerteam</span>
-                </div>
-                <div>
-                    <mat-icon class="tag">tag</mat-icon>
-                    <span>Office-team</span>
-                </div>
-            </div>
+            <div [ngClass]="{'d-none': !channels_opened}">
+                <div class="side-bar-channels-list">
+                    <div>
+                        <mat-icon class="tag">tag</mat-icon>
+                        <span>Entwicklerteam</span>
+                    </div>
+                    <div>
+                        <mat-icon class="tag">tag</mat-icon>
+                        <span>Office-team</span>
+                    </div>
 
-            <div class="side-bar-channel-add side-bar-hover" (click)="openDialog('createChannel')">
-                <mat-icon>add_circle</mat-icon>
-                <span>Channel hinzufügen</span>
+                    <div class="side-bar-channel-add side-bar-hover" (click)="openDialog('createChannel')">
+                        <mat-icon>add_circle</mat-icon>
+                        <span>Channel hinzufügen</span>
+                    </div>
+                </div>
             </div>
         </div>
 
 
         <div class="side-bar-channels">
-
             <div class="side-bar-channels-header">
-                <div class="side-bar-hover">
-                    <mat-icon>arrow_drop_down</mat-icon>
+                <div class="side-bar-hover" (click)="toggleDM()">
+                    <mat-icon>{{ directmessage_icon }}</mat-icon>
                     <span>
                         <mat-icon>account_circle</mat-icon>
                         <span>Direktnachrichten</span>
@@ -55,40 +56,41 @@
                 </div>
             </div>
 
-            <div class="side-bar-profile-list">
-                <div class="side-bar-profile">
-                    <div class="side-bar-profile-picture">
-                        <img src="../../../assets/avatars/avatar_1.svg">
-                        <div class="online"></div>
+            <div [ngClass]="{'d-none': !directmessages_opened}">
+                <div class="side-bar-profile-list">
+                    <div class="side-bar-profile">
+                        <div class="side-bar-profile-picture">
+                            <img src="../../../assets/avatars/avatar_1.svg">
+                            <div class="online"></div>
+                        </div>
+                        <span>Frederik Beck (Du)</span>
                     </div>
-                    <span>Frederik Beck (Du)</span>
-                </div>
 
-                <div class="side-bar-profile">
-                    <div class="side-bar-profile-picture">
-                        <img src="../../../assets/avatars/avatar_2.svg">
-                        <div class="online"></div>
+                    <div class="side-bar-profile">
+                        <div class="side-bar-profile-picture">
+                            <img src="../../../assets/avatars/avatar_2.svg">
+                            <div class="online"></div>
+                        </div>
+                        <span>Sofia Müller</span>
                     </div>
-                    <span>Sofia Müller</span>
-                </div>
 
-                <div class="side-bar-profile">
-                    <div class="side-bar-profile-picture">
-                        <img src="../../../assets/avatars/avatar_3.svg">
-                        <div class="online"></div>
+                    <div class="side-bar-profile">
+                        <div class="side-bar-profile-picture">
+                            <img src="../../../assets/avatars/avatar_3.svg">
+                            <div class="online"></div>
+                        </div>
+                        <span>Noah Braun</span>
                     </div>
-                    <span>Noah Braun</span>
-                </div>
 
-                <div class="side-bar-profile">
-                    <div class="side-bar-profile-picture">
-                        <img src="../../../assets/avatars/avatar_6.svg">
-                        <div class="online"></div>
+                    <div class="side-bar-profile">
+                        <div class="side-bar-profile-picture">
+                            <img src="../../../assets/avatars/avatar_6.svg">
+                            <div class="online"></div>
+                        </div>
+                        <span>Elise Roth</span>
                     </div>
-                    <span>Elise Roth</span>
                 </div>
             </div>
-
         </div>
     </main>
 </section>

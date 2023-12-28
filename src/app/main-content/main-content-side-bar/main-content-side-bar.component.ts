@@ -1,5 +1,5 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCreateChannelComponent } from 'src/app/dialogs/dialog-create-channel/dialog-create-channel.component';
 import { DialogEditChannelComponent } from 'src/app/dialogs/dialog-edit-channel/dialog-edit-channel.component';
@@ -13,6 +13,31 @@ import { DialogShowProfileComponent } from 'src/app/dialogs/dialog-show-profile/
   styleUrls: ['./main-content-side-bar.component.scss']
 })
 export class MainContentSideBarComponent {
+  channel_icon: string = 'arrow_drop_down';
+  channels_opened: boolean = true;
+  directmessage_icon: string = 'arrow_drop_down';
+  directmessages_opened: boolean = true;
+
+  toggleChannels() {
+    this.channels_opened = !this.channels_opened;
+
+    if (!this.channels_opened) {
+      this.channel_icon = 'arrow_right'
+    } else {
+      this.channel_icon = 'arrow_drop_down'
+    }
+  }
+
+  toggleDM() {
+    this.directmessages_opened = !this.directmessages_opened;
+
+    if (!this.directmessages_opened) {
+      this.directmessage_icon = 'arrow_right'
+    } else {
+      this.directmessage_icon = 'arrow_drop_down'
+    }
+  }
+
   /**
  * Mapping of component keys to their corresponding Angular component types.
  *
