@@ -20,7 +20,7 @@
                         <span>Channels</span>
                     </span>
                 </div>
-                <div class="channel-header-add-btn">
+                <div class="channel-header-add-btn" (click)="openDialog('createChannel')">
                     <mat-icon>add</mat-icon>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                 </div>
             </div>
 
-            <div class="side-bar-channel-add side-bar-hover">
+            <div class="side-bar-channel-add side-bar-hover" (click)="openDialog('createChannel')">
                 <mat-icon>add_circle</mat-icon>
                 <span>Channel hinzufügen</span>
             </div>
