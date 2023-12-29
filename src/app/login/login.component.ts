@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../shared-services/authentication.service';
+import { User } from '../models/user.class';
 
 @Component({
   selector: 'app-login',
@@ -6,6 +8,32 @@ import { Component } from '@angular/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  user: User = new User();
+
+  constructor(private authService: AuthService) {}
+
+  register() {
+    if (this.user.password === this.user.confirmPassword) {
+      this.authService.register(this.user.email, this.user.password)
+        .then(() => {
+          // Erfolgsbehandlung, z.B. Weiterleitung zur nächsten Seite oder Anzeige einer Erfolgsmeldung
+        })
+        .catch((error) => {
+          if (error.code === 'auth/email-already-in-use') {
+            // Benutzer benachrichtigen, dass die E-Mail bereits verwendet wird
+            // Zum Beispiel: Anzeigen einer Fehlermeldung in der Benutzeroberfläche
+          } else {
+            // Allgemeine Fehlerbehandlung für andere Fehlerarten
+            // Zum Beispiel: Anzeigen einer generischen Fehlermeldung
+          }
+        });
+    } else {
+      // Fehlermeldung, wenn die Passwörter nicht übereinstimmen
+      // Zum Beispiel: Anzeigen einer Fehlermeldung in der Benutzeroberfläche
+    }
+  }
+  
+
   avatarPaths = [
     'assets/avatars/avatar_1.svg',
     'assets/avatars/avatar_2.svg',
