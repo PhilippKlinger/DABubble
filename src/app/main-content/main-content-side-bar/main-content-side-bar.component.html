@@ -30,7 +30,7 @@
                     <li *ngFor="let channel of channels">
                     <div>
                         <mat-icon class="tag">tag</mat-icon>
-                        <span>{{ channel.name }}</span>
+                        <span (click)="editChannel(channel)">{{ channel.name }}</span>
                     </div>
                 </li>
                     <!-- <div>

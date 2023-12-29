@@ -54,6 +54,11 @@ export class MainContentSideBarComponent implements OnInit {
     }
   }
 
+  editChannel(channel: Channel): void {
+    this.channelsService.setSelectedChannel(channel);
+    this.dialogService.openDialog('editChannel');
+  }
+
   ngOnDestroy() {
     this.unsubChannels.unsubscribe();
   }
