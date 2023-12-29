@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-dialog-edit-channel',
@@ -14,8 +16,14 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class DialogEditChannelComponent {
   isEditingName: boolean = false;
   isEditingDescription: boolean = false;
+  channel: Channel | null = null;
+  selectedChannelSubscription: Subscription;
 
-  constructor(private channelsService: ChannelsService, private dialogRef: MatDialogRef<DialogEditChannelComponent>) { }
+  constructor(private channelsService: ChannelsService, private dialogRef: MatDialogRef<DialogEditChannelComponent>) {
+    this.selectedChannelSubscription = this.channelsService.selectedChannel$.subscribe((channel) => {
+      this.channel = channel;
+    });
+   }
 
   toggleEditing(field: 'name' | 'description'): void {
     if (field === 'name') {
@@ -26,10 +34,16 @@ export class DialogEditChannelComponent {
   }
 
   saveChanges(field: 'name' | 'description'): void {
+
+
     if (field === 'name') {
       this.isEditingName = false;
     } else if (field === 'description') {
       this.isEditingDescription = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.selectedChannelSubscription.unsubscribe();
   }
 }

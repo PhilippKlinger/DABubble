@@ -24,6 +24,7 @@ export class DialogCreateChannelComponent {
     this.channel.setTimestampNow();
     this.channelsService.createChannel(this.channel, 'channels').then((channelId) => {
       console.log('Neuer Kanal erstellt mit ID:', channelId);
+      // this.channel.id = channelId;
       this.dialogRef.close();
       // hier den ersten dialog schließen und den nächsten für member hinzufügen öffnen
     }).catch(error => {

@@ -3,6 +3,8 @@ import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { Subscription } from 'rxjs';
+import { DialogEditChannelComponent } from '../dialog-edit-channel/dialog-edit-channel.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -16,7 +18,7 @@ export class DialogDummyComponent implements OnInit {
   channels: Channel[] = [];
   unsubChannels!: Subscription;
 
-  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService) {
+  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -47,7 +49,8 @@ export class DialogDummyComponent implements OnInit {
   }
 
   editChannel(channel: Channel): void {
-    this.dialogService.openDialog('editChannel');
+    this.channelsService.setSelectedChannel(channel);
+    this.dialog.open(DialogEditChannelComponent);
   }
 
   ngOnDestroy() {
