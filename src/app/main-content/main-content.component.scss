@@ -9,6 +9,8 @@ $Rosa-error: #ED1E79;
 $Background-Login: #545BEC;
 $White: #FFFFFF;
 
+@import './../../styles.scss';
+
 .grid {
     display: grid;
     height: calc(100vh - 30px);
