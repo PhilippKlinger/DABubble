@@ -55,16 +55,16 @@ export class ChannelsService {
     )
   }
 
-  async updateChannelName(channel: Channel) {
-    if (channel.id) {
-      let docRef = this.getSingleDocRef('channels', channel.id);
-      await updateDoc(docRef, channel.toJSON()).catch(
-        (err) => {
-          console.log(err);
-        }
-      );
+  async updateChannel(channel: Channel | null) {
+    if (channel && channel.id) {
+        let docRef = this.getSingleDocRef('channels', channel.id);
+        await updateDoc(docRef, channel.toJSON()).catch(
+            (err) => {
+                console.log(err);
+            }
+        );
     }
-  }
+}
 
 
   getChannelsRef() {

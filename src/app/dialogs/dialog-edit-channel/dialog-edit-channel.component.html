@@ -11,8 +11,8 @@
             <p *ngIf="!isEditingName" (click)="toggleEditing('name')">Bearbeiten</p>
             <p *ngIf="isEditingName" (click)="saveChanges('name')">Speichern</p>
         </div>
-        <span *ngIf="!isEditingName"># Entwicklerteam</span>
-        <input *ngIf="isEditingName" matInput placeholder="# Entwicklerteam">
+        <span *ngIf="!isEditingName">{{channel?.name}}</span>
+        <input [(ngModel)]="channel!.name" *ngIf="isEditingName" matInput placeholder={{channel?.name}}>
     </div>
     <div class="dialog-bottom" [ngClass]="{'show-border': !isEditingDescription}">
         <div class="name-input">
@@ -21,10 +21,8 @@
                 <p *ngIf="!isEditingDescription" (click)="toggleEditing('description')">Bearbeiten</p>
                 <p *ngIf="isEditingDescription" (click)="saveChanges('description')">Speichern</p>
             </div>
-            <span *ngIf="!isEditingDescription">Dieser Channel ist für alles rund um #dfsdf vorgesehen.
-                Hier kannst du zusammen mit deinem Team Meetings abhalten, Dokumente teilen und Entscheidungen
-                treffen.</span>
-            <input *ngIf="isEditingDescription" matInput placeholder="Dein Text hier">
+            <span *ngIf="!isEditingDescription">{{channel?.description}}</span>
+            <input [(ngModel)]="channel!.description" *ngIf="isEditingDescription" matInput placeholder="Dein Text hier">
         </div>
 
         <div class="divider">
@@ -32,7 +30,7 @@
         </div>
         <div class="name name-bottom">
             <span>Erstellt von</span>
-            <p>Noah Braun</p>
+            <p>{{channel?.creator}}</p>
         </div>
     </div>
 
