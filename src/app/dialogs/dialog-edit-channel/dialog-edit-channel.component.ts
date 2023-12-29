@@ -34,8 +34,7 @@ export class DialogEditChannelComponent {
   }
 
   saveChanges(field: 'name' | 'description'): void {
-
-
+    this.channelsService.updateChannel(this.channel)
     if (field === 'name') {
       this.isEditingName = false;
     } else if (field === 'description') {
