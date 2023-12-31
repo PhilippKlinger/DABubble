@@ -9,9 +9,9 @@ import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 })
 export class MainContentMainChatUpperPartComponent {
 
-
   constructor(private dialogService: OpenDialogService) { }
 
+  
   openDialog(componentKey: string): void {
     this.dialogService.openDialog(componentKey);
   }

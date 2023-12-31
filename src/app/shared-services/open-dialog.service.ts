@@ -8,7 +8,6 @@ import { DialogEditChannelComponent } from '../dialogs/dialog-edit-channel/dialo
 import { DialogMenuProfileComponent } from '../dialogs/dialog-menu-profile/dialog-menu-profile.component';
 import { DialogAddChannelmembersComponent } from '../dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
 
-
 @Injectable({
   providedIn: 'root'
 })
