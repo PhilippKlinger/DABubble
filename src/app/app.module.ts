@@ -41,6 +41,9 @@ import { MainContentThreadChatComponent } from './main-content/main-content-thre
 import { MainContentThreadChatLowerPartComponent } from './main-content/main-content-thread-chat/main-content-thread-chat-lower-part/main-content-thread-chat-lower-part.component';
 import { MainContentThreadChatUpperPartComponent } from './main-content/main-content-thread-chat/main-content-thread-chat-upper-part/main-content-thread-chat-upper-part.component';
 import { MainContentSideBarComponent } from './main-content/main-content-side-bar/main-content-side-bar.component';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { firebaseConfig } from '../environments/firebase.config';
 import { DialogAddChannelmembersComponent } from './dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
 
 
@@ -89,6 +92,8 @@ import { DialogAddChannelmembersComponent } from './dialogs/dialog-add-channelme
     MatSidenavModule,
     MatToolbarModule,
     MatTooltipModule,
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireAuthModule,
     MatRadioModule
 
   ],
