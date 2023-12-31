@@ -18,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -40,6 +41,7 @@ import { MainContentThreadChatComponent } from './main-content/main-content-thre
 import { MainContentThreadChatLowerPartComponent } from './main-content/main-content-thread-chat/main-content-thread-chat-lower-part/main-content-thread-chat-lower-part.component';
 import { MainContentThreadChatUpperPartComponent } from './main-content/main-content-thread-chat/main-content-thread-chat-upper-part/main-content-thread-chat-upper-part.component';
 import { MainContentSideBarComponent } from './main-content/main-content-side-bar/main-content-side-bar.component';
+import { DialogAddChannelmembersComponent } from './dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
 
 
 @NgModule({
@@ -63,6 +65,7 @@ import { MainContentSideBarComponent } from './main-content/main-content-side-ba
     MainContentThreadChatLowerPartComponent,
     MainContentThreadChatUpperPartComponent,
     MainContentSideBarComponent,
+    DialogAddChannelmembersComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,6 +89,7 @@ import { MainContentSideBarComponent } from './main-content/main-content-side-ba
     MatSidenavModule,
     MatToolbarModule,
     MatTooltipModule,
+    MatRadioModule
 
   ],
   providers: [OpenDialogService,

@@ -6,6 +6,7 @@ import { DialogEditProfileComponent } from '../dialogs/dialog-edit-profile/dialo
 import { DialogCreateChannelComponent } from '../dialogs/dialog-create-channel/dialog-create-channel.component';
 import { DialogEditChannelComponent } from '../dialogs/dialog-edit-channel/dialog-edit-channel.component';
 import { DialogMenuProfileComponent } from '../dialogs/dialog-menu-profile/dialog-menu-profile.component';
+import { DialogAddChannelmembersComponent } from '../dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
 
 
 @Injectable({
@@ -23,6 +24,7 @@ export class OpenDialogService {
     'editProfile': DialogEditProfileComponent,
     'createChannel': DialogCreateChannelComponent,
     'editChannel': DialogEditChannelComponent,
+    'addChannelmembers': DialogAddChannelmembersComponent,
   };
 
   /**
