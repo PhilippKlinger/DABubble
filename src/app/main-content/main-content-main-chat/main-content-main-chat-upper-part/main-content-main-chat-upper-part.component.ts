@@ -11,11 +11,18 @@ import { Subscription } from 'rxjs';
 export class MainContentMainChatUpperPartComponent {
   selectedChannel!: Channel | null;
   unsubChannels!: Subscription;
+  members: Array<string> = [];
 
   constructor(private dialogService: OpenDialogService, private ChannelsService: ChannelsService) {
     this.unsubChannels = this.ChannelsService.selectedChannel$.subscribe(selectedChannel => {
       this.selectedChannel = selectedChannel;
-      console.log(this.selectedChannel)
+
+      if (selectedChannel?.members !== undefined) {
+        this.members = selectedChannel?.members;
+      } else {
+        this.members = ['empty', 'empty', 'empty', 'empty', 'empty',];
+        console.log(this.members);
+      }
     });
   }
 
