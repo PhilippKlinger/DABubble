@@ -1,0 +1,59 @@
+@import './../../../../styles.scss';
+
+$Bg-color: #ECEEFE;
+$Purple-3: #535AF1;
+
+nav {
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+    height: 100px;
+    width: 100%;
+    box-shadow: 0px 2px 10px 0px #00000014;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+    position: relative;
+}
+
+.channel-name {
+    margin-left: 30px;
+    font-size: 24px;
+    font-weight: 700;
+    color: black;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 5px 10px;
+    border-radius: 100px;
+    transition: 0.2s ease-in;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $Bg-color;
+    }
+}
+
+.profile-picture {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        height: 50px;
+        width: 50px;
+        border-radius: 100%;
+    }
+}
+
+.online {
+    position: absolute;
+    right: 0px;
+    bottom: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    border: 2px solid $Bg-color;
+    background-color: #92C83E;
+}

@@ -9,6 +9,7 @@ export class MainContentComponent implements OnInit {
   @ViewChild('grid') grid: any;
   workspace_open: boolean = true;
   thread_open!: boolean;
+  directmessage_open: boolean = false;
 
   constructor(private dataService: DataService) { }
 
@@ -21,7 +22,8 @@ export class MainContentComponent implements OnInit {
   }
 
   toggleWorkspace() {
-    this.workspace_open = !this.workspace_open;
+    // this.workspace_open = !this.workspace_open;
+    this.directmessage_open = !this.directmessage_open;
   }
 
   updateThreadBoolean() {

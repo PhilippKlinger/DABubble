@@ -1,20 +1,18 @@
 <nav>
     <div class="channel-name" (click)="openDialog('editChannel')">
         <mat-icon class="tag">tag</mat-icon>
-        <span>Entwicklerteam</span>
+        <span>{{ selectedChannel?.name }}</span>
         <mat-icon>keyboard_arrow_down</mat-icon>
     </div>
 
     <div class="main-chat-person-section">
         <div class="avatar-count">
             <div class="avatar-container">
-                <img src="../../../../assets/avatars/avatar_0.svg">
-                <img src="../../../../assets/avatars/avatar_0.svg">
-                <img src="../../../../assets/avatars/avatar_0.svg">
-                <img src="../../../../assets/avatars/avatar_0.svg">
-                <img src="../../../../assets/avatars/avatar_0.svg">
+                <div *ngFor="let member of members">
+                    <img src="../../../../assets/avatars/avatar_0.svg">
+                </div>
             </div>
-            <span>5</span>
+            <span>{{ members.length }}</span>
         </div>
 
         <div class="add-person-btn">

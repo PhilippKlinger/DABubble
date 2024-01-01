@@ -18,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -43,6 +44,11 @@ import { MainContentSideBarComponent } from './main-content/main-content-side-ba
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { firebaseConfig } from '../environments/firebase.config';
+import { DialogAddChannelmembersComponent } from './dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
+import { MainContentDirectmessageChatComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat.component';
+import { MainContentDirectmessageChatUpperPartComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat-upper-part/main-content-directmessage-chat-upper-part.component';
+import { MainContentDirectmessageChatLowerPartComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat-lower-part/main-content-directmessage-chat-lower-part.component';
+
 
 @NgModule({
   declarations: [
@@ -65,6 +71,10 @@ import { firebaseConfig } from '../environments/firebase.config';
     MainContentThreadChatLowerPartComponent,
     MainContentThreadChatUpperPartComponent,
     MainContentSideBarComponent,
+    DialogAddChannelmembersComponent,
+    MainContentDirectmessageChatComponent,
+    MainContentDirectmessageChatUpperPartComponent,
+    MainContentDirectmessageChatLowerPartComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,6 +100,8 @@ import { firebaseConfig } from '../environments/firebase.config';
     MatTooltipModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
+    MatRadioModule
+
   ],
   providers: [OpenDialogService,
   ],
