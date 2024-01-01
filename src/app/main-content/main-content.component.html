@@ -1,5 +1,11 @@
-<div [ngClass]="{'grid': workspace_open,'grid-no-workspace': !workspace_open, 'grid-no-thread-chat': !thread_open, 'grid-only-main-chat': (!workspace_open && !thread_open), 'grid-only-directmessage-chat': directmessage_open}"
-    class="grid-no-workspace" #grid>
+<div [ngClass]="{
+    'grid': workspace_open,
+    'grid-no-workspace': !workspace_open,
+    'grid-no-thread-chat': !thread_open,
+    'grid-only-main-chat': (!workspace_open && !thread_open),
+    'grid-directmessage-chat-and-workspace': directmessage_open,
+    'grid-only-directmessage-chat': (directmessage_open&&!workspace_open),
+    }" class="grid-no-workspace" #grid>
     <app-main-content-logo class="header1"></app-main-content-logo>
     <app-main-content-searchbar class="header2"></app-main-content-searchbar>
     <app-main-content-profile-selector class="header3"></app-main-content-profile-selector>

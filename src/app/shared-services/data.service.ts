@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class DataService {
   public thread_open: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  public directmessage_open: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   getBooleanValue(): boolean {
     return this.thread_open.value;

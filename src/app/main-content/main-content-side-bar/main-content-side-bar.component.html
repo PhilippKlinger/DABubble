@@ -54,7 +54,8 @@
 
             <div [ngClass]="{'d-none': !directmessages_opened}">
                 <div class="side-bar-profile-list">
-                    <div class="side-bar-profile">
+
+                    <div class="side-bar-profile" (click)="openDM()">
                         <div class="side-bar-profile-picture">
                             <img src="../../../assets/avatars/avatar_1.svg">
                             <div class="online"></div>
@@ -62,7 +63,7 @@
                         <span>Frederik Beck (Du)</span>
                     </div>
 
-                    <div class="side-bar-profile">
+                    <div class="side-bar-profile" (click)="openDM()">
                         <div class="side-bar-profile-picture">
                             <img src="../../../assets/avatars/avatar_2.svg">
                             <div class="online"></div>
@@ -70,7 +71,7 @@
                         <span>Sofia Müller</span>
                     </div>
 
-                    <div class="side-bar-profile">
+                    <div class="side-bar-profile" (click)="openDM()">
                         <div class="side-bar-profile-picture">
                             <img src="../../../assets/avatars/avatar_3.svg">
                             <div class="online"></div>
@@ -78,7 +79,7 @@
                         <span>Noah Braun</span>
                     </div>
 
-                    <div class="side-bar-profile">
+                    <div class="side-bar-profile" (click)="openDM()">
                         <div class="side-bar-profile-picture">
                             <img src="../../../assets/avatars/avatar_6.svg">
                             <div class="online"></div>

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
+import { DataService } from 'src/app/shared-services/data.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
-
 
 @Component({
   selector: 'app-main-content-side-bar',
@@ -19,10 +19,15 @@ export class MainContentSideBarComponent {
   channels: Channel[] = [];
   unsubChannels!: Subscription;
 
-  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService) {
+  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService, private dataService: DataService) {
     this.unsubChannels = this.channelsService.channels$.subscribe(channels => {
       this.channels = channels;
     });
+  }
+
+  openDM() {
+    //aktualisiert die variable in meiner data.service.ts, woraufhin sich die variable in der main-component mit aktualisiert
+    this.dataService.directmessage_open.next(true);
   }
 
   openDialog(componentKey: string): void {

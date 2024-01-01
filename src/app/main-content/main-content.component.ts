@@ -19,6 +19,11 @@ export class MainContentComponent implements OnInit {
       //bei veränderung des booleans wird folgende funktion ausgelöst
       this.thread_open = value;
     });
+
+
+    this.dataService.directmessage_open.subscribe((value: boolean) => {
+      this.directmessage_open = value;
+    });
   }
 
   toggleWorkspace() {
