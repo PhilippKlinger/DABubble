@@ -22,8 +22,8 @@ export class MainContentComponent implements OnInit {
   }
 
   toggleWorkspace() {
-    // this.workspace_open = !this.workspace_open;
-    this.directmessage_open = !this.directmessage_open;
+    this.workspace_open = !this.workspace_open;
+    // this.directmessage_open = !this.directmessage_open;
   }
 
   updateThreadBoolean() {
