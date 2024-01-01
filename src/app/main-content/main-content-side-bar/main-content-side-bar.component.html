@@ -28,9 +28,9 @@
             <div [ngClass]="{'d-none': !channels_opened}">
                 <div class="side-bar-channels-list">
                     <li *ngFor="let channel of channels">
-                        <div>
+                        <div (click)="openChannel()">
                             <mat-icon class="tag">tag</mat-icon>
-                            <span (click)="editChannel(channel)">{{ channel.name }}</span>
+                            <span>{{ channel.name }}</span>
                         </div>
                     </li>
                     <div class="side-bar-channel-add side-bar-hover" (click)="openDialog('createChannel')">
