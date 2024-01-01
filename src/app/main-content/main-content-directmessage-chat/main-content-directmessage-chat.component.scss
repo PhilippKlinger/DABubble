@@ -1,0 +1,19 @@
+@import './../../../styles.scss';
+
+section {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.lower-part-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: -webkit-fill-available;
+    width: 100%;
+}

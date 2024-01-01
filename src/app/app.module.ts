@@ -45,6 +45,9 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { firebaseConfig } from '../environments/firebase.config';
 import { DialogAddChannelmembersComponent } from './dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
+import { MainContentDirectmessageChatComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat.component';
+import { MainContentDirectmessageChatUpperPartComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat-upper-part/main-content-directmessage-chat-upper-part.component';
+import { MainContentDirectmessageChatLowerPartComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat-lower-part/main-content-directmessage-chat-lower-part.component';
 
 
 @NgModule({
@@ -69,6 +72,9 @@ import { DialogAddChannelmembersComponent } from './dialogs/dialog-add-channelme
     MainContentThreadChatUpperPartComponent,
     MainContentSideBarComponent,
     DialogAddChannelmembersComponent,
+    MainContentDirectmessageChatComponent,
+    MainContentDirectmessageChatUpperPartComponent,
+    MainContentDirectmessageChatLowerPartComponent,
   ],
   imports: [
     BrowserModule,

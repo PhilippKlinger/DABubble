@@ -1,0 +1,435 @@
+@import './../../../../styles.scss';
+
+$Purple-2: #797EF3;
+$Purple-1: #444DF2;
+$Purple-3: #535AF1;
+$Text-gray: #686868;
+$Bg-color: #ECEEFE;
+$Light-purple: #ADB0D9;
+
+.chat {
+    height: 100%;
+    width: 100%;
+}
+
+.chat-content {
+    height: calc(100% - 210px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        display: none
+    }
+}
+
+.user-message-hover-options {
+    opacity: 0;
+    display: none;
+    z-index: 3;
+    position: absolute;
+    margin-top: -26px;
+    margin-left: -60px;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 200px;
+    height: 46px;
+    background-color: white;
+    border: 1px solid $Light-purple;
+    border-radius: 25px 25px 0px 25px;
+    padding: 0px 10px;
+    cursor: pointer;
+
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 450px;
+        margin-top: 60px;
+        background-color: white;
+        position: absolute;
+        box-shadow: 0px 6px 14px 0px #00000033;
+        width: 270px;
+        height: 60px;
+        border-radius: 0px 30px 30px 30px;
+    }
+
+    div {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+        }
+    }
+
+    mat-icon {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+            color: $Purple-1;
+            scale: 1.1;
+        }
+    }
+}
+
+.hover-options-edit-message {
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 30px;
+    width: fit-content;
+    text-wrap: nowrap;
+    margin-block-start: 0;
+    margin-block-end: 0;
+
+    &:hover {
+        background-color: $Bg-color;
+        font-weight: 700;
+        color: $Purple-1;
+    }
+}
+
+.user-message {
+    width: -webkit-fill-available;
+    padding: 5px 30px 5px 130px;
+    gap: 30px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    background-color: white;
+    transition: 0.1s ease-in;
+
+    &:hover {
+        background-color: $Bg-color;
+        position: relative;
+    }
+
+    &:hover .user-message-hover-options {
+        display: flex;
+        opacity: 1;
+    }
+}
+
+.anon-user-message {
+    width: -webkit-fill-available;
+    padding: 5px 130px 5px 30px;
+    gap: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    background-color: white;
+    transition: 0.1s ease-in;
+
+    &:hover {
+        background-color: $Bg-color;
+        cursor: pointer;
+    }
+
+    &:hover .anon-speech-bubble-user {
+        background-color: white !important;
+    }
+}
+
+.flex-end {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.user-message-time-name {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+    width: fit-content;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    h3 {
+        color: black;
+        font-size: 18px;
+        font-weight: 700px !important;
+        transition: 0.2ms;
+        margin-block-start: 0;
+        margin-block-end: 0;
+
+        &:hover {
+            color: $Purple-1;
+        }
+    }
+
+    span {
+        color: $Text-gray;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 0;
+    }
+}
+
+.anon-user-message-time-name {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 20px;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    h3 {
+        color: black;
+        font-size: 18px;
+        font-weight: 700px !important;
+        transition: 0.2ms;
+        margin-block-start: 0;
+        margin-block-end: 0;
+
+        &:hover {
+            color: $Purple-1;
+        }
+    }
+
+    span {
+        color: $Text-gray;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 0;
+    }
+}
+
+.speech-bubble-user {
+    background-color: $Purple-2;
+    color: white;
+    padding: 15px;
+    border-radius: 30px 0px 30px 30px;
+    font-size: 18px;
+    font-weight: 400 !important;
+    line-height: 24.55px;
+}
+
+.anon-speech-bubble-user {
+    background-color: $Bg-color;
+    color: black;
+    padding: 15px;
+    border-radius: 0px 30px 30px 30px;
+    font-size: 18px;
+    font-weight: 400 !important;
+    line-height: 24.55px;
+}
+
+.user-message-avatar {
+    height: 70px;
+    width: 70px;
+    border-radius: 100%;
+}
+
+.user-message-emojis {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 5px 0px;
+    gap: 10px;
+
+    mat-icon {
+        padding: 5px;
+        border-radius: 100%;
+        background-color: white;
+        cursor: pointer;
+        transition: 0.2s ease-in;
+
+        &:hover {
+            color: $Purple-2;
+            background-color: $Bg-color;
+            scale: 1.1;
+        }
+    }
+}
+
+.anon-user-message-emojis {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 0px;
+    gap: 10px;
+
+    mat-icon {
+        padding: 5px;
+        border-radius: 100%;
+        background-color: white;
+        cursor: pointer;
+        transition: 0.2s ease-in;
+
+        &:hover {
+            color: $Purple-2;
+            background-color: $Bg-color;
+            scale: 1.1;
+        }
+    }
+}
+
+.user-message-emojis-showcase {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+    border: 1px solid #ADB0D9;
+    border-radius: 20px;
+    background-color: white;
+    font-size: 16px;
+    transition: 0.1s ease-in;
+    cursor: pointer;
+
+    &:hover {
+        border: 1px solid $Purple-2;
+    }
+}
+
+.anon-user-answer-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-right: 20px;
+
+    h3 {
+        margin-block-start: 0;
+        margin-block-end: 0;
+        font-size: 18px;
+        font-weight: 400;
+        color: $Purple-3;
+
+        &:hover {
+            font-weight: 500;
+            color: $Purple-1;
+        }
+    }
+
+    span {
+        letter-spacing: 0;
+    }
+}
+
+.chat-timestamp {
+    padding: 0px 30px;
+    width: -webkit-fill-available;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0px;
+    cursor: default;
+
+    span {
+        position: absolute;
+        z-index: 1;
+        background-color: white;
+        padding: 5px 15px;
+        border: solid 1px $Light-purple;
+        border-radius: 30px;
+    }
+
+    div {
+        background-color: $Light-purple;
+        height: 1px;
+        width: -webkit-fill-available;
+    }
+}
+
+// chat input related code below
+.chat-input {
+    width: -webkit-fill-available;
+    min-height: 150px;
+    margin: 30px;
+    border-radius: 20px;
+    border: 1px solid #ADB0D9;
+    position: absolute;
+    bottom: 0;
+}
+
+.chat-input-lower-position {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    position: absolute;
+    bottom: 0;
+    width: -webkit-fill-available;
+}
+
+.chat-input-send {
+    font-weight: bolder;
+    color: $Purple-1;
+
+    &:hover {
+        color: $Purple-2;
+        cursor: pointer;
+    }
+}
+
+.chat-input-options {
+    display: flex;
+    gap: 4px;
+
+    mat-icon {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: 0.1s ease-in;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+            color: $Purple-3;
+            scale: 1.1;
+        }
+    }
+}
+
+.chat-input-line {
+    height: 40px;
+    width: 1px;
+    background-color: $Light-purple;
+}
+
+.chat-input-design {
+    width: -webkit-fill-available;
+    margin: 20px;
+    margin-bottom: 80px;
+    position: absolute;
+    bottom: 0;
+    min-height: -webkit-fill-available;
+    overflow-y: scroll;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 24.55px;
+    border: none;
+
+    &:focus {
+        outline: none;
+    }
+
+    &::-webkit-scrollbar {
+        display: none
+    }
+}

@@ -67,6 +67,20 @@ $White: #FFFFFF;
         "main2 main2 main2";
 }
 
+.grid-only-directmessage-chat {
+    display: grid;
+    height: calc(100vh - 30px);
+    width: calc(100vw - 30px);
+    grid-template-columns: 0.7fr 2fr 1fr; //values for column-width/ 3 values = 3 columns
+    grid-template-rows: 70px; //values for row-width/ 1 value = first row's value
+    padding: 15px;
+    gap: 15px;
+    background-color: $Bg-color;
+    grid-template-areas:
+        "header1 header2 header3"
+        "main1 main4 main4";
+}
+
 .header1 {
     grid-area: header1;
 }
@@ -89,6 +103,10 @@ $White: #FFFFFF;
 
 .main3 {
     grid-area: main3;
+}
+
+.main4 {
+    grid-area: main4;
 }
 
 .close-workspace {
