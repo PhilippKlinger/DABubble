@@ -19,13 +19,15 @@
           <form>            
             <div>
               <div class="input-container d-flex-standard cursor-pointer">
-                <img src="assets\icons\mail.svg">
+                <img src="assets/icons/mail.svg">
                 <input type="email" matInput placeholder="beispielname@email.com" required>
-              </div>    
+              </div>
+              <span class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span>   
               <div class="input-container d-flex-standard cursor-pointer">
-                <img (click)="changeInputPasswordToTxt($event)" src="assets\icons\password.svg">
+                <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/password.svg">
                 <input type="password" matInput placeholder="Passwort" required>
               </div>
+              <span class="error-txt">Falsches Passwort. Bitte noch einmal versuchen.</span> 
             </div>    
             <div class="forgot-pass-container">
                 <a (click)="changeSwitchCase('forgotPassword')" class="link forgot-password d-flex-standard cursor-pointer">Passwort vergessen?</a>
@@ -35,8 +37,8 @@
               <span class="or">ODER</span>
               <div class="bottom-line"></div>
             </div>
-            <div mat-button class="input-container d-flex-standard cursor-pointer">
-              <img class="google-img" src="assets\icons\Google.svg">
+            <div mat-button class="input-container google-btn d-flex-standard cursor-pointer">
+              <img class="google-img" src="assets/icons/Google.svg">
               <span>Anmelden mit Google</span>
             </div>
             <div class="submit-buttons d-flex-standard">
@@ -50,24 +52,31 @@
           <img (click)="changeSwitchCase('login')" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Konto erstellen</h1>
           <p>Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
-          <form (ngSubmit)="register()">
+          <form (ngSubmit)="changeSwitchCase('avatar')">
             <div>
               <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets/icons/person_filled.svg">
-                <input type="text" matInput placeholder="Vorname und Nachname" required>
+                <input #nameInput="ngModel" type="text" matInput [(ngModel)]="user.name" name="name" placeholder="Vorname und Nachname" required minlength="5">
               </div>
+              <span [class.show]="nameInput.invalid && nameInput.dirty" class="error-txt">Bitte schreiben Sie einen Namen mit mindestens 5 Zeichen.</span> 
+              
               <div class="input-container d-flex-standard cursor-pointer">
-                <img src="assets\icons\mail.svg">
-                <input type="email" matInput [(ngModel)]="user.email" name="email" placeholder="beispielname@email.com" required>
-              </div>    
+                <img src="assets/icons/mail.svg">
+                <input #emailInput="ngModel" type="email" matInput [(ngModel)]="user.email" name="email" placeholder="beispielname@email.com" required>
+              </div>
+              <span [class.show]="(emailInput.invalid || !validateEmail(user.email)) && nameInput.dirty" class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span>     
+              
               <div class="input-container d-flex-standard cursor-pointer">
                 <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/password.svg" alt="Toggle Password Visibility">
-                <input type="password" matInput [(ngModel)]="user.password" name="password" placeholder="Passwort" required>
+                <input #passwordInput="ngModel" type="password" matInput [(ngModel)]="user.password" name="password" placeholder="Passwort" required minlength="5">
               </div>
+              <span [class.show]="passwordInput.invalid && nameInput.dirty" class="error-txt">Bitte geben Sie ein Passwort ein mit mindestens 8 Zeichen.</span> 
+              
               <div class="input-container d-flex-standard cursor-pointer">
                 <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/password.svg" alt="Toggle Password Visibility">
-                <input type="password" matInput [(ngModel)]="user.confirmPassword" name="confirmPassword" placeholder="Passwort bestätigen" required>
-              </div>              
+                <input #confirmPasswordInput="ngModel" type="password" matInput [(ngModel)]="user.confirmPassword" name="confirmPassword" placeholder="Passwort bestätigen" required>
+              </div>  
+              <span [class.show]="!isPasswordMatching() && confirmPasswordInput.dirty" class="error-txt">Die Passwörter stimmen nicht überein.</span>             
             </div> 
             <div class="privacy-container">
               <div (click)="changeCheckboxCheck($event)" class="checkbox"></div>
@@ -76,14 +85,14 @@
               <p>zu</p>
             </div>
             <div class="btn-end submit-buttons d-flex-standard">
-              <button class="btn-submit" mat-button type="submit">Weiter</button>
+              <button class="btn-submit" mat-button type="submit" [disabled]="!isFormValid()">Weiter</button>
             </div>
           </form>
         </div>
         
 
         <div *ngSwitchCase="'avatar'" class="container bg-white avatar-container">
-          <img (click)="changeSwitchCase('signup')" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
+          <img (click)="changeToSignupAndUncheck()" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Wähle deinen Avatar</h1>
           <img src="assets/avatars/avatar_0.svg" alt="">
           <h2 class="mt-32">Martin Unger</h2>
@@ -99,7 +108,7 @@
           </div>
 
           <div class="btn-end submit-buttons mt-32">
-            <button (click)="changeSwitchCase('login')" class="btn-submit" mat-button type="submit">Weiter</button>
+            <button (click)="register()" class="btn-submit" mat-button type="submit">Weiter</button>
           </div>
         </div>
 
@@ -110,7 +119,7 @@
           <form>            
             <div>              
               <div class="input-container d-flex-standard cursor-pointer">
-                <img src="assets\icons\mail.svg">
+                <img src="assets/icons/mail.svg">
                 <input type="email" matInput placeholder="beispielname@email.com" required>
               </div>
               <p>Wir senden Ihnen eine E-Mail, über die Sie Ihr Passwort ändern können.</p>   

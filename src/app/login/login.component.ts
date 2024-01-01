@@ -9,27 +9,42 @@ import { User } from '../models/user.class';
 })
 export class LoginComponent {
   user: User = new User();
+  isCheckboxChecked = false;
 
   constructor(private authService: AuthService) {}
+
+  isFormValid() {
+    return this.validateEmail(this.user.email) &&
+           this.user.name.length >= 5 &&
+           this.user.password.length >= 8 &&
+           this.user.password === this.user.confirmPassword &&
+           this.isCheckboxChecked;
+           
+  }
+
+  validateEmail(email: string): boolean {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
+
+  isPasswordMatching(): boolean {
+    return this.user.password === this.user.confirmPassword;
+  }
 
   register() {
     if (this.user.password === this.user.confirmPassword) {
       this.authService.register(this.user.email, this.user.password)
         .then(() => {
-          // Erfolgsbehandlung, z.B. Weiterleitung zur nächsten Seite oder Anzeige einer Erfolgsmeldung
+          this.changeSwitchCase('login');
         })
         .catch((error) => {
+          console.log(error);
           if (error.code === 'auth/email-already-in-use') {
-            // Benutzer benachrichtigen, dass die E-Mail bereits verwendet wird
-            // Zum Beispiel: Anzeigen einer Fehlermeldung in der Benutzeroberfläche
+            console.log("email already exist");
           } else {
-            // Allgemeine Fehlerbehandlung für andere Fehlerarten
-            // Zum Beispiel: Anzeigen einer generischen Fehlermeldung
+            console.log("an unexpected error occurred")
           }
         });
-    } else {
-      // Fehlermeldung, wenn die Passwörter nicht übereinstimmen
-      // Zum Beispiel: Anzeigen einer Fehlermeldung in der Benutzeroberfläche
     }
   }
   
@@ -57,11 +72,15 @@ export class LoginComponent {
   changeCheckboxCheck(event: MouseEvent): void {
     let checkboxElement = event.target as HTMLElement;
     checkboxElement.classList.toggle('checked');
+    this.isCheckboxChecked = checkboxElement.classList.contains('checked');
   }
 
   changeSwitchCase(newSwitchCase: string) {
     this.switch_expression = newSwitchCase;
-    
-    console.log(this.switch_expression);
+  }
+
+  changeToSignupAndUncheck() {
+    this.isCheckboxChecked = false;
+    this.changeSwitchCase('signup');
   }
 }
