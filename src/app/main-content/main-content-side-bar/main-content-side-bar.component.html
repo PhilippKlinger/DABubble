@@ -28,7 +28,7 @@
             <div [ngClass]="{'d-none': !channels_opened}">
                 <div class="side-bar-channels-list">
                     <li *ngFor="let channel of channels">
-                        <div (click)="openChannel()">
+                        <div (click)="openChannel(channel)">
                             <mat-icon class="tag">tag</mat-icon>
                             <span>{{ channel.name }}</span>
                         </div>
