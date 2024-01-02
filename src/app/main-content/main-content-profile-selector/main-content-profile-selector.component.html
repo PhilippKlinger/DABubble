@@ -7,7 +7,7 @@
         </div>
         <mat-icon>keyboard_arrow_down</mat-icon>
         <div class="profile-selector-window" [ngClass]="{'d-none': !profilemenu_open}" (click)="toggleProfilemenu()">
-            <span>Profil</span>
+            <span (click)="openDialog('menuProfile')">Profil</span>
             <div>Log out</div>
         </div>
     </main>
