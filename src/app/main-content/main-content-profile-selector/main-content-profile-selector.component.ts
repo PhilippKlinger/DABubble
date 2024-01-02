@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./main-content-profile-selector.component.scss']
 })
 export class MainContentProfileSelectorComponent {
+  profilemenu_open: boolean = false;
 
+  toggleProfilemenu() {
+    this.profilemenu_open = !this.profilemenu_open;
+  }
 }

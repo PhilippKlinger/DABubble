@@ -1,10 +1,15 @@
 <section>
-    <main>
+    <main (click)="toggleProfilemenu()">
         <span>Frederik Beck</span>
         <div class="profile-selector-avatar">
             <img src="../../../../assets/avatars/avatar_0.svg">
             <div class="online"></div>
         </div>
         <mat-icon>keyboard_arrow_down</mat-icon>
+        <div class="profile-selector-window" [ngClass]="{'d-none': !profilemenu_open}" (click)="toggleProfilemenu()">
+            <span>Profil</span>
+            <div>Log out</div>
+        </div>
     </main>
+    <div class="overlay" [ngClass]="{'d-none': !profilemenu_open}" (click)="toggleProfilemenu()"></div>
 </section>
