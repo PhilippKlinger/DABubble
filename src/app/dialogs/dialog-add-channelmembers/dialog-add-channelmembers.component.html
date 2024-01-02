@@ -1,20 +1,54 @@
 <div class="dialog-content">
-    <div class="dialog-head">
-        <span>Leute hinzufügen</span>
-        <button mat-icon-button mat-dialog-close>
-            <mat-icon>close</mat-icon>
-        </button>
-    </div>
-    <div class="add-section">
-        <div>
-            <mat-radio-button color="primary" value="before">Alle Mitglieder von OfficeTeam hinzufügen</mat-radio-button>
+    <header>
+        <div class="dialog-head">
+            <span>Leute hinzufügen</span>
+            <button mat-icon-button mat-dialog-close>
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
-        <div>
-            <mat-radio-button color="primary" value="before">Bestimmte Leute hinzufügen</mat-radio-button>
-            <span></span>
+        <div class="caption" *ngIf="needToAddMoreMembers">
+            <span>#{{channel?.name}}</span>
+        </div>
+    </header>
+    
+
+    <div class="add-section" *ngIf="!needToAddMoreMembers">
+        <mat-radio-group [(ngModel)]="selectedOption">
+            <mat-radio-button color="primary" value="allMembers">Alle Mitglieder von OfficeTeam
+                hinzufügen</mat-radio-button>
+            <mat-radio-button color="primary" value="specificMembers">Bestimmte Leute hinzufügen</mat-radio-button>
+        </mat-radio-group>
+    </div>
+
+    <div class="name-input" *ngIf="selectedOption === 'specificMembers' || needToAddMoreMembers">
+        <input [(ngModel)]="specificMemberInput" 
+               matInput 
+               placeholder="Name eingeben" 
+               [matAutocomplete]="auto"
+               (input)="onInput()" />
+               <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let user of filteredUsers" [value]="user" (click)="selectUser(user)">
+                  {{ user }}
+                </mat-option>
+              </mat-autocomplete>
+      </div>
+
+
+    <div class="added-user-list" *ngIf="selectedOption === 'specificMembers' || needToAddMoreMembers">
+        <div class="selected-user" *ngFor="let user of selectedUsers">
+
+            <!-- hier noch den avatar einfügen -->
+            
+            {{ user }}
+            <button mat-icon-button (click)="removeUser(user)">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
     </div>
+
+
+
     <div class="button">
-        <button mat-raised-button color="primary">Erstellen</button>
+        <button mat-raised-button color="primary" (click)="addChannelMembers()">Hinzufügen</button>
     </div>
 </div>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { MatDialogRef } from '@angular/material/dialog';
+import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 
 @Component({
   selector: 'app-dialog-create-channel',
@@ -17,16 +18,17 @@ export class DialogCreateChannelComponent {
   channel = new Channel();
 
 
-  constructor(private channelsService: ChannelsService, private dialogRef: MatDialogRef<DialogCreateChannelComponent>) { }
+  constructor(private channelsService: ChannelsService, private dialogService: OpenDialogService , private dialogRef: MatDialogRef<DialogCreateChannelComponent>) { }
 
   createChannel(): void {
     this.channel.setCreator();
     this.channel.setTimestampNow();
-    this.channelsService.createChannel(this.channel, 'channels').then((channelId) => {
-      console.log('Neuer Kanal erstellt mit ID:', channelId);
-      // this.channel.id = channelId;
+    this.channel.addCreatorToMember();
+    this.channelsService.createChannel(this.channel, 'channels').then(() => {
+      this.channelsService.setSelectedChannel(this.channel);
+      console.log('selectd channel is:', this.channel);
       this.dialogRef.close();
-      // hier den ersten dialog schließen und den nächsten für member hinzufügen öffnen
+      this.dialogService.openDialog('addChannelmembers');
     }).catch(error => {
       console.error('Fehler beim Erstellen des Kanals:', error);
     });

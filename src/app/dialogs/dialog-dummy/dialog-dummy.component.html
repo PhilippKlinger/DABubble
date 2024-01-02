@@ -16,6 +16,7 @@
     <p>Description: {{ channel.description }}</p>
     <p>Creation Date: {{channel.timestamp}} </p>
     <p>Creator: {{ channel.creator }}</p>
+    <p>Members: {{ channel.members}}</p>
     <p>Channel ID: {{ channel.id }}</p>
     <button mat-raised-button color="primary" (click)="deleteChannel(channel)">delete channel</button>
     <button mat-raised-button color="primary" (click)="editChannel(channel)">edit channel</button>

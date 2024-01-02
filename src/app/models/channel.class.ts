@@ -23,6 +23,11 @@ export class Channel {
         this.creator = 'Gast';
     }
 
+    addCreatorToMember(): void {
+        this.members = ['Gast'];
+    }
+    
+
     public toJSON() {
         return {
             id: this.id,

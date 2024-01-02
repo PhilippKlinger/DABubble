@@ -23,16 +23,19 @@ export class ChannelsService {
     this.selectedChannelSubject.next(channel);
   }
 
-  async createChannel(channel: Channel, colId: "channels"): Promise<string> {
+  async createChannel(channel: Channel, colId: "channels"): Promise<void> {
     const collectionRef = collection(this.firestore, colId);
     channel.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US')
-    const docRef = await addDoc(collectionRef, channel.toJSON()).catch(error => {
+    try {
+      const docRef = await addDoc(collectionRef, channel.toJSON());
+      channel.id = docRef.id;
+      // Später rausschmeißen
+      console.log('Channel written with ID: ', docRef.id);
+      this.updateChannel(channel);
+    } catch (error) {
       console.error(error);
       throw error;
-    });
-    //später rausschmeißen
-    console.log('Channel written with ID: ', docRef.id);
-    return docRef.id;
+    }
   }
 
   subChannelsList() {
@@ -65,7 +68,6 @@ export class ChannelsService {
       );
     }
   }
-
 
   getChannelsRef() {
     return collection(this.firestore, 'channels');
