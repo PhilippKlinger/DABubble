@@ -3,6 +3,7 @@ import { AuthService } from '../shared-services/authentication.service';
 import { User } from '../models/user.class';
 import { UserService } from '../shared-services/user.service';
 import { Router } from '@angular/router';
+import { AuthenticationStateService } from '../shared-services/authenticationState.service';
 
 @Component({
   selector: 'app-login',
@@ -24,11 +25,12 @@ export class LoginComponent {
   ];
   switch_expression: string = "login";
 
-  constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
+  constructor(private authService: AuthService, private authStateService: AuthenticationStateService, private userService: UserService, private router: Router) {}
 
   login() {
     this.authService.login(this.user.email, this.user.password)
-    .then(() => {
+    .then((userCredential) => {
+      this.authStateService.setCurrentUserId(userCredential.user.uid);
       this.router.navigate(['/main-content']);
     })
     .catch(error => {

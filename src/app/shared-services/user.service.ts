@@ -69,4 +69,11 @@ export class UserService {
         this.unsubUsers();
     }
 
+    async setUserOnlineStatus(userId: string, onlineStatus: boolean): Promise<void> {
+      const docRef = this.getSingleDocRef('users', userId);
+      await updateDoc(docRef, { onlineStatus }).catch((error) => {
+        console.error(error);
+      });
+    }
+
 }
