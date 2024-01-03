@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/shared-services/data.service';
-import { message } from './../../../models/message.class'
+import { Message } from './../../../models/message.class'
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Subscription } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
@@ -12,7 +12,7 @@ import { Channel } from 'src/app/models/channel.class';
 })
 export class MainContentMainChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
-  message = new message();
+  message = new Message();
   selectedChannel!: Channel | null;
   unsubChannels!: Subscription;
 
@@ -33,7 +33,7 @@ export class MainContentMainChatLowerPartComponent {
       this.message.setCreator();
       this.message.setTimestampNow();
       this.message.setMessage(this.input_message.nativeElement.value.trim());
-      this.channelService.pushMessageToChannel(this.selectedChannel!, this.message);
+      this.channelService.pushMessageToChannel(this.message);
     }
   }
 

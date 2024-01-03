@@ -3,7 +3,7 @@ import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, D
 import { Channel } from '../models/channel.class';
 import { BehaviorSubject } from 'rxjs';
 import { formatDate } from '@angular/common';
-import { message } from '../models/message.class';
+import { Message } from '../models/message.class';
 
 @Injectable({
   providedIn: 'root'
@@ -23,15 +23,17 @@ export class ChannelsService {
   setSelectedChannel(channel: Channel): void {
     this.selectedChannelSubject.next(channel);
   }
-
-  async pushMessageToChannel(selectedChannel$: Channel, message: message) {
-    let colId: string = 'channels';
-    const collectionRef = collection(this.firestore, colId);
-    let subCollectionRef = collection(doc((collectionRef), selectedChannel$.id), 'messages')
-    await addDoc(subCollectionRef, message.toJSON());
+  
+  async pushMessageToChannel(message: Message): Promise<void> {
+    const selectedChannel = this.selectedChannelSubject.value;
+    if (selectedChannel) {
+      await addDoc(this.getChannelsColRef(selectedChannel), message.toJSON());
+    } else {
+      console.error('No selected channel available.');
+    }
   }
 
-  async createChannel(channel: Channel, colId: "channels"): Promise<void> {
+  async createChannel(channel: Channel, colId: 'channels'): Promise<void> {
     const collectionRef = collection(this.firestore, colId);
     channel.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US')
     try {
@@ -79,6 +81,10 @@ export class ChannelsService {
 
   getChannelsRef() {
     return collection(this.firestore, 'channels');
+  }
+
+  getChannelsColRef(selectedChannel: Channel) {
+    return collection(this.firestore, `channels/${selectedChannel.id}/messages`);
   }
 
   getSingleDocRef(coldId: string, docID: string) {

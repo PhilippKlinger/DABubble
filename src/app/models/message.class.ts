@@ -1,4 +1,4 @@
-export class message {
+export class Message {
     id: string;
     message: string;
     creator: string;
