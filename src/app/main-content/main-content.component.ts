@@ -15,13 +15,12 @@ export class MainContentComponent implements OnInit {
 
   ngOnInit(): void {
     //Hier wird das thread_open boolean aus dem data.service.ts abonniert
-    this.dataService.thread_open.subscribe((value: boolean) => {
+    this.dataService.thread_open$.subscribe((value: boolean) => {
       //bei veränderung des booleans wird folgende funktion ausgelöst
       this.thread_open = value;
     });
 
-
-    this.dataService.directmessage_open.subscribe((value: boolean) => {
+    this.dataService.directmessage_open$.subscribe((value: boolean) => {
       this.directmessage_open = value;
     });
   }

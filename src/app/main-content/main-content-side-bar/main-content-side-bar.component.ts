@@ -27,13 +27,13 @@ export class MainContentSideBarComponent {
 
   openDM() {
     //aktualisiert die variable in meiner data.service.ts, woraufhin sich die variable in der main-component mit aktualisiert
-    this.dataService.directmessage_open.next(true);
+    this.dataService.directmessage_open$.next(true);
   }
 
   openChannel(channel: Channel): void {
     this.channelsService.setSelectedChannel(channel);
     //aktualisiert die variable in meiner data.service.ts, woraufhin sich die variable in der main-component mit aktualisiert
-    this.dataService.directmessage_open.next(false);
+    this.dataService.directmessage_open$.next(false);
   }
 
   openDialog(componentKey: string): void {

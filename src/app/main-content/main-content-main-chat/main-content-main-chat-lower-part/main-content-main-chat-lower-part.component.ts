@@ -34,6 +34,7 @@ export class MainContentMainChatLowerPartComponent {
       this.message.setTimestampNow();
       this.message.setMessage(this.input_message.nativeElement.value.trim());
       this.channelService.pushMessageToChannel(this.message);
+      this.input_message.nativeElement.value = '';
     }
   }
 
