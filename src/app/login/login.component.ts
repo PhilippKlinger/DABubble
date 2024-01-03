@@ -30,7 +30,11 @@ export class LoginComponent {
   login() {
     this.authService.login(this.user.email, this.user.password)
     .then((userCredential) => {
+      let userId = userCredential.user.uid;
       this.authStateService.setCurrentUserId(userCredential.user.uid);
+      return this.userService.setUserOnlineStatus(userId, true);
+    })
+    .then(() => {
       this.router.navigate(['/main-content']);
     })
     .catch(error => {
