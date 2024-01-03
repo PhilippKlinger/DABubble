@@ -26,6 +26,7 @@ export class ChannelsService {
   
   async pushMessageToChannel(message: Message): Promise<void> {
     const selectedChannel = this.selectedChannelSubject.value;
+    message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US')
     //try and catch besser ??
     if (selectedChannel) {
       await addDoc(this.getChannelsColRef(selectedChannel), message.toJSON());
@@ -36,7 +37,7 @@ export class ChannelsService {
 
   async createChannel(channel: Channel, colId: 'channels'): Promise<void> {
     const collectionRef = collection(this.firestore, colId);
-    channel.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US')
+    channel.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
     try {
       const docRef = await addDoc(collectionRef, channel.toJSON());
       channel.id = docRef.id;
