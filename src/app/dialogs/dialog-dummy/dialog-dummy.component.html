@@ -8,17 +8,31 @@
   <button (click)="openDialog('addChannelmembers')" mat-raised-button color="primary">add Members</button>
 </div>
 
+<div class="channels">
+  <h2>alle channels</h2>
+  <ul>
+    <li *ngFor="let channel of channels">
+      <p>Name: {{ channel.name }}</p>
+      <p>Description: {{ channel.description }}</p>
+      <p>Creation Date: {{channel.timestamp}} </p>
+      <p>Creator: {{ channel.creator }}</p>
+      <p>Members: {{ channel.members}}</p>
+      <p>Channel ID: {{ channel.id }}</p>
+      <button mat-raised-button color="primary" (click)="deleteChannel(channel)">delete channel</button>
+      <button mat-raised-button color="primary" (click)="editChannel(channel)">edit channel</button>
+    </li>
+  </ul>
+</div>
 
-<h2>alle channels</h2>
-<ul>
-  <li *ngFor="let channel of channels">
-    <p>Name: {{ channel.name }}</p>
-    <p>Description: {{ channel.description }}</p>
-    <p>Creation Date: {{channel.timestamp}} </p>
-    <p>Creator: {{ channel.creator }}</p>
-    <p>Members: {{ channel.members}}</p>
-    <p>Channel ID: {{ channel.id }}</p>
-    <button mat-raised-button color="primary" (click)="deleteChannel(channel)">delete channel</button>
-    <button mat-raised-button color="primary" (click)="editChannel(channel)">edit channel</button>
-  </li>
-</ul>
+<div class="users">
+  <h2>alle user</h2>
+  <ul>
+    <li *ngFor="let user of user">
+      <p>Avatar:<img height="80px" style="border-radius: 100%;" src="{{user.avatar}}"></p>
+      <p>Name: {{ user.name }}</p>
+      <p>Email: {{ user.email }}</p>
+      <p>Channel ID: {{ user.id }}</p>
+      <button mat-raised-button color="primary">edit user</button>
+    </li>
+  </ul>
+</div>
