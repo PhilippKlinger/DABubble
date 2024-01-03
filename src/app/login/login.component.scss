@@ -250,6 +250,12 @@ h2 {
     margin-top: 32px;
 }
 
+.selectedAvatar {
+    width: 168px;
+    height: 168px;
+    border-radius: 100px;
+}
+
 .avatar-img-container {
     img {
         width: 72px;
@@ -259,6 +265,9 @@ h2 {
         &:hover {
             border: 4px solid $Text-gray;
         }
+    }
+    img.selected {
+        border: 4px solid $Text-gray;
     }
     @include dFlex($g: 8px);
 }

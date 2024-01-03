@@ -16,16 +16,16 @@
         <div *ngSwitchCase="'login'" class="container bg-white">
           <h1>Anmeldung</h1>
           <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>    
-          <form>            
+          <form (ngSubmit)="login()">            
             <div>
               <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets/icons/mail.svg">
-                <input type="email" matInput placeholder="beispielname@email.com" required>
+                <input type="email" matInput placeholder="beispielname@email.com" [(ngModel)]="user.email" name="email" required>
               </div>
               <span class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span>   
               <div class="input-container d-flex-standard cursor-pointer">
                 <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/password.svg">
-                <input type="password" matInput placeholder="Passwort" required>
+                <input type="password" matInput placeholder="Passwort" [(ngModel)]="user.password" name="password" required>
               </div>
               <span class="error-txt">Falsches Passwort. Bitte noch einmal versuchen.</span> 
             </div>    
@@ -94,11 +94,11 @@
         <div *ngSwitchCase="'avatar'" class="container bg-white avatar-container">
           <img (click)="changeToSignupAndUncheck()" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Wähle deinen Avatar</h1>
-          <img src="assets/avatars/avatar_0.svg" alt="">
+          <img class="selectedAvatar" src="{{ selectedAvatar }}" alt="">
           <h2 class="mt-32">Martin Unger</h2>
           <p>Aus der Liste wählen</p>
           <div class="avatar-img-container">
-            <img *ngFor="let avatar of avatarPaths" class="cursor-pointer" src="{{ avatar }}" alt="Avatar">
+            <img *ngFor="let avatar of avatarPaths; let i = index" [class.selected]="selectedAvatarIndex === i" class="cursor-pointer" src="{{ avatar }}" alt="Avatar" (click)="changeAvatar(avatar, i)">
           </div>
           <div class="d-flex-standard mt-32 own-img-container">
             <p>eigenes Bild verwenden</p>

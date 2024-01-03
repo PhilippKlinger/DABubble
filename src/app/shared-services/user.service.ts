@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, DocumentData, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, DocumentData, getDoc, setDoc } from '@angular/fire/firestore';
 import { User } from '../models/user.class';
 import { BehaviorSubject } from 'rxjs';
 
@@ -18,11 +18,9 @@ export class UserService {
     }
 
     async createUser(user: User, colId: "users"): Promise<void> {
-        const collectionRef = collection(this.firestore, colId);
+        const docRef = doc(this.firestore, colId, user.id);
         try {
-            const docRef = await addDoc(collectionRef, user.toJSON());
-            user.id = docRef.id;
-            this.updateUser(user);
+          await setDoc(docRef, user.toJSON());
         } catch (error) {
             console.error(error);
             throw error;

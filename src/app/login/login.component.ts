@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../shared-services/authentication.service';
 import { User } from '../models/user.class';
 import { UserService } from '../shared-services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -11,8 +12,29 @@ import { UserService } from '../shared-services/user.service';
 export class LoginComponent {
   user: User = new User();
   isCheckboxChecked = false;
+  selectedAvatar = 'assets/avatars/avatar_0.svg';
+  selectedAvatarIndex: number = -1;
+  avatarPaths = [
+    'assets/avatars/avatar_1.svg',
+    'assets/avatars/avatar_2.svg',
+    'assets/avatars/avatar_3.svg',
+    'assets/avatars/avatar_4.svg',
+    'assets/avatars/avatar_5.svg',
+    'assets/avatars/avatar_6.svg',
+  ];
+  switch_expression: string = "login";
 
-  constructor(private authService: AuthService, private userService: UserService) {}
+  constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
+
+  login() {
+    this.authService.login(this.user.email, this.user.password)
+    .then(() => {
+      this.router.navigate(['/main-content']);
+    })
+    .catch(error => {
+      console.error('Anmeldefehler', error);
+    });
+  }
 
   isFormValid() {
     return this.validateEmail(this.user.email) &&
@@ -35,13 +57,15 @@ export class LoginComponent {
   register() {
     if (this.user.password === this.user.confirmPassword) {
       this.authService.register(this.user.email, this.user.password)
-        .then(() => {
+        .then((userCredential) => {
+          this.user.id = userCredential.user.uid;
+          this.user.onlineStatus = true;
+          this.user.avatar = this.selectedAvatar;
           this.userService.createUser(this.user, 'users');
           this.changeSwitchCase('login');
         })
         .catch((error) => {
           console.log(error);
-          console.log(error.code);
           if (error.code === 'auth/email-already-in-use') {
             console.log("email already exist");
           } else {
@@ -50,17 +74,7 @@ export class LoginComponent {
         });
     }
   }
-  
 
-  avatarPaths = [
-    'assets/avatars/avatar_1.svg',
-    'assets/avatars/avatar_2.svg',
-    'assets/avatars/avatar_3.svg',
-    'assets/avatars/avatar_4.svg',
-    'assets/avatars/avatar_5.svg',
-    'assets/avatars/avatar_6.svg',
-  ];
-  switch_expression: string = "login";
 
   changeInputPasswordToTxt(event: MouseEvent): void {
     let imgElement = event.target as HTMLElement;
@@ -85,5 +99,10 @@ export class LoginComponent {
   changeToSignupAndUncheck() {
     this.isCheckboxChecked = false;
     this.changeSwitchCase('signup');
+  }
+
+  changeAvatar(newAvatar: string, index: number): void {
+    this.selectedAvatar = newAvatar;
+    this.selectedAvatarIndex = index;
   }
 }

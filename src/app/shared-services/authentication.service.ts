@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from '@angular/fire/auth';
-import firebase from 'firebase/compat/app';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, signOut } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +21,9 @@ export class AuthService {
 
   async resetPassword(email: string) {
     return sendPasswordResetEmail(this.auth, email);
+  }
+
+  async logout() {
+    return signOut(this.auth);
   }
 }

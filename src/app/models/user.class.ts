@@ -21,8 +21,6 @@ export class User {
         return {
             id: this.id,
             name: this.name,
-            password: this.password,
-            confirmPassword: this.confirmPassword,
             email: this.email,
             avatar: this.avatar,
             onlineStatus: this.onlineStatus

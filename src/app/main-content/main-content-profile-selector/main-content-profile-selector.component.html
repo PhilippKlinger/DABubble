@@ -8,7 +8,7 @@
         <mat-icon>keyboard_arrow_down</mat-icon>
         <div class="profile-selector-window" [ngClass]="{'d-none': !profilemenu_open}" (click)="toggleProfilemenu()">
             <span (click)="openDialog('menuProfile')">Profil</span>
-            <div>Log out</div>
+            <div (click)="logout()">Log out</div>
         </div>
     </main>
     <div class="overlay" [ngClass]="{'d-none': !profilemenu_open}" (click)="toggleProfilemenu()"></div>
