@@ -65,7 +65,7 @@ export class LoginComponent {
       this.authService.register(this.user.email, this.user.password)
         .then((userCredential) => {
           this.user.id = userCredential.user.uid;
-          this.user.onlineStatus = true;
+          this.user.onlineStatus = false;
           this.user.avatar = this.selectedAvatar;
           this.userService.createUser(this.user, 'users');
           this.changeSwitchCase('login');
