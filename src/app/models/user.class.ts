@@ -1,4 +1,5 @@
 export class User {
+    id: string;
     name: string;
     password: string;
     confirmPassword: string;
@@ -7,6 +8,7 @@ export class User {
     onlineStatus: boolean = false;
 
     constructor(obj?: any) {
+        this.id = obj ? obj.id : '';
         this.name = obj ? obj.lastName : '';
         this.password = obj ? obj.password : '';
         this.confirmPassword = obj ? obj.confirmPassword : '';
@@ -17,6 +19,7 @@ export class User {
 
     public toJSON() {
         return {
+            id: this.id,
             name: this.name,
             password: this.password,
             confirmPassword: this.confirmPassword,

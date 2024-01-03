@@ -4,9 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
+import { Auth, getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { environment } from '../environments/eniviroment';
+
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -22,12 +24,13 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
+
+
 import { DialogShowProfileComponent } from './dialogs/dialog-show-profile/dialog-show-profile.component';
 import { DialogEditProfileComponent } from './dialogs/dialog-edit-profile/dialog-edit-profile.component';
 import { DialogCreateChannelComponent } from './dialogs/dialog-create-channel/dialog-create-channel.component';
 import { DialogEditChannelComponent } from './dialogs/dialog-edit-channel/dialog-edit-channel.component';
 import { DialogDummyComponent } from './dialogs/dialog-dummy/dialog-dummy.component';
-import { OpenDialogService } from './shared-services/open-dialog.service';
 import { DialogMenuProfileComponent } from './dialogs/dialog-menu-profile/dialog-menu-profile.component';
 import { MainContentComponent } from './main-content/main-content.component';
 import { MainContentSearchbarComponent } from './main-content/main-content-searchbar/main-content-searchbar.component';
@@ -41,13 +44,18 @@ import { MainContentThreadChatComponent } from './main-content/main-content-thre
 import { MainContentThreadChatLowerPartComponent } from './main-content/main-content-thread-chat/main-content-thread-chat-lower-part/main-content-thread-chat-lower-part.component';
 import { MainContentThreadChatUpperPartComponent } from './main-content/main-content-thread-chat/main-content-thread-chat-upper-part/main-content-thread-chat-upper-part.component';
 import { MainContentSideBarComponent } from './main-content/main-content-side-bar/main-content-side-bar.component';
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { firebaseConfig } from '../environments/firebase.config';
 import { DialogAddChannelmembersComponent } from './dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
 import { MainContentDirectmessageChatComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat.component';
 import { MainContentDirectmessageChatUpperPartComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat-upper-part/main-content-directmessage-chat-upper-part.component';
 import { MainContentDirectmessageChatLowerPartComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat-lower-part/main-content-directmessage-chat-lower-part.component';
+
+
+import { AuthService } from './shared-services/authentication.service';
+import { ChannelsService } from './shared-services/channels.service';
+import { DataService } from './shared-services/data.service';
+import { OpenDialogService } from './shared-services/open-dialog.service';
+import { UserService } from './shared-services/user.service';
+
 
 
 @NgModule({
@@ -80,7 +88,7 @@ import { MainContentDirectmessageChatLowerPartComponent } from './main-content/m
     BrowserModule,
     FormsModule,
     AppRoutingModule,
-    provideFirebaseApp(() => initializeApp({ "projectId": "dabubble-5ec88", "appId": "1:540601189295:web:7f3ece8c1beefd7ba9655a", "storageBucket": "dabubble-5ec88.appspot.com", "apiKey": "AIzaSyBwQtoQFZ1UWiUgbOSwrfARsckBgdqZjXA", "authDomain": "dabubble-5ec88.firebaseapp.com", "messagingSenderId": "540601189295" })),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     BrowserAnimationsModule,
@@ -98,12 +106,14 @@ import { MainContentDirectmessageChatLowerPartComponent } from './main-content/m
     MatSidenavModule,
     MatToolbarModule,
     MatTooltipModule,
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireAuthModule,
     MatRadioModule
-
   ],
-  providers: [OpenDialogService,
+  providers: [
+    OpenDialogService,
+    AuthService,
+    ChannelsService,
+    UserService,
+    DataService,
   ],
   bootstrap: [AppComponent,
   ]

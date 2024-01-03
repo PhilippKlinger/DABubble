@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../shared-services/authentication.service';
 import { User } from '../models/user.class';
+import { UserService } from '../shared-services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,7 @@ export class LoginComponent {
   user: User = new User();
   isCheckboxChecked = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private userService: UserService) {}
 
   isFormValid() {
     return this.validateEmail(this.user.email) &&
@@ -35,10 +36,12 @@ export class LoginComponent {
     if (this.user.password === this.user.confirmPassword) {
       this.authService.register(this.user.email, this.user.password)
         .then(() => {
+          this.userService.createUser(this.user, 'users');
           this.changeSwitchCase('login');
         })
         .catch((error) => {
           console.log(error);
+          console.log(error.code);
           if (error.code === 'auth/email-already-in-use') {
             console.log("email already exist");
           } else {
