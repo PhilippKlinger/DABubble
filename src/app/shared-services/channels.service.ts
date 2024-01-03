@@ -26,6 +26,7 @@ export class ChannelsService {
   
   async pushMessageToChannel(message: Message): Promise<void> {
     const selectedChannel = this.selectedChannelSubject.value;
+    //try and catch besser ??
     if (selectedChannel) {
       await addDoc(this.getChannelsColRef(selectedChannel), message.toJSON());
     } else {
