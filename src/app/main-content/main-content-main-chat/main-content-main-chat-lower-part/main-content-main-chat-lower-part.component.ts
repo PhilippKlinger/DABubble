@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/shared-services/data.service';
-
+import { message } from './../../../models/message.class'
+import { ChannelsService } from 'src/app/shared-services/channels.service';
+import { Subscription } from 'rxjs';
+import { Channel } from 'src/app/models/channel.class';
 
 @Component({
   selector: 'app-main-content-main-chat-lower-part',
@@ -8,12 +11,33 @@ import { DataService } from 'src/app/shared-services/data.service';
   styleUrls: ['./main-content-main-chat-lower-part.component.scss']
 })
 export class MainContentMainChatLowerPartComponent {
+  @ViewChild('message') input_message!: ElementRef;
+  message = new message();
+  selectedChannel!: Channel | null;
+  unsubChannels!: Subscription;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private channelService: ChannelsService) {
+    this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
+      this.selectedChannel = selectedChannel;
+    });
+  }
 
   openThread() {
     //setzt den thread_open boolean auf true.
     // Bei veränderung wird in Main-content.ts eine funktion ausgelöst da main content die function abonniert hat
     this.dataService.setBooleanValue(true);
+  }
+
+  sendMessageToChannel() {
+    if (this.input_message.nativeElement.value.trim() !== '') {
+      this.message.setCreator();
+      this.message.setTimestampNow();
+      this.message.setMessage(this.input_message.nativeElement.value.trim());
+      this.channelService.pushMessageToChannel(this.selectedChannel!, this.message);
+    }
+  }
+
+  ngOnDestroy() {
+    this.unsubChannels.unsubscribe();
   }
 }
