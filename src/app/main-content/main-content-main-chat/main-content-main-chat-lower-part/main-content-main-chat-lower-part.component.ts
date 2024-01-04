@@ -28,7 +28,7 @@ export class MainContentMainChatLowerPartComponent {
   receiveChatMessages() {
     this.channelService.updateChatMessageOfSelectedChannel();
     this.chatMessages = this.channelService.chatMessages;
-    console.log(this.chatMessages);
+    // console.log(this.chatMessages);
   }
 
   openThread() {
