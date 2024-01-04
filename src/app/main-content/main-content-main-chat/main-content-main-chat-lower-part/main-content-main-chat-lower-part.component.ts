@@ -12,14 +12,23 @@ import { Channel } from 'src/app/models/channel.class';
 })
 export class MainContentMainChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
+  @ViewChild('chat_content') chat_content!: ElementRef;
   message = new Message();
   selectedChannel!: Channel | null;
   unsubChannels!: Subscription;
+  chatMessages: any = [];
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
       this.selectedChannel = selectedChannel;
+      this.receiveChatMessages();
     });
+  }
+
+  receiveChatMessages() {
+    this.channelService.updateChatMessageOfSelectedChannel();
+    this.chatMessages = this.channelService.chatMessages;
+    console.log(this.chatMessages);
   }
 
   openThread() {

@@ -1,15 +1,19 @@
 <div class="chat">
-    <div class="chat-content">
-        <div class="user-message">
+    <div #chat_content class="chat-content">
+        <div class="chat-timestamp">
+            <div></div>
+            <span>Momentan</span>
+        </div>
+
+        <div class="user-message" *ngFor="let message of chatMessages">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_0.svg">
             <div class="flex-end">
                 <div class="user-message-time-name">
-                    <span>14:04 Uhr</span>
-                    <h3>Frederik Beck</h3>
+                    <span>{{ message.timestamp }}</span>
+                    <h3>{{ message.creator }}</h3>
                 </div>
-                <div class="speech-bubble-user">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Tempore nostrum minus exercitationem aliquam incidunt ducimus. Voluptate commodi nihil ipsum
-                    molestias itaque quae quidem eligendi aperiam recusandae, optio vel earum sunt.
+                <div class="speech-bubble-user">
+                    {{ message.message }}
                 </div>
                 <div class="user-message-emojis">
                     <div class="user-message-emojis-showcase">
@@ -38,12 +42,12 @@
             </div>
         </div>
 
-        <div class="chat-timestamp">
+        <!-- <div class="chat-timestamp">
             <div></div>
             <span>Dienstag, 14 Januar</span>
-        </div>
+        </div> -->
 
-        <div class="anon-user-message">
+        <!-- <div class="anon-user-message">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_0.svg">
             <div>
                 <div class="anon-user-message-time-name">
@@ -106,7 +110,7 @@
                     </h1>
                 </span>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
