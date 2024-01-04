@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
+import { User } from 'src/app/models/user.class';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { UserService } from 'src/app/shared-services/user.service';
 
 
 @Component({ 
@@ -16,14 +18,19 @@ export class DialogDummyComponent implements OnInit {
 
   channels: Channel[] = [];
   unsubChannels!: Subscription;
+  user: User[] = [];
+  unsubUser!: Subscription;
 
-  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService) {
+  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService, private userService: UserService) {
   }
 
   ngOnInit(): void {
     this.unsubChannels = this.channelsService.channels$.subscribe(channels => {
       this.channels = channels;
     });
+    this.unsubUser = this.userService.users$.subscribe(user => {
+      this.user = user;
+    })
   }
 
   async createChannel(item: Channel): Promise<void> {
@@ -54,5 +61,6 @@ export class DialogDummyComponent implements OnInit {
 
   ngOnDestroy() {
     this.unsubChannels.unsubscribe();
+    this.unsubUser.unsubscribe();
   }
 }

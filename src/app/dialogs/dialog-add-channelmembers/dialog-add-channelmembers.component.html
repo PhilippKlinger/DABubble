@@ -28,7 +28,7 @@
                (input)="onInput()" />
                <mat-autocomplete #auto="matAutocomplete">
                 <mat-option *ngFor="let user of filteredUsers" [value]="user" (click)="selectUser(user)">
-                  {{ user }}
+                  {{ user.name }}
                 </mat-option>
               </mat-autocomplete>
       </div>
@@ -39,7 +39,7 @@
 
             <!-- hier noch den avatar einfügen -->
             
-            {{ user }}
+            {{ user.name }}
             <button mat-icon-button (click)="removeUser(user)">
                 <mat-icon>close</mat-icon>
             </button>

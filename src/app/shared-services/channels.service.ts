@@ -9,6 +9,7 @@ import { Message } from '../models/message.class';
   providedIn: 'root'
 })
 export class ChannelsService {
+  chatMessages = [];
 
   private channelsSubject = new BehaviorSubject<Channel[]>([]);
   channels$ = this.channelsSubject.asObservable();
@@ -20,10 +21,18 @@ export class ChannelsService {
     this.unsubChannels = this.subChannelsList();
   }
 
+  updateChatMessageOfSelectedChannel() {
+    const selectedChannel = this.selectedChannelSubject.value;
+
+    onSnapshot(this.getChannelsColRef(selectedChannel!), (snapshot: any) => {
+      this.chatMessages = snapshot.docs.map((doc: any) => doc.data());
+    });
+  }
+
   setSelectedChannel(channel: Channel): void {
     this.selectedChannelSubject.next(channel);
   }
-  
+
   async pushMessageToChannel(message: Message): Promise<void> {
     const selectedChannel = this.selectedChannelSubject.value;
     message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
