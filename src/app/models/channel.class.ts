@@ -20,14 +20,13 @@ export class Channel {
       }
 
     setCreator(): void {
-        this.creator = 'Gast';
+        this.creator = 'Test User';
     }
 
-    addCreatorToMember(): void {
-        this.members = ['Gast'];
+    addCreatorToMembers(): void {
+        this.members = [{email: 'testuser@dev.com', id: '11sdf1s6f1s6f1', name: 'Test User', avatar: 'assets/avatars/avatar_0.svg' }];
     }
-    
-
+   
     public toJSON() {
         return {
             id: this.id,

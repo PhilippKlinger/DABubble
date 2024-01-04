@@ -3,6 +3,7 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { MatDialogRef } from '@angular/material/dialog';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
+import { User } from 'src/app/models/user.class';
 
 @Component({
   selector: 'app-dialog-create-channel',
@@ -16,14 +17,14 @@ import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 export class DialogCreateChannelComponent {
 
   channel = new Channel();
+  
 
-
-  constructor(private channelsService: ChannelsService, private dialogService: OpenDialogService , private dialogRef: MatDialogRef<DialogCreateChannelComponent>) { }
+  constructor(private channelsService: ChannelsService, private dialogService: OpenDialogService, private dialogRef: MatDialogRef<DialogCreateChannelComponent>) { }
 
   createChannel(): void {
     this.channel.setCreator();
     this.channel.setTimestampNow();
-    this.channel.addCreatorToMember();
+    this.channel.addCreatorToMembers();
     this.channelsService.createChannel(this.channel, 'channels').then(() => {
       this.channelsService.setSelectedChannel(this.channel);
       console.log('selectd channel is:', this.channel);

@@ -65,6 +65,12 @@ export class ChannelsService {
         const data = doc.data() as Channel;
         return new Channel({ ...data, id: doc.id });
       });
+      //hier entweder bestimmten channel auswählen oder zuletzt besuchten channel anzeigen
+      // if (channels.length > 0) {
+      //   const firstChannel = channels[0];
+      //   this.setSelectedChannel(firstChannel);
+      // }
+
       this.channelsSubject.next(channels);
       //später rausschmeißen
       console.log(channels);

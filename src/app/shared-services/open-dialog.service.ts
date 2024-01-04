@@ -7,11 +7,16 @@ import { DialogCreateChannelComponent } from '../dialogs/dialog-create-channel/d
 import { DialogEditChannelComponent } from '../dialogs/dialog-edit-channel/dialog-edit-channel.component';
 import { DialogMenuProfileComponent } from '../dialogs/dialog-menu-profile/dialog-menu-profile.component';
 import { DialogAddChannelmembersComponent } from '../dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpenDialogService {
+
+  private needToAddMoreMembersSubject = new BehaviorSubject<boolean>(false);
+  needToAddMoreMembers$ = this.needToAddMoreMembersSubject.asObservable();
+
   /**
    * Mapping of component keys to their corresponding Angular component types.
    *
@@ -47,5 +52,9 @@ export class OpenDialogService {
     } else {
       console.error(`Component with key ${componentKey} not found.`);
     }
+  }
+
+  setNeedToAddMoreMembers(value: boolean): void {
+    this.needToAddMoreMembersSubject.next(value);
   }
 }

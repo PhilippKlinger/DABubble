@@ -9,13 +9,13 @@
         <div class="avatar-count">
             <div class="avatar-container">
                 <div *ngFor="let member of members">
-                    <img src="../../../../assets/avatars/avatar_0.svg">
+                    <img src="{{member.avatar}}">
                 </div>
             </div>
             <span>{{ members.length }}</span>
         </div>
 
-        <div class="add-person-btn">
+        <div class="add-person-btn" (click)="openDialog('addChannelmembers')"> 
             <mat-icon class="rotate-icon custom-icon">person_add</mat-icon>
         </div>
     </div>

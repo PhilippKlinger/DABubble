@@ -5,6 +5,7 @@ import { User } from 'src/app/models/user.class';
 import { Subscription } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 import { UserService } from 'src/app/shared-services/user.service';
+import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 
 @Component({
   selector: 'app-dialog-add-channelmembers',
@@ -20,19 +21,24 @@ export class DialogAddChannelmembersComponent {
 
   filteredUsers: User[] = [];
   selectedUsers: User[] = [];
-  needToAddMoreMembers: boolean = false;     //wenn dialog im channel geöffnet wird
 
+  needToAddMoreMembers: boolean = false;
+  needToAddMoreMembersSubscription: Subscription
   channel: Channel | null = null;
   selectedChannelSubscription: Subscription;
   users: User[] = [];
   userSubscription: Subscription;
 
-  constructor(private channelsService: ChannelsService, private userService: UserService, private dialogRef: MatDialogRef<DialogAddChannelmembersComponent>) {
+  constructor(private channelsService: ChannelsService, private dialogService: OpenDialogService, private userService: UserService, private dialogRef: MatDialogRef<DialogAddChannelmembersComponent>) {
     this.selectedChannelSubscription = this.channelsService.selectedChannel$.subscribe((channel) => {
       this.channel = channel;
     });
     this.userSubscription = this.userService.users$.subscribe((users) => {
       this.users = users;
+    });
+    this.needToAddMoreMembersSubscription = this.dialogService.needToAddMoreMembers$.subscribe((state) => {
+      this.needToAddMoreMembers = state;
+      console.log('zweiter member dialog geöffnet', state)
     })
   }
 
@@ -41,11 +47,26 @@ export class DialogAddChannelmembersComponent {
   }
 
   filterUsers() {
-    this.filteredUsers = this.users.filter(user =>
-      user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) && !this.selectedUsers.includes(user)
-    );
+    if (this.channel) {
+      const channelMembers = this.needToAddMoreMembers ? (this.channel.members || []) : [];
+           
+      this.filteredUsers = this.users.filter(user => {
+        const userIncluded = channelMembers.some(channelUser => channelUser.id === user.id);
+       
+        return (
+          user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
+          !this.selectedUsers.includes(user) &&
+          (this.needToAddMoreMembers ? !userIncluded : true)
+        );
+      });
+    } else {
+      this.filteredUsers = this.users.filter(user =>
+        user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
+        !this.selectedUsers.includes(user)
+      );
+    }
   }
-
+  
   selectUser(user: User) {
     this.selectedUsers.push(user);
     this.specificMemberInput = '';
@@ -75,6 +96,7 @@ export class DialogAddChannelmembersComponent {
       this.channelsService.setSelectedChannel(this.channel);
       this.channelsService.updateChannel(this.channel);
       this.dialogRef.close();
+      this.dialogService.setNeedToAddMoreMembers(false);
     }
   }
   

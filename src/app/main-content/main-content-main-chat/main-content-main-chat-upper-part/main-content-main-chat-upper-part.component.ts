@@ -3,6 +3,7 @@ import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { Subscription } from 'rxjs';
+import { User } from 'src/app/models/user.class';
 @Component({
   selector: 'app-main-content-main-chat-upper-part',
   templateUrl: './main-content-main-chat-upper-part.component.html',
@@ -11,7 +12,7 @@ import { Subscription } from 'rxjs';
 export class MainContentMainChatUpperPartComponent {
   selectedChannel!: Channel | null;
   unsubChannels!: Subscription;
-  members: Array<string> = [];
+  members: User[] = [];
 
   constructor(private dialogService: OpenDialogService, private ChannelsService: ChannelsService) {
     this.unsubChannels = this.ChannelsService.selectedChannel$.subscribe(selectedChannel => {
@@ -20,13 +21,13 @@ export class MainContentMainChatUpperPartComponent {
       if (selectedChannel?.members !== undefined) {
         this.members = selectedChannel?.members;
       } else {
-        this.members = ['empty', 'empty', 'empty', 'empty', 'empty',];
-        console.log(this.members);
+        console.log('no selected channel avaialble');
       }
     });
   }
 
   openDialog(componentKey: string): void {
+    this.dialogService.setNeedToAddMoreMembers(true);
     this.dialogService.openDialog(componentKey);
   }
 

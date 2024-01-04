@@ -20,8 +20,12 @@ export class MainContentMainChatLowerPartComponent {
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
-      this.selectedChannel = selectedChannel;
-      this.receiveChatMessages();
+      if (selectedChannel) {
+        this.selectedChannel = selectedChannel;
+        this.receiveChatMessages();
+      } else {
+        console.log('waiting for selected channel');
+      }
     });
   }
 

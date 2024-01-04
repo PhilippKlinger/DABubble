@@ -36,10 +36,13 @@
 
     <div class="added-user-list" *ngIf="selectedOption === 'specificMembers' || needToAddMoreMembers">
         <div class="selected-user" *ngFor="let user of selectedUsers">
-
-            <!-- hier noch den avatar einfügen -->
-            
-            {{ user.name }}
+            <div class="side-bar-profile">
+                <div class="side-bar-profile-picture">
+                    <img src="{{user.avatar}}">
+                    <div class="online"></div>
+                </div>
+                <span>{{ user.name }}</span>
+            </div>
             <button mat-icon-button (click)="removeUser(user)">
                 <mat-icon>close</mat-icon>
             </button>
