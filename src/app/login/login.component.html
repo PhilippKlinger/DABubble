@@ -37,7 +37,7 @@
               <span class="or">ODER</span>
               <div class="bottom-line"></div>
             </div>
-            <div mat-button class="input-container google-btn d-flex-standard cursor-pointer">
+            <div (click)="loginGoogle()" mat-button class="input-container google-btn d-flex-standard cursor-pointer">
               <img class="google-img" src="assets/icons/Google.svg">
               <span>Anmelden mit Google</span>
             </div>
@@ -120,13 +120,13 @@
             <div>              
               <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets/icons/mail.svg">
-                <input type="email" matInput placeholder="beispielname@email.com" required>
+                <input type="email" matInput placeholder="beispielname@email.com" [(ngModel)]="user.email" name="email" required>
               </div>
               <p>Wir senden Ihnen eine E-Mail, über die Sie Ihr Passwort ändern können.</p>   
             </div>  
           </form>
           <div class="btn-end submit-buttons mt-32">
-            <button (click)="changeSwitchCase('login')" class="btn-submit" mat-button type="submit">E-Mail senden</button>
+            <button (click)="setNewPassword()" class="btn-submit" mat-button type="submit">E-Mail senden</button>
           </div>
         </div>
     </div>

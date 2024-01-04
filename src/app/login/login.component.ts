@@ -42,6 +42,13 @@ export class LoginComponent {
     });
   }
 
+  loginGoogle() {
+    this.authService.loginWithGoogle()
+    .then (() => { 
+      this.router.navigate(['/main-content']);
+    });
+  }
+
   isFormValid() {
     return this.validateEmail(this.user.email) &&
            this.user.name.length >= 5 &&
@@ -81,6 +88,13 @@ export class LoginComponent {
     }
   }
 
+  setNewPassword() {
+    this.authService.resetPassword(this.user.email)
+    .then (() => { 
+      this.changeSwitchCase('login');
+    });
+  }
+ 
 
   changeInputPasswordToTxt(event: MouseEvent): void {
     let imgElement = event.target as HTMLElement;
