@@ -39,7 +39,7 @@
             <div class="side-bar-profile">
                 <div class="side-bar-profile-picture">
                     <img src="{{user.avatar}}">
-                    <div class="online"></div>
+                    <div [ngClass]="{ 'online': user.onlineStatus, 'offline': !user.onlineStatus }"></div>
                 </div>
                 <span>{{ user.name }}</span>
             </div>

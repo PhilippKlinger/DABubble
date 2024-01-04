@@ -51,6 +51,17 @@ $Bg-color: #ECEEFE;
     background-color: #92C83E;
 }
 
+.offline {
+    position: absolute;
+    right: 0px;
+    bottom: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    border: 2px solid $Bg-color;
+    background-color: #656565;
+}
+
 .button {
     justify-content: flex-end !important;
 }
