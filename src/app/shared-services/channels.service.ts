@@ -10,6 +10,7 @@ import { Message } from '../models/message.class';
 })
 export class ChannelsService {
   chatMessages = [];
+  threadAnswers = [];
 
   private channelsSubject = new BehaviorSubject<Channel[]>([]);
   channels$ = this.channelsSubject.asObservable();
@@ -17,8 +18,32 @@ export class ChannelsService {
   selectedChannel$ = this.selectedChannelSubject.asObservable();
   private unsubChannels;
 
+  public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
+
   constructor(private firestore: Firestore) {
     this.unsubChannels = this.subChannelsList();
+  }
+
+  updateThreadAnswersOfSelectedMessage() {
+    const selectedChannel = this.selectedChannelSubject.value;
+    const thread_subject = this.thread_subject$.value;
+
+    onSnapshot(this.getChannelsMessageColRef(selectedChannel!, thread_subject!), (snapshot: any) => {
+      this.threadAnswers = snapshot.docs.map((doc: any) => doc.data());
+    });
+  }
+
+  async pushThreadAnswerToMessage(answer: Message): Promise<void> {
+    const selectedChannel = this.selectedChannelSubject.value;
+    const thread_subject = this.thread_subject$.value;
+
+    answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
+    //try and catch besser ??
+    if (selectedChannel) {
+      await addDoc(this.getChannelsMessageColRef(selectedChannel!, thread_subject!), answer.toJSON());
+    } else {
+      console.error('No thread subject available.');
+    }
   }
 
   updateChatMessageOfSelectedChannel() {
@@ -102,6 +127,10 @@ export class ChannelsService {
 
   getChannelsColRef(selectedChannel: Channel) {
     return collection(this.firestore, `channels/${selectedChannel.id}/messages`);
+  }
+
+  getChannelsMessageColRef(selectedChannel: Channel, thread_subject: Message) {
+    return collection(this.firestore, `channels/${selectedChannel.id}/messages/${thread_subject.id}/answers`);
   }
 
   getSingleDocRef(coldId: string, docID: string) {

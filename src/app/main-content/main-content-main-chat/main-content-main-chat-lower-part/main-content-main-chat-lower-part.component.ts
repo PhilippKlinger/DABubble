@@ -29,6 +29,10 @@ export class MainContentMainChatLowerPartComponent {
     });
   }
 
+  selectMessageForThread(index: number) {
+    this.channelService.thread_subject$.next(this.chatMessages[index]);
+  }
+
   receiveChatMessages() {
     this.channelService.updateChatMessageOfSelectedChannel();
     this.chatMessages = this.channelService.chatMessages;

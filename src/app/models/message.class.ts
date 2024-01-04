@@ -25,7 +25,6 @@ export class Message {
 
     public toJSON() {
         return {
-            id: this.id,
             message: this.message,
             creator: this.creator,
             timestamp: this.timestamp

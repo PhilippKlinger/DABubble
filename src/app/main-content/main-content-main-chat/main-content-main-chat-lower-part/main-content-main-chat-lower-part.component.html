@@ -5,7 +5,7 @@
             <span>Momentan</span>
         </div>
 
-        <div class="user-message" *ngFor="let message of chatMessages">
+        <div class="user-message" *ngFor="let message of chatMessages; let i = index" (click)="selectMessageForThread(i)">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_0.svg">
             <div class="flex-end">
                 <div class="user-message-time-name">

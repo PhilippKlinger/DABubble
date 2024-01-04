@@ -26,7 +26,6 @@ export class MainContentSideBarComponent {
   }
 
   openDM() {
-    //aktualisiert die variable in meiner data.service.ts, woraufhin sich die variable in der main-component mit aktualisiert
     this.dataService.directmessage_open$.next(true);
   }
 
