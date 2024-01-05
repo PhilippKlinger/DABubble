@@ -4,11 +4,11 @@
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div>
                 <div class="anon-user-message-time-name">
-                    <span>{{ thread_subject.timestamp }}</span>
-                    <h3>{{ thread_subject.creator }}</h3>
+                    <span>{{ thread_subject?.timestamp }}</span>
+                    <h3>{{ thread_subject?.creator }}</h3>
                 </div>
                 <div class="anon-speech-bubble-user">
-                    {{ thread_subject.message }}
+                    {{ thread_subject?.message }}
                 </div>
                 <div class="anon-user-message-emojis">
                     <div class="user-message-emojis-showcase">

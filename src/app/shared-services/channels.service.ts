@@ -27,24 +27,27 @@ export class ChannelsService {
   updateThreadAnswersOfSelectedMessage() {
     const selectedChannel = this.selectedChannelSubject.value;
     const thread_subject = this.thread_subject$.value;
-
-    onSnapshot(this.getChannelsMessageColRef(selectedChannel!, thread_subject!), (snapshot: any) => {
-      this.threadAnswers = snapshot.docs.map((doc: any) => doc.data());
-    });
+  
+    if (selectedChannel && thread_subject) {
+      onSnapshot(this.getChannelsMessageColRef(selectedChannel, thread_subject), (snapshot: any) => {
+        this.threadAnswers = snapshot.docs.map((doc: any) => doc.data());
+      });
+    }
   }
+  
 
   async pushThreadAnswerToMessage(answer: Message): Promise<void> {
     const selectedChannel = this.selectedChannelSubject.value;
     const thread_subject = this.thread_subject$.value;
-
-    answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
-    //try and catch besser ??
-    if (selectedChannel) {
-      await addDoc(this.getChannelsMessageColRef(selectedChannel!, thread_subject!), answer.toJSON());
+  
+    if (selectedChannel && thread_subject) {
+      answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
+      await addDoc(this.getChannelsMessageColRef(selectedChannel, thread_subject), answer.toJSON());
     } else {
-      console.error('No thread subject available.');
+      console.error('No selected channel or thread subject available.');
     }
   }
+  
 
   updateChatMessageOfSelectedChannel() {
     const selectedChannel = this.selectedChannelSubject.value;

@@ -9,7 +9,9 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 })
 export class MainContentThreadChatLowerPartComponent {
   @ViewChild('answer') input_answer!: ElementRef;
-  thread_subject: Message = null!;
+  // thread_subject: Message = null!;
+  thread_subject: Message | null = null;
+
   threadAnswers = [];
   answer = new Message();
   constructor(private channelService: ChannelsService) {
@@ -17,7 +19,7 @@ export class MainContentThreadChatLowerPartComponent {
       //bei veränderung des observables wird folgende funktion ausgelöst
       this.thread_subject = value;
 
-      this.receiveThreadAnswers();
+      this.receiveThreadAnswers(); 
     });
   }
 
