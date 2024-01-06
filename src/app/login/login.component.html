@@ -23,13 +23,13 @@
                 <input type="email" matInput placeholder="beispielname@email.com" [(ngModel)]="user.email" name="email" required>
                 <img src="assets/icons/empty.svg">
               </div>
-              <span class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span>   
+              <span [class.show]="loginErrorUser" class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span>   
               <div class="input-container d-flex-standard cursor-pointer">
-                <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/password.svg">
+                <img src="assets/icons/password.svg">
                 <input type="password" matInput placeholder="Passwort" [(ngModel)]="user.password" name="password" required>
                 <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/visibility_off.svg" alt="Toggle Password Visibility">
               </div>
-              <span class="error-txt">Falsches Passwort. Bitte noch einmal versuchen.</span> 
+              <span [class.show]="loginErrorPassword" class="error-txt">Falsches Passwort. Bitte noch einmal versuchen.</span> 
             </div>    
             <div class="forgot-pass-container">
                 <a (click)="changeSwitchCase('forgotPassword')" class="link forgot-password d-flex-standard cursor-pointer">Passwort vergessen?</a>
@@ -54,7 +54,7 @@
           <img (click)="changeSwitchCase('login')" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Konto erstellen</h1>
           <p>Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
-          <form (ngSubmit)="changeSwitchCase('avatar')">
+          <form (ngSubmit)="moveToAvatar()">
             <div>
               <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets/icons/person_filled.svg">
@@ -68,14 +68,14 @@
                 <input #emailInput="ngModel" type="email" matInput [(ngModel)]="user.email" name="email" placeholder="beispielname@email.com" required>
                 <img src="assets/icons/empty.svg">
               </div>
-              <span [class.show]="(emailInput.invalid || !validateEmail(user.email)) && nameInput.dirty" class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span>     
+              <span [class.show]="(emailInput.invalid || !validateEmail(user.email) || loginErrorUser) && emailInput.dirty" class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span>     
               
               <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets/icons/password.svg" alt="lock">
-                <input #passwordInput="ngModel" type="password" matInput [(ngModel)]="user.password" name="password" placeholder="Passwort" required minlength="5">
+                <input #passwordInput="ngModel" type="password" matInput [(ngModel)]="user.password" name="password" placeholder="Passwort" required minlength="8">
                 <img (click)="changeInputPasswordToTxt($event)" src="assets/icons/visibility_off.svg" alt="Toggle Password Visibility">
               </div>
-              <span [class.show]="passwordInput.invalid && nameInput.dirty" class="error-txt">Bitte geben Sie ein Passwort ein mit mindestens 8 Zeichen.</span> 
+              <span [class.show]="passwordInput.invalid && passwordInput.dirty" class="error-txt">Bitte geben Sie ein Passwort ein mit mindestens 8 Zeichen.</span> 
               
               <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets/icons/password.svg" alt="lock">

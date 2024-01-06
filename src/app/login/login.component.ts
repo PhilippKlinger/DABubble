@@ -24,22 +24,40 @@ export class LoginComponent {
     'assets/avatars/avatar_6.svg',
   ];
   switch_expression: string = "login";
+  loginErrorUser: boolean = false;
+  loginErrorPassword: boolean = false;
 
   constructor(private authService: AuthService, private authStateService: AuthenticationStateService, private userService: UserService, private router: Router) {}
 
-  login() {
-    this.authService.login(this.user.email, this.user.password)
-    .then((userCredential) => {
-      let userId = userCredential.user.uid;
-      this.authStateService.setCurrentUserId(userCredential.user.uid);
-      return this.userService.setUserOnlineStatus(userId, true);
-    })
-    .then(() => {
-      this.router.navigate(['/main-content']);
-    })
-    .catch(error => {
-      console.error('Anmeldefehler', error);
-    });
+  async login() {
+    if (await this.checkUserExists()) {
+      this.authService.login(this.user.email, this.user.password)
+      .then((userCredential) => {
+        let userId = userCredential.user.uid;
+        this.authStateService.setCurrentUserId(userCredential.user.uid);
+        return this.userService.setUserOnlineStatus(userId, true);
+      })
+      .then(() => {
+        this.router.navigate(['/main-content']);
+      })
+      .catch(error => {
+        if (error.code === 'auth/too-many-requests' || error.code === 'auth/invalid-credential' || error.code === 'auth/missing-password') {
+          this.loginErrorPassword = true;
+        }
+      });
+    }  
+  }
+
+  async checkUserExists() {
+    this.loginErrorUser = false;
+    this.loginErrorPassword = false;
+    let userExists = await this.userService.userExistsByEmail(this.user.email);
+    if (!userExists) {
+      this.loginErrorUser = true;
+      return false;
+    } else {
+      return true;
+    }
   }
 
   loginGoogle() {
@@ -67,7 +85,16 @@ export class LoginComponent {
     return this.user.password === this.user.confirmPassword;
   }
 
-  register() {
+  async moveToAvatar() {
+    if (!await this.checkUserExists()) {
+      this.changeSwitchCase('avatar');
+    } else {
+      this.loginErrorUser = true;
+    }
+  }
+  
+
+  async register() {
     if (this.user.password === this.user.confirmPassword) {
       this.authService.register(this.user.email, this.user.password)
         .then((userCredential) => {

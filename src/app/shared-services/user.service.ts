@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, DocumentData, getDoc, setDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, updateDoc, deleteDoc, setDoc, query, where, getDocs } from '@angular/fire/firestore';
 import { User } from '../models/user.class';
 import { BehaviorSubject } from 'rxjs';
 
@@ -18,7 +18,7 @@ export class UserService {
     }
 
     async createUser(user: User, colId: "users"): Promise<void> {
-        const docRef = doc(this.firestore, colId, user.id);
+        let docRef = doc(this.firestore, colId, user.id);
         try {
           await setDoc(docRef, user.toJSON());
         } catch (error) {
@@ -30,8 +30,8 @@ export class UserService {
 
     subUsersList() {
         return onSnapshot(this.getUsersRef(), (querySnapshot) => {
-          const users = querySnapshot.docs.map((doc) => {
-            const data = doc.data() as User;
+          let users = querySnapshot.docs.map((doc) => {
+            let data = doc.data() as User;
             return new User({ ...data, id: doc.id });
           });
           this.usersSubject.next(users);
@@ -70,10 +70,16 @@ export class UserService {
     }
 
     async setUserOnlineStatus(userId: string, onlineStatus: boolean): Promise<void> {
-      const docRef = this.getSingleDocRef('users', userId);
+      let docRef = this.getSingleDocRef('users', userId);
       await updateDoc(docRef, { onlineStatus }).catch((error) => {
         console.error(error);
       });
+    }
+
+    async userExistsByEmail(email: string): Promise<boolean> {
+      const q = query(this.getUsersRef(), where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+      return !querySnapshot.empty;
     }
 
 }
