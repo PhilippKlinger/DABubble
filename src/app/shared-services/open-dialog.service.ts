@@ -8,6 +8,7 @@ import { DialogEditChannelComponent } from '../dialogs/dialog-edit-channel/dialo
 import { DialogMenuProfileComponent } from '../dialogs/dialog-menu-profile/dialog-menu-profile.component';
 import { DialogAddChannelmembersComponent } from '../dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { DialogShowChannelmembersComponent } from '../dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,7 @@ export class OpenDialogService {
     'createChannel': DialogCreateChannelComponent,
     'editChannel': DialogEditChannelComponent,
     'addChannelmembers': DialogAddChannelmembersComponent,
+    'showChannelmembers': DialogShowChannelmembersComponent
   };
 
   /**
