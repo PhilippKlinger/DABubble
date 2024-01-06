@@ -10,7 +10,7 @@
 
     <div class="added-user-list">
         <div class="selected-user" *ngFor="let user of channel?.members">
-            <div class="side-bar-profile" (click)="openDialog('showProfile')">
+            <div class="side-bar-profile" (click)="showSelectedUser(user)">
                 <div class="side-bar-profile-picture">
                     <img src="{{user.avatar}}">
                     <div [ngClass]="{ 'online': user.onlineStatus, 'offline': !user.onlineStatus }"></div>

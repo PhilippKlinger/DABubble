@@ -4,6 +4,8 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { Subscription } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
+import { User } from 'src/app/models/user.class';
+import { UserService } from 'src/app/shared-services/user.service';
 
 @Component({
   selector: 'app-dialog-show-channelmembers',
@@ -17,10 +19,16 @@ export class DialogShowChannelmembersComponent {
   channel: Channel | null = null;
   selectedChannelSubscription: Subscription;
 
-  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService, private dialogRef: MatDialogRef<DialogShowChannelmembersComponent>){
+  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService, private userService: UserService, private dialogRef: MatDialogRef<DialogShowChannelmembersComponent>){
     this.selectedChannelSubscription = this.channelsService.selectedChannel$.subscribe((channel) => {
       this.channel = channel;
     });
+  }
+
+  showSelectedUser(user: User){
+    this.userService.setSelectedUser(user);
+    this.dialogService.openDialog('showProfile');
+    this.dialogRef.close();
   }
 
   openDialog(componentKey: string): void {

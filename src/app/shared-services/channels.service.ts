@@ -16,6 +16,7 @@ export class ChannelsService {
   channels$ = this.channelsSubject.asObservable();
   private selectedChannelSubject = new BehaviorSubject<Channel | null>(null);
   selectedChannel$ = this.selectedChannelSubject.asObservable();
+  
   private unsubChannels;
 
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
@@ -35,7 +36,6 @@ export class ChannelsService {
     }
   }
   
-
   async pushThreadAnswerToMessage(answer: Message): Promise<void> {
     const selectedChannel = this.selectedChannelSubject.value;
     const thread_subject = this.thread_subject$.value;
@@ -48,7 +48,6 @@ export class ChannelsService {
     }
   }
   
-
   updateChatMessageOfSelectedChannel() {
     const selectedChannel = this.selectedChannelSubject.value;
 
