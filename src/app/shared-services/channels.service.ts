@@ -12,21 +12,24 @@ export class ChannelsService {
   chatMessages = [];
   threadAnswers = [];
 
-  private channelsSubject = new BehaviorSubject<Channel[]>([]);
-  channels$ = this.channelsSubject.asObservable();
-  private selectedChannelSubject = new BehaviorSubject<Channel | null>(null);
-  selectedChannel$ = this.selectedChannelSubject.asObservable();
+  // private channelsSubject = new BehaviorSubject<Channel[]>([]);
+  // channels$ = this.channelsSubject.asObservable();
+  // private selectedChannelSubject = new BehaviorSubject<Channel | null>(null);
+  // selectedChannel$ = this.selectedChannelSubject.asObservable();
   
-  private unsubChannels;
-
+  
+  public channels$: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
+  public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
+
+  private unsubChannels;
 
   constructor(private firestore: Firestore) {
     this.unsubChannels = this.subChannelsList();
   }
 
   updateThreadAnswersOfSelectedMessage() {
-    const selectedChannel = this.selectedChannelSubject.value;
+    const selectedChannel = this.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
   
     if (selectedChannel && thread_subject) {
@@ -37,7 +40,7 @@ export class ChannelsService {
   }
   
   async pushThreadAnswerToMessage(answer: Message): Promise<void> {
-    const selectedChannel = this.selectedChannelSubject.value;
+    const selectedChannel = this.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
   
     if (selectedChannel && thread_subject) {
@@ -49,7 +52,7 @@ export class ChannelsService {
   }
   
   updateChatMessageOfSelectedChannel() {
-    const selectedChannel = this.selectedChannelSubject.value;
+    const selectedChannel = this.selectedChannel$.value;
 
     onSnapshot(this.getChannelsColRef(selectedChannel!), (snapshot: any) => {
       this.chatMessages = snapshot.docs.map((doc: any) => doc.data());
@@ -57,11 +60,11 @@ export class ChannelsService {
   }
 
   setSelectedChannel(channel: Channel): void {
-    this.selectedChannelSubject.next(channel);
+    this.selectedChannel$.next(channel);
   }
 
   async pushMessageToChannel(message: Message): Promise<void> {
-    const selectedChannel = this.selectedChannelSubject.value;
+    const selectedChannel = this.selectedChannel$.value;
     message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
     //try and catch besser ??
     if (selectedChannel) {
@@ -77,8 +80,6 @@ export class ChannelsService {
     try {
       const docRef = await addDoc(collectionRef, channel.toJSON());
       channel.id = docRef.id;
-      // Später rausschmeißen
-      console.log('Channel written with ID: ', docRef.id);
       this.updateChannel(channel);
     } catch (error) {
       console.error(error);
@@ -98,9 +99,7 @@ export class ChannelsService {
       //   this.setSelectedChannel(firstChannel);
       // }
 
-      this.channelsSubject.next(channels);
-      //später rausschmeißen
-      console.log(channels);
+      this.channels$.next(channels);
     });
   }
 
