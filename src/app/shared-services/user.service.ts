@@ -11,6 +11,9 @@ export class UserService {
 
     private usersSubject = new BehaviorSubject<User[]>([]);
     users$ = this.usersSubject.asObservable();
+    private selectedUserSubject = new BehaviorSubject<User | null>(null);
+    selectedUser$ = this.selectedUserSubject.asObservable();
+
     private unsubUsers;
 
     constructor(private firestore: Firestore) {
@@ -26,7 +29,6 @@ export class UserService {
             throw error;
         }
     }
-
 
     subUsersList() {
         return onSnapshot(this.getUsersRef(), (querySnapshot) => {
@@ -74,6 +76,11 @@ export class UserService {
       await updateDoc(docRef, { onlineStatus }).catch((error) => {
         console.error(error);
       });
+    }
+
+    setSelectedUser(user: User): void {
+      this.selectedUserSubject.next(user);
+      console.log('selected User is:', user)
     }
 
     async userExistsByEmail(email: string): Promise<boolean> {

@@ -1,0 +1,87 @@
+@import './../../../styles.scss';
+
+$Bg-color: #ECEEFE;
+
+.selected-user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+
+.side-bar-profile-picture {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        height: 50px;
+        width: 50px;
+        border-radius: 100%;
+    }
+}
+
+.side-bar-profile {
+    height: 50px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+    border-radius: 30px;
+    margin-left: 20px;
+    cursor: pointer;
+
+    span {
+        font-size: 18px;
+        font-weight: 400;
+        letter-spacing: 0;
+    }
+}
+
+.online {
+    position: absolute;
+    right: 0px;
+    bottom: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    border: 2px solid $Bg-color;
+    background-color: #92C83E;
+}
+
+.offline {
+    position: absolute;
+    right: 0px;
+    bottom: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    border: 2px solid $Bg-color;
+    background-color: #656565;
+}
+
+.add-person-btn {
+    display: flex;
+    cursor: pointer;
+    flex-direction: row;
+    align-items: center;
+    transition: 0.1s ease-in;
+    margin-left: 29px;
+    gap: 15px;
+ 
+
+    span {
+        font-size: 18px;
+        font-weight: 400;
+        letter-spacing: 0;
+    }
+
+    &:hover {
+        color: $Purple-3;
+        font-size: 26px;
+    }
+}

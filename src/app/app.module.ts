@@ -55,6 +55,7 @@ import { ChannelsService } from './shared-services/channels.service';
 import { DataService } from './shared-services/data.service';
 import { OpenDialogService } from './shared-services/open-dialog.service';
 import { UserService } from './shared-services/user.service';
+import { DialogShowChannelmembersComponent } from './dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component';
 
 
 
@@ -83,6 +84,7 @@ import { UserService } from './shared-services/user.service';
     MainContentDirectmessageChatComponent,
     MainContentDirectmessageChatUpperPartComponent,
     MainContentDirectmessageChatLowerPartComponent,
+    DialogShowChannelmembersComponent,
   ],
   imports: [
     BrowserModule,

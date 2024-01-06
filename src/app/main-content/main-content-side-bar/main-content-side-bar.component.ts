@@ -36,6 +36,7 @@ export class MainContentSideBarComponent {
   }
 
   openDialog(componentKey: string): void {
+    this.dialogService.setNeedToAddMoreMembers(false);
     this.dialogService.openDialog(componentKey);
   }
 

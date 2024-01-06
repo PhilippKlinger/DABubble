@@ -1,0 +1,27 @@
+<div class="dialog-content">
+    <header>
+        <div class="dialog-head">
+            <span>Mitglieder</span>
+            <button mat-icon-button mat-dialog-close>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </header>
+
+    <div class="added-user-list">
+        <div class="selected-user" *ngFor="let user of channel?.members">
+            <div class="side-bar-profile" (click)="showSelectedUser(user)">
+                <div class="side-bar-profile-picture">
+                    <img src="{{user.avatar}}">
+                    <div [ngClass]="{ 'online': user.onlineStatus, 'offline': !user.onlineStatus }"></div>
+                </div>
+                <span>{{ user.name }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-person-btn" (click)="openDialog('addChannelmembers')"> 
+        <mat-icon class="rotate-icon custom-icon">person_add</mat-icon>
+        <span>Mitglieder hinzufügen</span>
+    </div>
+</div>
