@@ -33,11 +33,7 @@ export class LoginComponent {
     if (await this.checkUserExists()) {
       this.authService.login(this.user.email, this.user.password)
       .then((userCredential) => {
-        let userId = userCredential.user.uid;
-        this.authStateService.setCurrentUserId(userCredential.user.uid);
-        return this.userService.setUserOnlineStatus(userId, true);
-      })
-      .then(() => {
+        this.setUserOnline(userCredential);
         this.router.navigate(['/main-content']);
       })
       .catch(error => {
@@ -46,6 +42,12 @@ export class LoginComponent {
         }
       });
     }  
+  }
+
+  setUserOnline(userCredential: any) {
+    let userId = userCredential.user.uid;
+    this.authStateService.setCurrentUserId(userId);
+    return this.userService.setUserOnlineStatus(userId, true);
   }
 
   async checkUserExists() {
@@ -60,11 +62,39 @@ export class LoginComponent {
     }
   }
 
-  loginGoogle() {
-    this.authService.loginWithGoogle()
-    .then (() => { 
-      this.router.navigate(['/main-content']);
-    });
+  async loginGoogle() {
+    try {
+      let result = await this.authService.loginWithGoogle();
+      let googleUser = result.user;
+      this.authStateService.setCurrentUserId(googleUser.uid);
+      if (googleUser.email && googleUser.displayName) {
+        this.checkGooleUserExistsAndCreate(googleUser);
+        await this.setUserOnline(result);
+        this.router.navigate(['/main-content']);        
+      } else {        
+        console.log("Google-Konto hat keine gültige E-Mail oder keinen Namen.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async checkGooleUserExistsAndCreate(googleUser: any) {
+    let userExists = await this.userService.userExistsByEmail(googleUser.email);  
+    if (!userExists) {
+      this.createNewGoogleUser(googleUser);
+    }
+  }
+
+  async createNewGoogleUser(googleUser: any) {
+    let newUser: User = new User({
+      email: googleUser.email,
+      name: googleUser.displayName,
+      avatar: 'assets/avatars/google.svg',
+      onlineStatus: true,
+      id: googleUser.uid
+    });  
+    await this.userService.createUser(newUser, 'users');
   }
 
   isFormValid() {
@@ -98,21 +128,20 @@ export class LoginComponent {
     if (this.user.password === this.user.confirmPassword) {
       this.authService.register(this.user.email, this.user.password)
         .then((userCredential) => {
-          this.user.id = userCredential.user.uid;
-          this.user.onlineStatus = false;
-          this.user.avatar = this.selectedAvatar;
-          this.userService.createUser(this.user, 'users');
-          this.changeSwitchCase('login');
+          this.createNormalUser(userCredential);
         })
         .catch((error) => {
           console.log(error);
-          if (error.code === 'auth/email-already-in-use') {
-            console.log("email already exist");
-          } else {
-            console.log("an unexpected error occurred")
-          }
         });
     }
+  }
+
+  createNormalUser(userCredential: any) {
+    this.user.id = userCredential.user.uid;
+    this.user.onlineStatus = false;
+    this.user.avatar = this.selectedAvatar;
+    this.userService.createUser(this.user, 'users');
+    this.changeSwitchCase('login');
   }
 
   setNewPassword() {
