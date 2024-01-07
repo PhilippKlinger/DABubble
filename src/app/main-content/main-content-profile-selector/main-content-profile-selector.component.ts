@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { AuthService } from '../../shared-services/authentication.service';
 import { Router } from '@angular/router';
-import { AuthenticationStateService } from '../../shared-services/authenticationState.service';
 import { UserService } from 'src/app/shared-services/user.service';
 
 @Component({
@@ -13,7 +12,7 @@ import { UserService } from 'src/app/shared-services/user.service';
 export class MainContentProfileSelectorComponent {
   profilemenu_open: boolean = false;
 
-  constructor(private dialogService: OpenDialogService, private authService: AuthService, private router: Router, private authStateService: AuthenticationStateService, private userService: UserService) {}
+  constructor(private dialogService: OpenDialogService, private authService: AuthService, private router: Router, private userService: UserService) {}
 
   toggleProfilemenu() {
     this.profilemenu_open = !this.profilemenu_open;
@@ -24,15 +23,15 @@ export class MainContentProfileSelectorComponent {
   }
 
   logout() {
-    const currentUserId = this.authStateService.getCurrentUserId();
-  
-    if (currentUserId) {
-      this.userService.setUserOnlineStatus(currentUserId, false)
+    const userJson = sessionStorage.getItem('user');  
+    if (userJson) {
+      const user = JSON.parse(userJson);
+      this.userService.setUserOnlineStatus(user.uid, false)
         .then(() => {
           return this.authService.logout();
         })
         .then(() => {
-          this.authStateService.clearCurrentUserId();
+          sessionStorage.removeItem('user'); 
           this.router.navigate(['/login']);
         })
         .catch(error => {

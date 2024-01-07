@@ -3,7 +3,6 @@ import { AuthService } from '../shared-services/authentication.service';
 import { User } from '../models/user.class';
 import { UserService } from '../shared-services/user.service';
 import { Router } from '@angular/router';
-import { AuthenticationStateService } from '../shared-services/authenticationState.service';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +26,7 @@ export class LoginComponent {
   loginErrorUser: boolean = false;
   loginErrorPassword: boolean = false;
 
-  constructor(private authService: AuthService, private authStateService: AuthenticationStateService, private userService: UserService, private router: Router) {}
+  constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
 
   async login() {
     if (await this.checkUserExists()) {
@@ -46,7 +45,7 @@ export class LoginComponent {
 
   setUserOnline(userCredential: any) {
     let userId = userCredential.user.uid;
-    this.authStateService.setCurrentUserId(userId);
+    sessionStorage.setItem('user', JSON.stringify(userCredential.user));
     return this.userService.setUserOnlineStatus(userId, true);
   }
 
@@ -66,7 +65,6 @@ export class LoginComponent {
     try {
       let result = await this.authService.loginWithGoogle();
       let googleUser = result.user;
-      this.authStateService.setCurrentUserId(googleUser.uid);
       if (googleUser.email && googleUser.displayName) {
         this.checkGooleUserExistsAndCreate(googleUser);
         await this.setUserOnline(result);
