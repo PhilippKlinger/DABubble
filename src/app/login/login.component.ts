@@ -168,9 +168,10 @@ export class LoginComponent {
   }
 
   changeSwitchCase(newSwitchCase: string) {
-    if (newSwitchCase === 'signup' || newSwitchCase === 'forgotPassword' || newSwitchCase === 'login') {
+    if ((this.switch_expression === 'avatar' && newSwitchCase === 'signup') || (this.switch_expression === 'forgotPassword' && newSwitchCase === 'login')) {
+    } else if (newSwitchCase === 'signup' || newSwitchCase === 'forgotPassword' || newSwitchCase === 'login') {
       this.user = new User();
-    }  
+    } 
     this.switch_expression = newSwitchCase;
   }
 
