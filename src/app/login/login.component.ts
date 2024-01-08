@@ -3,6 +3,7 @@ import { AuthService } from '../shared-services/authentication.service';
 import { User } from '../models/user.class';
 import { UserService } from '../shared-services/user.service';
 import { Router } from '@angular/router';
+import { StorageService } from '../shared-services/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -11,9 +12,12 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   user: User = new User();
-  isCheckboxChecked = false;
+  isCheckboxChecked: boolean = false;
   selectedAvatar = 'assets/avatars/avatar_0.svg';
   selectedAvatarIndex: number = -1;
+  avatarFile: File | null = null;
+  errorUploadFile: boolean = false;
+
   avatarPaths = [
     'assets/avatars/avatar_1.svg',
     'assets/avatars/avatar_2.svg',
@@ -26,7 +30,7 @@ export class LoginComponent {
   loginErrorUser: boolean = false;
   loginErrorPassword: boolean = false;
 
-  constructor(private authService: AuthService, private userService: UserService, private router: Router) {}
+  constructor(private authService: AuthService, private userService: UserService, private router: Router, private storageService: StorageService) {}
 
   async login() {
     if (await this.checkUserExists()) {
@@ -123,15 +127,17 @@ export class LoginComponent {
   
 
   async register() {
-    if (this.user.password === this.user.confirmPassword) {
-      this.authService.register(this.user.email, this.user.password)
-        .then((userCredential) => {
-          this.createNormalUser(userCredential);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+    this.loginErrorUser = false;
+    if (this.avatarFile) {
+      await this.storageService.uploadFile(this.avatarFile);
+    }   
+    this.authService.register(this.user.email, this.user.password)
+      .then((userCredential) => {
+        this.createNormalUser(userCredential);
+      })
+      .catch((error) => {
+        console.log(error);
+      }); 
   }
 
   createNormalUser(userCredential: any) {
@@ -142,11 +148,14 @@ export class LoginComponent {
     this.changeSwitchCase('login');
   }
 
-  setNewPassword() {
-    this.authService.resetPassword(this.user.email)
-    .then (() => { 
-      this.changeSwitchCase('login');
-    });
+  async setNewPassword() {
+    if (await this.checkUserExists()) {
+      this.loginErrorUser = false;
+      this.authService.resetPassword(this.user.email)
+      .then (() => { 
+        this.changeSwitchCase('login');
+      });
+    }
   }
  
 
@@ -181,7 +190,31 @@ export class LoginComponent {
   }
 
   changeAvatar(newAvatar: string, index: number): void {
+    this.errorUploadFile = false;
     this.selectedAvatar = newAvatar;
     this.selectedAvatarIndex = index;
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files){
+      return;
+    }
+    const file = input.files[0];
+    const fileType = file.type;
+    const MAX_FILE_SIZE = 5242880;
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    this.errorUploadFile = !validTypes.includes(fileType) || file.size > MAX_FILE_SIZE;
+    if (!this.errorUploadFile) {
+        this.selectedAvatar = URL.createObjectURL(file);
+        this.avatarFile = file;
+    }
+  }
+
+  triggerFileInput() {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+        fileInput.click();
+    } 
   }
 }
