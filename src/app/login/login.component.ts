@@ -65,6 +65,14 @@ export class LoginComponent {
     }
   }
 
+  loginGuest() {
+    this.authService.login('guest@guest.com', 'Guestlogin')
+      .then((userCredential) => {
+        this.setUserOnline(userCredential);
+        this.router.navigate(['/main-content']);
+      })
+  }
+
   async loginGoogle() {
     try {
       let result = await this.authService.loginWithGoogle();
@@ -181,6 +189,7 @@ export class LoginComponent {
     } else if (newSwitchCase === 'signup' || newSwitchCase === 'forgotPassword' || newSwitchCase === 'login') {
       this.user = new User();
     } 
+    this.loginErrorUser = false;
     this.switch_expression = newSwitchCase;
   }
 

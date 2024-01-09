@@ -56,6 +56,7 @@ import { DataService } from './shared-services/data.service';
 import { OpenDialogService } from './shared-services/open-dialog.service';
 import { UserService } from './shared-services/user.service';
 import { DialogShowChannelmembersComponent } from './dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 
 
@@ -85,6 +86,7 @@ import { DialogShowChannelmembersComponent } from './dialogs/dialog-show-channel
     MainContentDirectmessageChatUpperPartComponent,
     MainContentDirectmessageChatLowerPartComponent,
     DialogShowChannelmembersComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,
