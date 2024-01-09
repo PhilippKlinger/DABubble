@@ -68,7 +68,8 @@ export class ChannelsService {
     message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
     //try and catch besser ??
     if (selectedChannel) {
-      await addDoc(this.getChannelsColRef(selectedChannel), message.toJSON());
+      const docRef = await addDoc(this.getChannelsColRef(selectedChannel), message.toJSON());
+      message.id = docRef.id;
     } else {
       console.error('No selected channel available.');
     }

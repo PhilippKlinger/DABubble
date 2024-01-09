@@ -36,6 +36,6 @@ export class MainContentThreadChatLowerPartComponent {
   receiveThreadAnswers() {
     this.channelService.updateThreadAnswersOfSelectedMessage();
     this.threadAnswers = this.channelService.threadAnswers;
-    // console.log(this.threadAnswers);
+     console.log(this.threadAnswers);
   }
 }
