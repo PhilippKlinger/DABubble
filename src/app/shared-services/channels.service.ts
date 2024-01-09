@@ -16,8 +16,8 @@ export class ChannelsService {
   // channels$ = this.channelsSubject.asObservable();
   // private selectedChannelSubject = new BehaviorSubject<Channel | null>(null);
   // selectedChannel$ = this.selectedChannelSubject.asObservable();
-  
-  
+
+
   public channels$: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
   public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
@@ -31,26 +31,27 @@ export class ChannelsService {
   updateThreadAnswersOfSelectedMessage() {
     const selectedChannel = this.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
-  
+
     if (selectedChannel && thread_subject) {
       onSnapshot(this.getChannelsMessageColRef(selectedChannel, thread_subject), (snapshot: any) => {
         this.threadAnswers = snapshot.docs.map((doc: any) => doc.data());
       });
     }
   }
-  
+
   async pushThreadAnswerToMessage(answer: Message): Promise<void> {
     const selectedChannel = this.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
-  
-    if (selectedChannel && thread_subject) {
+
+    if (selectedChannel && thread_subject && thread_subject !== undefined) {
       answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
       await addDoc(this.getChannelsMessageColRef(selectedChannel, thread_subject), answer.toJSON());
+      console.log(this.getChannelsMessageColRef(selectedChannel, thread_subject))
     } else {
       console.error('No selected channel or thread subject available.');
     }
   }
-  
+
   updateChatMessageOfSelectedChannel() {
     const selectedChannel = this.selectedChannel$.value;
 
@@ -69,7 +70,9 @@ export class ChannelsService {
     //try and catch besser ??
     if (selectedChannel) {
       const docRef = await addDoc(this.getChannelsColRef(selectedChannel), message.toJSON());
-      message.id = docRef.id;
+      message.setId(docRef.id);
+      updateDoc(this.getUpdatedChannelsColRef(selectedChannel, docRef.id), message.toJSON());
+      console.log(docRef.id)
     } else {
       console.error('No selected channel available.');
     }
@@ -125,6 +128,10 @@ export class ChannelsService {
 
   getChannelsRef() {
     return collection(this.firestore, 'channels');
+  }
+
+  getUpdatedChannelsColRef(selectedChannel: Channel, id: string) {
+    return doc(this.firestore, `channels/${selectedChannel.id}/messages/${id}`);
   }
 
   getChannelsColRef(selectedChannel: Channel) {

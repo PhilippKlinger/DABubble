@@ -24,15 +24,15 @@
             <div></div>
         </div>
 
-        <!-- <div class="thread-anon-user-message">
+        <div class="thread-anon-user-message" *ngFor="let answer of threadAnswers">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div>
                 <div class="anon-user-message-time-name">
-                    <span>14:04 Uhr</span>
-                    <h3>Sofia Müller</h3>
+                    <span>{{ answer.timestamp }}</span>
+                    <h3>{{ answer.creator }}</h3>
                 </div>
                 <div class="anon-speech-bubble-user">
-                    nerv nich!
+                    {{ answer.message }}
                 </div>
                 <div class="anon-user-message-emojis">
 
@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <div class="thread-user-message">
+        <!-- <div class="thread-user-message">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div class="flex-end">
                 <div class="user-message-time-name">

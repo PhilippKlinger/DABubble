@@ -12,13 +12,12 @@ export class MainContentThreadChatLowerPartComponent {
   // thread_subject: Message = null!;
   thread_subject: Message | null = null;
 
-  threadAnswers = [];
+  threadAnswers:any = [];
   answer = new Message();
   constructor(private channelService: ChannelsService) {
     this.channelService.thread_subject$.subscribe((value: Message) => {
       //bei veränderung des observables wird folgende funktion ausgelöst
       this.thread_subject = value;
-
       this.receiveThreadAnswers(); 
     });
   }
@@ -36,6 +35,6 @@ export class MainContentThreadChatLowerPartComponent {
   receiveThreadAnswers() {
     this.channelService.updateThreadAnswersOfSelectedMessage();
     this.threadAnswers = this.channelService.threadAnswers;
-     console.log(this.threadAnswers);
+    console.log(this.threadAnswers);
   }
 }

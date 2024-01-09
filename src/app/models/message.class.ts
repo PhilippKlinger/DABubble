@@ -19,12 +19,17 @@ export class Message {
         this.creator = 'Gast';
     }
 
-    setMessage(message:string): void {
+    setMessage(message: string): void {
         this.message = message;
+    }
+
+    setId(id: string): void {
+        this.id = id;
     }
 
     public toJSON() {
         return {
+            id: this.id,
             message: this.message,
             creator: this.creator,
             timestamp: this.timestamp
