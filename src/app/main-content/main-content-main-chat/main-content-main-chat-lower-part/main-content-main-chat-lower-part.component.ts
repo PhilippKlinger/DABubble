@@ -17,8 +17,11 @@ export class MainContentMainChatLowerPartComponent {
   selectedChannel!: Channel | null;
   unsubChannels!: Subscription;
   chatMessages: any = [];
+  emoji_window_open: boolean = false;
+  emoji_window_messages_open: boolean = false;
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
+
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
@@ -27,6 +30,22 @@ export class MainContentMainChatLowerPartComponent {
         console.log('waiting for selected channel');
       }
     });
+  }
+
+  addEmoji($event: any) {
+    if ($event.emoji.native !== '🫥') {
+      this.input_message.nativeElement.value += $event.emoji.native;
+      //console.log($event.emoji);
+      this.emoji_window_open = false;
+    }
+  }
+
+  toggleEmojiWindowForMessage() {
+    this.emoji_window_messages_open = !this.emoji_window_messages_open;
+  }
+
+  toggleEmojiWindow() {
+    this.emoji_window_open = !this.emoji_window_open;
   }
 
   selectMessageForThread(index: number) {
