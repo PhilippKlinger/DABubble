@@ -90,6 +90,8 @@ $Light-purple: #ADB0D9;
     position: absolute;
     margin-top: -430px;
     margin-left: 80px;
+    z-index: 2;
+    overflow: visible;
 }
 
 .d-none {

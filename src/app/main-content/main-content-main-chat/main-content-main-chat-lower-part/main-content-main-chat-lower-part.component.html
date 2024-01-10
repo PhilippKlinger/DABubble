@@ -32,7 +32,12 @@
             <div class="user-message-hover-options">
                 <div>✔</div>
                 <div>🤚</div>
-                <mat-icon>add_reaction</mat-icon>
+
+                <div class="emoji-window" *ngIf="emoji_window_messages_open">
+                    <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addEmoji($event)"></emoji-mart>
+                </div>
+
+                <mat-icon (click)="toggleEmojiWindowForMessage()">add_reaction</mat-icon>
                 <mat-icon>insert_comment</mat-icon>
                 <mat-icon>more_vert</mat-icon>
                 <span>
@@ -127,7 +132,6 @@
             </div>
 
             <mat-icon (click)="toggleEmojiWindow()">sentiment_satisfied</mat-icon>
-
             <mat-icon>alternate_email</mat-icon>
         </div>
         <mat-icon class="chat-input-send" (click)="sendMessageToChannel()">send</mat-icon>

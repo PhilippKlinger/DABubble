@@ -9,17 +9,29 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 })
 export class MainContentThreadChatLowerPartComponent {
   @ViewChild('answer') input_answer!: ElementRef;
-  // thread_subject: Message = null!;
   thread_subject: Message | null = null;
-
   threadAnswers:any = [];
   answer = new Message();
+  emoji_window_open: boolean = false;
+
   constructor(private channelService: ChannelsService) {
     this.channelService.thread_subject$.subscribe((value: Message) => {
       //bei veränderung des observables wird folgende funktion ausgelöst
       this.thread_subject = value;
       this.receiveThreadAnswers(); 
     });
+  }
+
+  addEmoji($event: any) {
+    if ($event.emoji.native !== '🫥') {
+      this.input_answer.nativeElement.value += $event.emoji.native;
+      //console.log($event.emoji);
+      this.emoji_window_open = false;
+    }
+  }
+
+  toggleEmojiWindow() {
+    this.emoji_window_open = !this.emoji_window_open;
   }
 
   sendAnswerToThread() {

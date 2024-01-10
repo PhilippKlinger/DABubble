@@ -18,6 +18,7 @@ export class MainContentMainChatLowerPartComponent {
   unsubChannels!: Subscription;
   chatMessages: any = [];
   emoji_window_open: boolean = false;
+  emoji_window_messages_open: boolean = false;
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
 
@@ -34,8 +35,13 @@ export class MainContentMainChatLowerPartComponent {
   addEmoji($event: any) {
     if ($event.emoji.native !== '🫥') {
       this.input_message.nativeElement.value += $event.emoji.native;
-      console.log($event.emoji);
+      //console.log($event.emoji);
+      this.emoji_window_open = false;
     }
+  }
+
+  toggleEmojiWindowForMessage() {
+    this.emoji_window_messages_open = !this.emoji_window_messages_open;
   }
 
   toggleEmojiWindow() {
