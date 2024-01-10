@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, updateDoc, deleteDoc, setDoc, query, where, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, updateDoc, deleteDoc, setDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
 import { User } from '../models/user.class';
 import { BehaviorSubject } from 'rxjs';
 
@@ -88,5 +88,20 @@ export class UserService {
       const querySnapshot = await getDocs(q);
       return !querySnapshot.empty;
     }
+
+    async getUserInfos(userId: string): Promise<any> {
+      const userDocRef = doc(this.firestore, 'users', userId);
+      try {
+          const docSnap = await getDoc(userDocRef);
+          if (docSnap.exists()) {
+              return { id: docSnap.id, ...docSnap.data() };
+          } else {
+              return null;
+          }
+      } catch (error) {
+          console.error('Fehler beim Abrufen der Benutzerinformationen:', error);
+          throw error;
+      }
+  }
 
 }

@@ -26,7 +26,7 @@ export class MainContentProfileSelectorComponent {
     const userJson = sessionStorage.getItem('user');  
     if (userJson) {
       const user = JSON.parse(userJson);
-      this.userService.setUserOnlineStatus(user.uid, false)
+      this.userService.setUserOnlineStatus(user.id, false)
         .then(() => {
           return this.authService.logout();
         })

@@ -48,10 +48,13 @@ export class LoginComponent {
     }  
   }
 
-  setUserOnline(userCredential: any) {
-    let userId = userCredential.user.uid;
-    sessionStorage.setItem('user', JSON.stringify(userCredential.user));
-    return this.userService.setUserOnlineStatus(userId, true);
+  async setUserOnline(userCredential: any) {
+    let userId = userCredential.user.uid; 
+    await this.userService.setUserOnlineStatus(userId, true);
+    let userInfo = await this.userService.getUserInfos(userId);
+    if (userInfo) {        
+      sessionStorage.setItem('user', JSON.stringify(userInfo));
+    }
   }
 
   async checkUserExists() {
