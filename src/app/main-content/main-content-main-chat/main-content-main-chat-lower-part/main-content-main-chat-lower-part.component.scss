@@ -86,6 +86,16 @@ $Light-purple: #ADB0D9;
     }
 }
 
+.emoji-window {
+    position: absolute;
+    margin-top: -430px;
+    margin-left: 80px;
+}
+
+.d-none {
+    display: none;
+}
+
 .hover-options-edit-message {
     font-size: 20px;
     font-weight: 500;

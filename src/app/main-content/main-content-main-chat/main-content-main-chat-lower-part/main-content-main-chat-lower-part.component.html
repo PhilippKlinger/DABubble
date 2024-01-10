@@ -5,7 +5,8 @@
             <span>Momentan</span>
         </div>
 
-        <div class="user-message" *ngFor="let message of chatMessages; let i = index" (click)="selectMessageForThread(i)">
+        <div class="user-message" *ngFor="let message of chatMessages; let i = index"
+            (click)="selectMessageForThread(i)">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_0.svg">
             <div class="flex-end">
                 <div class="user-message-time-name">
@@ -120,7 +121,13 @@
         <div class="chat-input-options">
             <mat-icon>add</mat-icon>
             <div class="chat-input-line"></div>
-            <mat-icon>sentiment_satisfied</mat-icon>
+
+            <div class="emoji-window" [ngClass]="{'d-none': !emoji_window_open}">
+                <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addEmoji($event)"></emoji-mart>
+            </div>
+
+            <mat-icon (click)="toggleEmojiWindow()">sentiment_satisfied</mat-icon>
+
             <mat-icon>alternate_email</mat-icon>
         </div>
         <mat-icon class="chat-input-send" (click)="sendMessageToChannel()">send</mat-icon>

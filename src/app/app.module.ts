@@ -58,8 +58,7 @@ import { OpenDialogService } from './shared-services/open-dialog.service';
 import { UserService } from './shared-services/user.service';
 import { CommonService } from './shared-services/common.service';
 import { StorageService } from './shared-services/storage.service';
-
-
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
 @NgModule({
   declarations: [
@@ -111,7 +110,8 @@ import { StorageService } from './shared-services/storage.service';
     MatSidenavModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatRadioModule
+    MatRadioModule,
+    PickerComponent,
   ],
   providers: [
     OpenDialogService,
