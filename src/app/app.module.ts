@@ -48,15 +48,16 @@ import { DialogAddChannelmembersComponent } from './dialogs/dialog-add-channelme
 import { MainContentDirectmessageChatComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat.component';
 import { MainContentDirectmessageChatUpperPartComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat-upper-part/main-content-directmessage-chat-upper-part.component';
 import { MainContentDirectmessageChatLowerPartComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat-lower-part/main-content-directmessage-chat-lower-part.component';
-
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { DialogShowChannelmembersComponent } from './dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component';
 
 import { AuthService } from './shared-services/authentication.service';
 import { ChannelsService } from './shared-services/channels.service';
 import { DataService } from './shared-services/data.service';
 import { OpenDialogService } from './shared-services/open-dialog.service';
 import { UserService } from './shared-services/user.service';
-import { DialogShowChannelmembersComponent } from './dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { CommonService } from './shared-services/common.service';
+import { StorageService } from './shared-services/storage.service';
 
 
 
@@ -118,6 +119,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     ChannelsService,
     UserService,
     DataService,
+    CommonService,
+    StorageService,
   ],
   bootstrap: [AppComponent,
   ]

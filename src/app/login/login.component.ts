@@ -4,6 +4,7 @@ import { User } from '../models/user.class';
 import { UserService } from '../shared-services/user.service';
 import { Router } from '@angular/router';
 import { StorageService } from '../shared-services/storage.service';
+import { CommonService } from '../shared-services/common.service';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,7 @@ export class LoginComponent {
   loginErrorUser: boolean = false;
   loginErrorPassword: boolean = false;
 
-  constructor(private authService: AuthService, private userService: UserService, private router: Router, private storageService: StorageService) {}
+  constructor(private authService: AuthService, private userService: UserService, private router: Router, private storageService: StorageService, private commonService: CommonService) {}
 
   async login() {
     if (await this.checkUserExists()) {
@@ -122,7 +123,7 @@ export class LoginComponent {
   }
 
   isPasswordMatching(): boolean {
-    return this.user.password === this.user.confirmPassword;
+    return this.commonService.isPasswordMatching(this.user.password, this.user.confirmPassword);
   }
 
   async moveToAvatar() {
@@ -168,14 +169,7 @@ export class LoginComponent {
  
 
   changeInputPasswordToTxt(event: MouseEvent): void {
-    let imgElement = event.target as HTMLImageElement;
-    let parentElement = imgElement.parentElement;
-    let inputElement = parentElement?.querySelector('input') as HTMLInputElement;
-
-    if (inputElement) {
-      inputElement.type = inputElement.type === 'password' ? 'text' : 'password';
-      imgElement.src = inputElement.type === 'password' ? 'assets/icons/visibility_off.svg' : 'assets/icons/visibility.svg';
-    }
+    this.commonService.changeInputPasswordToTxt(event);
   }
 
   changeCheckboxCheck(event: MouseEvent): void {
