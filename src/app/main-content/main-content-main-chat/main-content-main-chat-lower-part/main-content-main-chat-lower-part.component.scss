@@ -40,6 +40,8 @@ $Light-purple: #ADB0D9;
     border-radius: 25px 25px 0px 25px;
     padding: 0px 10px;
     cursor: pointer;
+    left: 0;
+    margin-left: 30px;
 
     span {
         display: flex;
@@ -86,6 +88,56 @@ $Light-purple: #ADB0D9;
     }
 }
 
+.anon-message-hover-options {
+    opacity: 0;
+    display: none;
+    z-index: 3;
+    position: absolute;
+    margin-top: -26px;
+    margin-left: -60px;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 150px;
+    height: 46px;
+    background-color: white;
+    border: 1px solid $Light-purple;
+    border-radius: 25px 25px 0px 25px;
+    padding: 0px 10px;
+    cursor: pointer;
+    right: 0;
+    margin-right: 30px;
+
+    div {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+        }
+    }
+
+    mat-icon {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+            color: $Purple-1;
+            scale: 1.1;
+        }
+    }
+}
+
 .emoji-window-messages-overlay {
     position: absolute;
     height: 100%;
@@ -93,7 +145,6 @@ $Light-purple: #ADB0D9;
     display: flex;
     justify-content: center;
     align-items: center;
-    
 }
 
 .emoji-window-messages {
@@ -157,10 +208,16 @@ $Light-purple: #ADB0D9;
     &:hover {
         background-color: $Bg-color;
         cursor: pointer;
+        position: relative;
     }
 
     &:hover .anon-speech-bubble-user {
         background-color: white !important;
+    }
+
+    &:hover .anon-message-hover-options {
+        display: flex;
+        opacity: 1;
     }
 }
 

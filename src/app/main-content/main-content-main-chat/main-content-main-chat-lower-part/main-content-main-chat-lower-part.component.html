@@ -39,9 +39,9 @@
                     <div>✔</div>
                     <div>🤚</div>
                     <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
-                    <mat-icon>insert_comment</mat-icon>
-                    <mat-icon>more_vert</mat-icon>
-                    <span>
+                    <mat-icon (click)="openThread()">insert_comment</mat-icon>
+                    <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
+                    <span *ngIf="hoverOptionEditMessage_open">
                         <h1 class="hover-options-edit-message">
                             Nachricht bearbeiten
                         </h1>
@@ -71,17 +71,11 @@
                     </div>
                 </div>
 
-                <div class="user-message-hover-options">
+                <div class="anon-message-hover-options">
                     <div>✔</div>
                     <div>🤚</div>
                     <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
-                    <mat-icon>insert_comment</mat-icon>
-                    <mat-icon>more_vert</mat-icon>
-                    <span>
-                        <h1 class="hover-options-edit-message">
-                            Nachricht bearbeiten
-                        </h1>
-                    </span>
+                    <mat-icon (click)="openThread()">insert_comment</mat-icon>
                 </div>
             </div>
         </div>

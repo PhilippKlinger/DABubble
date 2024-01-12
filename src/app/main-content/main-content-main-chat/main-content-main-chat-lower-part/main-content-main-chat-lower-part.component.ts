@@ -23,6 +23,7 @@ export class MainContentMainChatLowerPartComponent {
   emoji_window_open: boolean = false;
   emoji_window_messages_open: boolean = false;
   user: User = null!;
+  hoverOptionEditMessage_open: boolean = false;
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
@@ -44,6 +45,10 @@ export class MainContentMainChatLowerPartComponent {
     if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
       this.emoji_window_messages_open = false;
     }
+  }
+
+  toggleHoverOptionEditMessage() {
+    this.hoverOptionEditMessage_open = !this.hoverOptionEditMessage_open;
   }
 
   private isClickInsideContainer(event: MouseEvent): boolean {
@@ -105,7 +110,7 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   sortChatMessages() {
-    console.log(this.chatMessages.sort(this.customSort));
+    this.chatMessages.sort(this.customSort);
   }
 
   openThread() {
