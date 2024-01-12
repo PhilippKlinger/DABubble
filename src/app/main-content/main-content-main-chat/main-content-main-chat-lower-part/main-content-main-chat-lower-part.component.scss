@@ -86,12 +86,19 @@ $Light-purple: #ADB0D9;
     }
 }
 
-.emoji-window {
+.emoji-window-messages-overlay {
     position: absolute;
-    margin-top: -430px;
-    margin-left: 80px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.emoji-window-messages {
+    position: absolute;
     z-index: 2;
-    overflow: visible;
 }
 
 .d-none {

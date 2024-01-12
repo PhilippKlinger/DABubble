@@ -5,6 +5,12 @@
             <span>Momentan</span>
         </div>
 
+        <div class="emoji-window-messages-overlay" *ngIf="emoji_window_messages_open">
+            <div id="emoji-window-messages" class="emoji-window-messages">
+                <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addReaction($event)"></emoji-mart>
+            </div>
+        </div>
+
         <div class="user-message" *ngFor="let message of chatMessages; let i = index"
             (click)="selectMessageForThread(i)">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_0.svg">
@@ -32,12 +38,7 @@
             <div class="user-message-hover-options">
                 <div>✔</div>
                 <div>🤚</div>
-
-                <div class="emoji-window" *ngIf="emoji_window_messages_open">
-                    <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addEmoji($event)"></emoji-mart>
-                </div>
-
-                <mat-icon (click)="toggleEmojiWindowForMessage()">add_reaction</mat-icon>
+                <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
                 <mat-icon>insert_comment</mat-icon>
                 <mat-icon>more_vert</mat-icon>
                 <span>

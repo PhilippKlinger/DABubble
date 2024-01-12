@@ -1,9 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/shared-services/data.service';
 import { Message } from './../../../models/message.class'
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Subscription } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
+import { Reaction } from 'src/app/models/reaction.class';
 
 @Component({
   selector: 'app-main-content-main-chat-lower-part',
@@ -14,6 +15,7 @@ export class MainContentMainChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('chat_content') chat_content!: ElementRef;
   message = new Message();
+  reaction = new Reaction();
   selectedChannel!: Channel | null;
   unsubChannels!: Subscription;
   chatMessages: any = [];
@@ -21,7 +23,6 @@ export class MainContentMainChatLowerPartComponent {
   emoji_window_messages_open: boolean = false;
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
-
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
@@ -30,6 +31,34 @@ export class MainContentMainChatLowerPartComponent {
         console.log('waiting for selected channel');
       }
     });
+
+    this.channelService.selectedMessageMainChat$.subscribe(selectedMessageMainChat => {
+      console.log(selectedMessageMainChat);
+    });
+  }
+
+  @HostListener('document:click', ['$event'])
+  documentClickHandler(event: MouseEvent): void {
+    if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
+      this.emoji_window_messages_open = false;
+    }
+  }
+
+  private isClickInsideContainer(event: MouseEvent): boolean {
+    let containerElement = document.getElementById('emoji-window-messages');
+
+    if (containerElement) {
+      return containerElement.contains(event.target as Node);
+    }
+
+    return false;
+  }
+
+  addReaction($event: any) {
+    this.reaction.setReaction($event.emoji.native);
+    this.reaction.setCreator();
+    this.channelService.addReactionToMessage(this.reaction);
+    this.emoji_window_messages_open = false;
   }
 
   addEmoji($event: any) {
@@ -40,8 +69,11 @@ export class MainContentMainChatLowerPartComponent {
     }
   }
 
-  toggleEmojiWindowForMessage() {
-    this.emoji_window_messages_open = !this.emoji_window_messages_open;
+  toggleEmojiWindowForMessage(index: number) {
+    setTimeout(() => {
+      this.emoji_window_messages_open = !this.emoji_window_messages_open;
+    }, 50);
+    this.channelService.selectedMessageMainChat$.next(this.chatMessages[index]);
   }
 
   toggleEmojiWindow() {

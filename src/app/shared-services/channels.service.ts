@@ -4,6 +4,7 @@ import { Channel } from '../models/channel.class';
 import { BehaviorSubject } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { Message } from '../models/message.class';
+import { Reaction } from '../models/reaction.class';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class ChannelsService {
   // private selectedChannelSubject = new BehaviorSubject<Channel | null>(null);
   // selectedChannel$ = this.selectedChannelSubject.asObservable();
 
-
+  public selectedMessageMainChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public channels$: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
   public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
@@ -26,6 +27,18 @@ export class ChannelsService {
 
   constructor(private firestore: Firestore) {
     this.unsubChannels = this.subChannelsList();
+  }
+
+  async addReactionToMessage(reaction: Reaction) {
+    const selectedChannel = this.selectedChannel$.value;
+    const selectedMessageMainChat = this.selectedMessageMainChat$.value;
+
+    if (selectedChannel && selectedMessageMainChat) {
+      await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
+      console.log(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat))
+    } else {
+      console.error('No selected channel or selected message available.');
+    }
   }
 
   updateThreadAnswersOfSelectedMessage() {
@@ -140,6 +153,10 @@ export class ChannelsService {
 
   getChannelsMessageColRef(selectedChannel: Channel, thread_subject: Message) {
     return collection(this.firestore, `channels/${selectedChannel.id}/messages/${thread_subject.id}/answers`);
+  }
+
+  getChannelsMessageReactionColRef(selectedChannel: Channel, selectedMessageMainChat: Message) {
+    return collection(this.firestore, `channels/${selectedChannel.id}/messages/${selectedMessageMainChat.id}/reactions`);
   }
 
   getSingleDocRef(coldId: string, docID: string) {
