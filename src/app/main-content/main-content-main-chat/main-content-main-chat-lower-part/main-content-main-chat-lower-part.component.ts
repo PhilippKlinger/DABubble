@@ -89,6 +89,23 @@ export class MainContentMainChatLowerPartComponent {
   receiveChatMessages() {
     this.channelService.updateChatMessageOfSelectedChannel();
     this.chatMessages = this.channelService.chatMessages;
+    this.sortChatMessages();
+  }
+
+  customSort = (a: any, b: any) => {
+    const dateA = new Date(a.timestamp);
+    const dateB = new Date(b.timestamp);
+    if (dateA > dateB) {
+      return 1;
+    } else if (dateA < dateB) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+
+  sortChatMessages() {
+    console.log(this.chatMessages.sort(this.customSort));
   }
 
   openThread() {
