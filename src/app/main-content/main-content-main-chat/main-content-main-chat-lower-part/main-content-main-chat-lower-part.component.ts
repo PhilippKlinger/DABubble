@@ -5,6 +5,7 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Subscription } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
 import { Reaction } from 'src/app/models/reaction.class';
+import { User } from 'src/app/models/user.class';
 
 @Component({
   selector: 'app-main-content-main-chat-lower-part',
@@ -21,6 +22,7 @@ export class MainContentMainChatLowerPartComponent {
   chatMessages: any = [];
   emoji_window_open: boolean = false;
   emoji_window_messages_open: boolean = false;
+  user: User = null!;
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
@@ -32,8 +34,8 @@ export class MainContentMainChatLowerPartComponent {
       }
     });
 
-    this.channelService.selectedMessageMainChat$.subscribe(selectedMessageMainChat => {
-      console.log(selectedMessageMainChat);
+    this.channelService.currentUserInfo$.subscribe((user: User) => {
+      this.user = user;
     });
   }
 
@@ -87,7 +89,6 @@ export class MainContentMainChatLowerPartComponent {
   receiveChatMessages() {
     this.channelService.updateChatMessageOfSelectedChannel();
     this.chatMessages = this.channelService.chatMessages;
-    // console.log(this.chatMessages);
   }
 
   openThread() {
@@ -97,8 +98,10 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   sendMessageToChannel() {
+    const currentUserInfo = this.channelService.currentUserInfo$.value
+
     if (this.input_message.nativeElement.value.trim() !== '') {
-      this.message.setCreator();
+      this.message.setCreator(currentUserInfo.name);
       this.message.setTimestampNow();
       this.message.setMessage(this.input_message.nativeElement.value.trim());
       this.channelService.pushMessageToChannel(this.message);

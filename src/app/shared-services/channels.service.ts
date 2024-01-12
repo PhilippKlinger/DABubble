@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { Message } from '../models/message.class';
 import { Reaction } from '../models/reaction.class';
+import { User } from '../models/user.class';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +19,11 @@ export class ChannelsService {
   // private selectedChannelSubject = new BehaviorSubject<Channel | null>(null);
   // selectedChannel$ = this.selectedChannelSubject.asObservable();
 
-  public selectedMessageMainChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public channels$: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
   public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
+  public selectedMessageMainChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
+  public currentUserInfo$: BehaviorSubject<User> = new BehaviorSubject<User>(null!);
 
   private unsubChannels;
 
@@ -35,7 +37,7 @@ export class ChannelsService {
 
     if (selectedChannel && selectedMessageMainChat) {
       await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
-      console.log(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat))
+      console.log(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat));
     } else {
       console.error('No selected channel or selected message available.');
     }
@@ -79,6 +81,7 @@ export class ChannelsService {
 
   async pushMessageToChannel(message: Message): Promise<void> {
     const selectedChannel = this.selectedChannel$.value;
+
     message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
     //try and catch besser ??
     if (selectedChannel) {

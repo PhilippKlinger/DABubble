@@ -15,8 +15,8 @@ export class Message {
         this.timestamp = Date.now();
     }
 
-    setCreator(): void {
-        this.creator = 'Gast';
+    setCreator(name: string): void {
+        this.creator = name;
     }
 
     setMessage(message: string): void {

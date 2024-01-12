@@ -35,8 +35,10 @@ export class MainContentThreadChatLowerPartComponent {
   }
 
   sendAnswerToThread() {
+    const currentUserInfo = this.channelService.currentUserInfo$.value
+
     if (this.input_answer.nativeElement.value.trim() !== '') {
-      this.answer.setCreator();
+      this.answer.setCreator(currentUserInfo.name);
       this.answer.setTimestampNow();
       this.answer.setMessage(this.input_answer.nativeElement.value.trim());
       this.channelService.pushThreadAnswerToMessage(this.answer);
