@@ -55,6 +55,10 @@ section {
     background-color: $online-green;
 }
 
+.offline {
+    background-color: $Text-gray;
+}
+
 .overlay {
     height: 100vh;
     width: 100%;

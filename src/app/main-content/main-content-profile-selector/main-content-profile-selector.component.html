@@ -1,10 +1,12 @@
 <section>
     <main (click)="toggleProfilemenu()">
-        <span>Frederik Beck</span>
+        <span>{{ this.currentUserInfo.name }}</span>
         <div class="profile-selector-avatar">
-            <img src="../../../../assets/avatars/avatar_0.svg">
-            <div class="online"></div>
+            <img src="{{this.currentUserInfo.avatar}}">
+            <div *ngIf="this.currentUserInfo.onlineStatus" class="online"></div>
+            <div *ngIf="!this.currentUserInfo.onlineStatus" class="offline"></div>
         </div>
+
         <mat-icon>keyboard_arrow_down</mat-icon>
         <div class="profile-selector-window" [ngClass]="{'d-none': !profilemenu_open}" (click)="toggleProfilemenu()">
             <span (click)="openDialog('menuProfile')">Profil</span>
