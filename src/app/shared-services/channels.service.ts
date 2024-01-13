@@ -32,9 +32,26 @@ export class ChannelsService {
     this.unsubChannels = this.subChannelsList();
   }
 
+  checkReactionExistence(reaction: Reaction) {
+    let messageReactions: any = this.selectedMessageMainChat$.value.reactions;
+
+    if (messageReactions) {
+      for (let i = 0; i < messageReactions.length; i++) {
+        if (messageReactions[i].reaction == reaction.reaction) {
+          console.log(true);
+        }
+      }
+      console.log(false);
+    } else {
+      console.log(false);
+    }
+  }
+
   async addReactionToMessage(reaction: Reaction) {
     const selectedChannel = this.selectedChannel$.value;
     const selectedMessageMainChat = this.selectedMessageMainChat$.value;
+
+    this.checkReactionExistence(reaction);
 
     if (selectedChannel && selectedMessageMainChat) {
       await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
