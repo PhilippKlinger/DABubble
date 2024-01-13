@@ -11,8 +11,9 @@ import { User } from '../models/user.class';
   providedIn: 'root'
 })
 export class ChannelsService {
-  chatMessages = [];
+  chatMessages: any = [];
   threadAnswers = [];
+  messageReactions = [];
 
   // private channelsSubject = new BehaviorSubject<Channel[]>([]);
   // channels$ = this.channelsSubject.asObservable();
@@ -37,7 +38,7 @@ export class ChannelsService {
 
     if (selectedChannel && selectedMessageMainChat) {
       await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
-      console.log(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat));
+      // console.log(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat));
     } else {
       console.error('No selected channel or selected message available.');
     }
@@ -61,9 +62,22 @@ export class ChannelsService {
     if (selectedChannel && thread_subject && thread_subject !== undefined) {
       answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
       await addDoc(this.getChannelsMessageColRef(selectedChannel, thread_subject), answer.toJSON());
-      console.log(this.getChannelsMessageColRef(selectedChannel, thread_subject))
+      // console.log(this.getChannelsMessageColRef(selectedChannel, thread_subject))
     } else {
       console.error('No selected channel or thread subject available.');
+    }
+  }
+
+  getReactionsOfMessages() {
+    const selectedChannel = this.selectedChannel$.value;
+
+    for (let i = 0; i < this.chatMessages.length; i++) {
+      let message = this.chatMessages[i];
+
+      onSnapshot(this.getChannelsMessageReactionColRef(selectedChannel!, message), (snapshot: any) => {
+        this.messageReactions = snapshot.docs.map((doc: any) => doc.data());
+        this.chatMessages[i].reactions = this.messageReactions;
+      });
     }
   }
 
@@ -88,7 +102,7 @@ export class ChannelsService {
       const docRef = await addDoc(this.getChannelsColRef(selectedChannel), message.toJSON());
       message.setId(docRef.id);
       updateDoc(this.getUpdatedChannelsColRef(selectedChannel, docRef.id), message.toJSON());
-      console.log(docRef.id)
+      // console.log(docRef.id)
     } else {
       console.error('No selected channel available.');
     }
@@ -136,7 +150,7 @@ export class ChannelsService {
       let docRef = this.getSingleDocRef('channels', channel.id);
       await updateDoc(docRef, channel.toJSON()).catch(
         (err) => {
-          console.log(err);
+          // console.log(err);
         }
       );
     }

@@ -13,7 +13,7 @@
 
         <div *ngFor="let message of chatMessages; let i = index" (click)="selectMessageForThread(i)">
             <div class="user-message" *ngIf="message.creator == this.user.name">
-                <img class="user-message-avatar" src="../../../../assets/avatars/avatar_0.svg">
+                <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div class="flex-end">
                     <div class="user-message-time-name">
                         <span>{{ message.timestamp }}</span>
@@ -22,13 +22,9 @@
                     <div class="speech-bubble-user">
                         {{ message.message }}
                     </div>
-                    <div class="user-message-emojis">
-                        <div class="user-message-emojis-showcase">
-                            <div>🎈</div>
-                            <span>1</span>
-                        </div>
-                        <div class="user-message-emojis-showcase">
-                            <div>👽</div>
+                    <div class="user-message-emojis" >
+                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions" >
+                            <div>{{ reactions.reaction }}</div>
                             <span>1</span>
                         </div>
                         <mat-icon>add_reaction</mat-icon>
@@ -50,7 +46,7 @@
             </div>
 
             <div class="anon-user-message" *ngIf="message.creator !== this.user.name">
-                <img class="user-message-avatar" src="../../../../assets/avatars/avatar_0.svg">
+                <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div>
                     <div class="anon-user-message-time-name">
                         <span>{{ message.timestamp }}</span>

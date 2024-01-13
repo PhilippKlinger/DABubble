@@ -24,6 +24,7 @@ export class MainContentMainChatLowerPartComponent {
   emoji_window_messages_open: boolean = false;
   user: User = null!;
   hoverOptionEditMessage_open: boolean = false;
+  messageReactions: any = [];
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
@@ -93,8 +94,10 @@ export class MainContentMainChatLowerPartComponent {
 
   receiveChatMessages() {
     this.channelService.updateChatMessageOfSelectedChannel();
+    this.channelService.getReactionsOfMessages();
     this.chatMessages = this.channelService.chatMessages;
     this.sortChatMessages();
+    console.log(this.chatMessages);
   }
 
   customSort = (a: any, b: any) => {
@@ -124,6 +127,7 @@ export class MainContentMainChatLowerPartComponent {
 
     if (this.input_message.nativeElement.value.trim() !== '') {
       this.message.setCreator(currentUserInfo.name);
+      this.message.setAvatar(currentUserInfo.avatar);
       this.message.setTimestampNow();
       this.message.setMessage(this.input_message.nativeElement.value.trim());
       this.channelService.pushMessageToChannel(this.message);
