@@ -1,5 +1,12 @@
 @import './../../styles.scss';
 
+$AnnimationWidth: 390px;
+$ImgWidth: 186.98px;
+$AnnimationHeight: 183.99px;
+$AnnimationWidthSmall: 230px;
+$ImgWidthSmall: 70.65px;
+$AnnimationHeightSmall: 69.53px;
+
 section {
     width: 100vw;
     height: 100vh;
@@ -10,22 +17,116 @@ section {
     @include dFlex();
 }
 
+.start-animation-container {
+    position: absolute;
+    top: calc(50% - ($AnnimationHeight / 2));
+    left: calc(50% - ($AnnimationWidth / 2));
+    animation: moveLeftUp 1s forwards 2.5s;
+    @include dFlex($g: 60px);
+    @media (max-width: 700px) {
+        top: calc(50% - ($AnnimationHeightSmall / 2));
+        left: calc(50% - ($AnnimationWidthSmall / 2));
+        animation: moveLeftUpSmall 1s forwards 2.5s;
+    }
+}
 
 .start-animation {
-    @include dFlex($g: 60px);
+    animation: fadeOut 1s forwards 3s;
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;    
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, $Purple-1, $Purple-2, $Purple-3);
+    background: $Purple-1;
+
     img {
-        width: 186.98px;
-        height: 184px;
-        z-index: 1;
-        animation: fadeRight 2s
+        width: $ImgWidth;
+        height: $AnnimationHeight;
+        z-index: 4;
+        animation: moveImage 1s forwards;
+        background: $Purple-1;
+        @media (max-width: 700px) {
+            width: $ImgWidthSmall;
+            height: $AnnimationHeightSmall;
+        }
     }
+
     p {
-        animation: fadeRight 2s;
-        color: #FFFAFA;    
+        position: absolute;
+        color: $White;    
         font-size: 76px;
+        animation: fadeInText 2s forwards;
+        opacity: 0;
+        z-index: 3;
+        margin: 0;
+        @media (max-width: 700px) {
+            font-size: 45px;
+        }
+    }
+}
+
+@keyframes moveImage {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes fadeInText {
+    0% {
+        transform: translateX(-200%);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0;
+        z-index: -1;
+    }
+    100% {
+        transform: translateX(60%);
+        opacity: 1;
+        z-index: 1;
+    }
+}
+
+@keyframes moveLeftUp {
+    0% {
+        position: absolute;
+        top: calc(50% - ($AnnimationHeight / 2));
+        left: calc(50% - ($AnnimationWidth / 2));
+    } 
+    
+    100% {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+
+@keyframes moveLeftUpSmall {
+    0% {
+        position: absolute;
+        top: calc(50% - ($AnnimationHeightSmall / 2));
+        left: calc(50% - ($AnnimationWidthSmall / 2));
+    } 
+    
+    100% {
+        position: absolute;
+        top: 0;
+        left: calc(50% - ($AnnimationWidthSmall / 2));
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
     }
 }
 
@@ -277,13 +378,5 @@ h2 {
     width: 100%;
     p {
         width: 100%;
-    }
-}
-
-
-
-@keyframes fadeRight {
-    from {
-        transform: translateX(-110%);
     }
 }

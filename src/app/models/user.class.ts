@@ -1,7 +1,6 @@
 export class User {
     id: string;
     name: string;
-    oldPassword: string;
     password: string;
     confirmPassword: string;
     email: string;
@@ -11,7 +10,6 @@ export class User {
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
         this.name = obj ? obj.name : '';
-        this.oldPassword = obj ? obj.oldPassword : '';
         this.password = obj ? obj.password : '';
         this.confirmPassword = obj ? obj.confirmPassword : '';
         this.email = obj ? obj.email : '';
