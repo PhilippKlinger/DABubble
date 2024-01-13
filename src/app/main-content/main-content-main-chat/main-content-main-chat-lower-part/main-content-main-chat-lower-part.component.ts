@@ -63,8 +63,10 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   addReaction($event: any) {
+    const currentUserInfo = this.channelService.currentUserInfo$.value
+    
     this.reaction.setReaction($event.emoji.native);
-    this.reaction.setCreator();
+    this.reaction.setCreator(currentUserInfo.name);
     this.channelService.addReactionToMessage(this.reaction);
     this.emoji_window_messages_open = false;
   }

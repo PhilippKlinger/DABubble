@@ -9,8 +9,8 @@ export class Reaction {
         this.creator = obj ? obj.creator : '';
     }
 
-    setCreator(): void {
-        this.creator = 'Gast';
+    setCreator(name: string): void {
+        this.creator = name;
     }
 
     setReaction(reaction: string): void {

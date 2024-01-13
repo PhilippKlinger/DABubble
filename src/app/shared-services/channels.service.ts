@@ -47,20 +47,6 @@ export class ChannelsService {
     }
   }
 
-  async addReactionToMessage(reaction: Reaction) {
-    const selectedChannel = this.selectedChannel$.value;
-    const selectedMessageMainChat = this.selectedMessageMainChat$.value;
-
-    this.checkReactionExistence(reaction);
-
-    if (selectedChannel && selectedMessageMainChat) {
-      await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
-      // console.log(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat));
-    } else {
-      console.error('No selected channel or selected message available.');
-    }
-  }
-
   updateThreadAnswersOfSelectedMessage() {
     const selectedChannel = this.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
@@ -69,19 +55,6 @@ export class ChannelsService {
       onSnapshot(this.getChannelsMessageColRef(selectedChannel, thread_subject), (snapshot: any) => {
         this.threadAnswers = snapshot.docs.map((doc: any) => doc.data());
       });
-    }
-  }
-
-  async pushThreadAnswerToMessage(answer: Message): Promise<void> {
-    const selectedChannel = this.selectedChannel$.value;
-    const thread_subject = this.thread_subject$.value;
-
-    if (selectedChannel && thread_subject && thread_subject !== undefined) {
-      answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
-      await addDoc(this.getChannelsMessageColRef(selectedChannel, thread_subject), answer.toJSON());
-      // console.log(this.getChannelsMessageColRef(selectedChannel, thread_subject))
-    } else {
-      console.error('No selected channel or thread subject available.');
     }
   }
 
@@ -110,6 +83,36 @@ export class ChannelsService {
     this.selectedChannel$.next(channel);
   }
 
+
+  async addReactionToMessage(reaction: Reaction) {
+    const selectedChannel = this.selectedChannel$.value;
+    const selectedMessageMainChat = this.selectedMessageMainChat$.value;
+
+    this.checkReactionExistence(reaction);
+
+    if (selectedChannel && selectedMessageMainChat) {
+      const docRef = await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
+      reaction.setId(docRef.id);
+      updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, docRef.id), reaction.toJSON())
+    } else {
+      console.error('No selected channel or selected message available.');
+    }
+  }
+
+  async pushThreadAnswerToMessage(answer: Message): Promise<void> {
+    const selectedChannel = this.selectedChannel$.value;
+    const thread_subject = this.thread_subject$.value;
+
+    answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
+    if (selectedChannel && thread_subject && thread_subject !== undefined) {
+      const docRef = await addDoc(this.getChannelsMessageColRef(selectedChannel, thread_subject), answer.toJSON());
+      answer.setId(docRef.id);
+      updateDoc(this.getUpdateChannelsMessageColRef(selectedChannel, thread_subject, docRef.id), answer.toJSON())
+    } else {
+      console.error('No selected channel or thread subject available.');
+    }
+  }
+
   async pushMessageToChannel(message: Message): Promise<void> {
     const selectedChannel = this.selectedChannel$.value;
 
@@ -118,7 +121,7 @@ export class ChannelsService {
     if (selectedChannel) {
       const docRef = await addDoc(this.getChannelsColRef(selectedChannel), message.toJSON());
       message.setId(docRef.id);
-      updateDoc(this.getUpdatedChannelsColRef(selectedChannel, docRef.id), message.toJSON());
+      await updateDoc(this.getUpdatedChannelsColRef(selectedChannel, docRef.id), message.toJSON());
       // console.log(docRef.id)
     } else {
       console.error('No selected channel available.');
@@ -179,6 +182,14 @@ export class ChannelsService {
 
   getUpdatedChannelsColRef(selectedChannel: Channel, id: string) {
     return doc(this.firestore, `channels/${selectedChannel.id}/messages/${id}`);
+  }
+
+  getUpdateChannelsMessageColRef(selectedChannel: Channel, thread_subject: Message, id: string) {
+    return doc(this.firestore, `channels/${selectedChannel.id}/messages/${thread_subject.id}/answers/${id}`);
+  }
+
+  getUpdateChannelsMessageReactionColRef(selectedChannel: Channel, selectedMessageMainChat: Message, id: string) {
+    return doc(this.firestore, `channels/${selectedChannel.id}/messages/${selectedMessageMainChat.id}/reactions/${id}`);
   }
 
   getChannelsColRef(selectedChannel: Channel) {

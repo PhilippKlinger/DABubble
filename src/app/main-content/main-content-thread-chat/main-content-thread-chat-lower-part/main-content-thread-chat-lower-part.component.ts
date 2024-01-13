@@ -10,7 +10,7 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 export class MainContentThreadChatLowerPartComponent {
   @ViewChild('answer') input_answer!: ElementRef;
   thread_subject: Message | null = null;
-  threadAnswers:any = [];
+  threadAnswers: any = [];
   answer = new Message();
   emoji_window_open: boolean = false;
 
@@ -18,7 +18,7 @@ export class MainContentThreadChatLowerPartComponent {
     this.channelService.thread_subject$.subscribe((value: Message) => {
       //bei veränderung des observables wird folgende funktion ausgelöst
       this.thread_subject = value;
-      this.receiveThreadAnswers(); 
+      this.receiveThreadAnswers();
     });
   }
 
@@ -40,6 +40,7 @@ export class MainContentThreadChatLowerPartComponent {
     if (this.input_answer.nativeElement.value.trim() !== '') {
       this.answer.setCreator(currentUserInfo.name);
       this.answer.setTimestampNow();
+      this.answer.setAvatar(currentUserInfo.avatar);
       this.answer.setMessage(this.input_answer.nativeElement.value.trim());
       this.channelService.pushThreadAnswerToMessage(this.answer);
       this.input_answer.nativeElement.value = '';
