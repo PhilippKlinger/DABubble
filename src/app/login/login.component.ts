@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { AuthService } from '../shared-services/authentication.service';
 import { User } from '../models/user.class';
 import { UserService } from '../shared-services/user.service';
-import { Router } from '@angular/router';
 import { StorageService } from '../shared-services/storage.service';
 import { CommonService } from '../shared-services/common.service';
 
@@ -31,14 +30,15 @@ export class LoginComponent {
   loginErrorUser: boolean = false;
   loginErrorPassword: boolean = false;
 
-  constructor(private authService: AuthService, private userService: UserService, private router: Router, private storageService: StorageService, private commonService: CommonService) {}
+  constructor(private authService: AuthService, private userService: UserService, private storageService: StorageService, private commonService: CommonService) {}
 
   async login() {
     if (await this.checkUserExists()) {
       this.authService.login(this.user.email, this.user.password)
       .then((userCredential) => {
         this.setUserOnline(userCredential);
-        this.router.navigate(['/main-content']);
+        this.commonService.showPopup('login');
+        this.commonService.routeTo('main-content');
       })
       .catch(error => {
         if (error.code === 'auth/too-many-requests' || error.code === 'auth/invalid-credential' || error.code === 'auth/missing-password') {
@@ -57,6 +57,8 @@ export class LoginComponent {
     }
   }
 
+  
+
   async checkUserExists() {
     this.loginErrorUser = false;
     this.loginErrorPassword = false;
@@ -70,10 +72,12 @@ export class LoginComponent {
   }
 
   loginGuest() {
+    this.loginErrorUser = false;
     this.authService.login('guest@guest.com', 'Guestlogin')
       .then((userCredential) => {
         this.setUserOnline(userCredential);
-        this.router.navigate(['/main-content']);
+        this.commonService.showPopup('login');  
+        this.commonService.routeTo('main-content');
       })
   }
 
@@ -84,7 +88,8 @@ export class LoginComponent {
       if (googleUser.email && googleUser.displayName) {
         this.checkGooleUserExistsAndCreate(googleUser);
         await this.setUserOnline(result);
-        this.router.navigate(['/main-content']);        
+        this.commonService.showPopup('login');
+        this.commonService.routeTo('main-content');
       } else {        
         console.log("Google-Konto hat keine gültige E-Mail oder keinen Namen.");
       }
@@ -157,7 +162,22 @@ export class LoginComponent {
     this.user.onlineStatus = false;
     this.user.avatar = this.selectedAvatar;
     this.userService.createUser(this.user, 'users');
-    this.changeSwitchCase('login');
+    this.commonService.showPopup('register');
+    this.switchLogin('register')
+  }
+
+  switchLogin(popup_name:string) {
+    setTimeout(() => {
+      this.setDNonePopup(popup_name);
+      this.changeSwitchCase('login');
+    },2000);
+  }
+
+  setDNonePopup(popup_name:string) {
+    const popup = document.getElementById(popup_name);
+    if (popup) {
+      popup.classList.add('d-none'); 
+    };  
   }
 
   async setNewPassword() {
@@ -165,7 +185,8 @@ export class LoginComponent {
       this.loginErrorUser = false;
       this.authService.resetPassword(this.user.email)
       .then (() => { 
-        this.changeSwitchCase('login');
+        this.commonService.showPopup('new-pass');
+        this.switchLogin('new-pass');
       });
     }
   }

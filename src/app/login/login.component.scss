@@ -33,9 +33,7 @@ section {
 .start-animation {
     animation: fadeOut 1s forwards 3s;
     z-index: 2;
-    position: absolute;
-    top: 0;
-    left: 0;    
+    @include posAbs();   
     width: 100%;
     height: 100%;
     background: $Purple-1;
@@ -66,69 +64,6 @@ section {
     }
 }
 
-@keyframes moveImage {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-50%);
-    }
-}
-
-@keyframes fadeInText {
-    0% {
-        transform: translateX(-200%);
-        opacity: 0;
-    }
-    50% {
-        opacity: 0;
-        z-index: -1;
-    }
-    100% {
-        transform: translateX(60%);
-        opacity: 1;
-        z-index: 1;
-    }
-}
-
-@keyframes moveLeftUp {
-    0% {
-        position: absolute;
-        top: calc(50% - ($AnnimationHeight / 2));
-        left: calc(50% - ($AnnimationWidth / 2));
-    } 
-    
-    100% {
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-}
-
-
-@keyframes moveLeftUpSmall {
-    0% {
-        position: absolute;
-        top: calc(50% - ($AnnimationHeightSmall / 2));
-        left: calc(50% - ($AnnimationWidthSmall / 2));
-    } 
-    
-    100% {
-        position: absolute;
-        top: 0;
-        left: calc(50% - ($AnnimationWidthSmall / 2));
-    }
-}
-
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-        display: none;
-    }
-}
 
 .d-none {
     display: none !important;
@@ -298,9 +233,7 @@ input {
 
 
 .arrow-back {
-    position: absolute;
-    top: 57.5px;
-    left: 44px;
+    @include posAbs($t:57.5px, $l: 44px);
     &:hover {
         scale: 1.3;
     }
@@ -378,5 +311,96 @@ h2 {
     width: 100%;
     p {
         width: 100%;
+    }
+}
+
+.popup {
+    @include dFlex($g: 18px);
+    @include posAbs($b: 30px, $r: 30px);    
+    width: fit-content;
+    height: fit-content;
+    padding: 20px 30px 20px 30px;
+    border-radius: 30px 30px 0px 30px;
+    background-color: $Purple-1;
+    p {
+        @include fonts($fs: 22px);
+        margin: 0;
+        color: $White;
+    }
+    &.animate-in {
+        animation: slideInFromRight 0.5s ease-out forwards;
+    }
+}
+
+@keyframes slideInFromRight {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+@keyframes moveImage {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes fadeInText {
+    0% {
+        transform: translateX(-200%);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0;
+        z-index: -1;
+    }
+    100% {
+        transform: translateX(60%);
+        opacity: 1;
+        z-index: 1;
+    }
+}
+
+@keyframes moveLeftUp {
+    0% {
+        position: absolute;
+        top: calc(50% - ($AnnimationHeight / 2));
+        left: calc(50% - ($AnnimationWidth / 2));
+    } 
+    
+    100% {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+
+@keyframes moveLeftUpSmall {
+    0% {
+        position: absolute;
+        top: calc(50% - ($AnnimationHeightSmall / 2));
+        left: calc(50% - ($AnnimationWidthSmall / 2));
+    } 
+    
+    100% {
+        position: absolute;
+        top: 0;
+        left: calc(50% - ($AnnimationWidthSmall / 2));
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
     }
 }
