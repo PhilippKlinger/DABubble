@@ -7,7 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 const routes: Routes = [
-  { path: '', component: AppComponent },      //nur platzhalter
+  { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'dialogs', component: DialogDummyComponent },
   { path: 'main-content', component: MainContentComponent },

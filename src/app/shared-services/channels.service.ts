@@ -26,7 +26,7 @@ export class ChannelsService {
   public selectedMessageMainChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public currentUserInfo$: BehaviorSubject<User> = new BehaviorSubject<User>(null!);
 
-  private unsubChannels;
+  private unsubChannels; 
 
   constructor(private firestore: Firestore) {
     this.unsubChannels = this.subChannelsList();
@@ -170,7 +170,7 @@ export class ChannelsService {
       let docRef = this.getSingleDocRef('channels', channel.id);
       await updateDoc(docRef, channel.toJSON()).catch(
         (err) => {
-          // console.log(err);
+          console.log(err);
         }
       );
     }

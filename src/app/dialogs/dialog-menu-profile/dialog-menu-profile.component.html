@@ -6,12 +6,12 @@
           </button>
     </div>
     <div class="avatar">
-        <img src="../../../assets/avatars/avatar_0.svg">
+        <img src="{{currentUser.avatar}}">
     </div>
     <div class="username">
         <div class="username-head">
-            <span>Steffen Hoffmann</span>
-            <p>Bearbeiten</p>
+            <span>{{currentUser.name}}</span>
+            <p (click)="openEditProfile()">Bearbeiten</p>
         </div>
         <div class="status">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
@@ -24,7 +24,7 @@
         <img src="../../../assets/icons/mail.svg">
         <div class="email">
             <span>E-Mail-Adresse</span>
-            <p>thehoffman@beispiel.com</p>
+            <p>{{currentUser.email}}</p>
         </div>
     </div>
 </div>
