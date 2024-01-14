@@ -58,7 +58,6 @@ export class MainContentMainChatLowerPartComponent {
     if (containerElement) {
       return containerElement.contains(event.target as Node);
     }
-
     return false;
   }
 
@@ -99,7 +98,6 @@ export class MainContentMainChatLowerPartComponent {
     this.channelService.getReactionsOfMessages();
     this.chatMessages = this.channelService.chatMessages;
     this.sortChatMessages();
-    console.log(this.chatMessages);
   }
 
   customSort = (a: any, b: any) => {

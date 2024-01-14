@@ -32,21 +32,6 @@ export class ChannelsService {
     this.unsubChannels = this.subChannelsList();
   }
 
-  checkReactionExistence(reaction: Reaction) {
-    let messageReactions: any = this.selectedMessageMainChat$.value.reactions;
-
-    if (messageReactions) {
-      for (let i = 0; i < messageReactions.length; i++) {
-        if (messageReactions[i].reaction == reaction.reaction) {
-          console.log(true);
-        }
-      }
-      console.log(false);
-    } else {
-      console.log(false);
-    }
-  }
-
   updateThreadAnswersOfSelectedMessage() {
     const selectedChannel = this.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
@@ -83,20 +68,43 @@ export class ChannelsService {
     this.selectedChannel$.next(channel);
   }
 
+  checkReactionExistence(reaction: Reaction) {
+    let messageReactions: any = this.selectedMessageMainChat$.value.reactions;
+
+    if (messageReactions) {
+      for (let i = 0; i < messageReactions.length; i++) {
+        if (messageReactions[i].reaction == reaction.reaction) {
+          return { exists: true, amount: messageReactions[i].amount, id: messageReactions[i].id }
+        }
+      }
+      return { exists: false, amount: -1, id: null };
+    } else {
+      return { exists: false, amount: -1, id: null };
+    }
+  }
 
   async addReactionToMessage(reaction: Reaction) {
     const selectedChannel = this.selectedChannel$.value;
     const selectedMessageMainChat = this.selectedMessageMainChat$.value;
-
-    this.checkReactionExistence(reaction);
+    let result = this.checkReactionExistence(reaction);
 
     if (selectedChannel && selectedMessageMainChat) {
-      const docRef = await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
-      reaction.setId(docRef.id);
-      updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, docRef.id), reaction.toJSON())
+      if (result.exists) {
+        let reaction_amount = result.amount + 1;
+        reaction.setAmount(reaction_amount);
+        console.log(reaction_amount);
+        await updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, result.id), reaction.toJSON());
+      } else {
+        reaction.setAmount(1);
+        const docRef = await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
+        reaction.setId(docRef.id);
+        console.log(docRef.id);
+        await updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, docRef.id), reaction.toJSON());
+      }
     } else {
       console.error('No selected channel or selected message available.');
     }
+    this.setSelectedChannel(selectedChannel!);
   }
 
   async pushThreadAnswerToMessage(answer: Message): Promise<void> {
@@ -126,6 +134,8 @@ export class ChannelsService {
     } else {
       console.error('No selected channel available.');
     }
+
+    this.setSelectedChannel(selectedChannel!);
   }
 
   async createChannel(channel: Channel, colId: 'channels'): Promise<void> {

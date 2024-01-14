@@ -22,10 +22,10 @@
                     <div class="speech-bubble-user">
                         {{ message.message }}
                     </div>
-                    <div class="user-message-emojis" >
-                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions" >
+                    <div class="user-message-emojis">
+                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
                             <div>{{ reactions.reaction }}</div>
-                            <span>1</span>
+                            <span>{{ reactions.amount }}</span>
                         </div>
                         <mat-icon>add_reaction</mat-icon>
                     </div>
@@ -60,9 +60,9 @@
                             <h3 (click)="openThread()">2 Antworten</h3>
                             <span>Letzte Antwort 14:56</span>
                         </div>
-                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions" >
+                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
                             <div>{{ reactions.reaction }}</div>
-                            <span>1</span>
+                            <span>{{ reactions.amount }}</span>
                         </div>
                     </div>
                 </div>
