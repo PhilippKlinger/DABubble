@@ -1,5 +1,119 @@
 @import './../../../../styles.scss';
 
+.user-message-hover-options {
+    opacity: 0;
+    display: none;
+    z-index: 3;
+    position: absolute;
+    margin-top: -26px;
+    margin-left: -60px;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 80px;
+    height: 46px;
+    background-color: white;
+    border: 1px solid $Light-purple;
+    border-radius: 25px 25px 0px 25px;
+    padding: 0px 10px;
+    cursor: pointer;
+    left: 0;
+    margin-left: 30px;
+
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 450px;
+        margin-top: 60px;
+        background-color: white;
+        position: absolute;
+        box-shadow: 0px 6px 14px 0px #00000033;
+        width: 270px;
+        height: 60px;
+        border-radius: 0px 30px 30px 30px;
+    }
+
+    div {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+        }
+    }
+
+    mat-icon {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+            color: $Purple-1;
+            scale: 1.1;
+        }
+    }
+}
+
+.anon-message-hover-options {
+    opacity: 0;
+    display: none;
+    z-index: 3;
+    position: absolute;
+    margin-top: -26px;
+    margin-left: -60px;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 50px;
+    height: 46px;
+    background-color: white;
+    border: 1px solid $Light-purple;
+    border-radius: 25px 25px 0px 25px;
+    padding: 0px 10px;
+    cursor: pointer;
+    right: 0;
+    margin-right: 30px;
+
+    div {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+        }
+    }
+
+    mat-icon {
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $Bg-color;
+            color: $Purple-1;
+            scale: 1.1;
+        }
+    }
+}
+
 .chat {
     height: 100%;
     width: 100%;
@@ -35,12 +149,16 @@
     gap: 20px;
     display: flex;
     flex-direction: row-reverse;
-    justify-content: flex-end;
     background-color: white;
     transition: 0.1s ease-in;
 
     &:hover {
         background-color: $Bg-color;
+    }
+
+    &:hover .user-message-hover-options {
+        display: flex;
+        opacity: 1;
     }
 }
 
@@ -61,6 +179,11 @@
 
     &:hover .anon-speech-bubble-user {
         background-color: white !important;
+    }
+
+    &:hover .anon-message-hover-options {
+        display: flex;
+        opacity: 1;
     }
 }
 

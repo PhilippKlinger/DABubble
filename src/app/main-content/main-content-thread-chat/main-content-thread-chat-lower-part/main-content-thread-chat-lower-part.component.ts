@@ -1,5 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Message } from 'src/app/models/message.class';
+import { Reaction } from 'src/app/models/reaction.class';
+import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 
 @Component({
@@ -12,7 +14,12 @@ export class MainContentThreadChatLowerPartComponent {
   thread_subject: Message | null = null;
   threadAnswers: any = [];
   answer = new Message();
+  reaction = new Reaction();
   emoji_window_open: boolean = false;
+  hoverOptionEditMessage_open: boolean = false;
+  emoji_window_messages_open: boolean = false;
+  chatMessages: any = [];
+  user: User = null!;
 
   constructor(private channelService: ChannelsService) {
     this.channelService.thread_subject$.subscribe((value: Message) => {
@@ -20,12 +27,35 @@ export class MainContentThreadChatLowerPartComponent {
       this.thread_subject = value;
       this.receiveThreadAnswers();
     });
+
+    this.channelService.currentUserInfo$.subscribe((user: User) => {
+      this.user = user;
+    });
+  }
+
+  addReaction($event: any) {
+    const currentUserInfo = this.channelService.currentUserInfo$.value
+    
+    this.reaction.setReaction($event.emoji.native);
+    this.reaction.setCreator(currentUserInfo.name);
+    this.channelService.addReactionToMessage(this.reaction);
+    this.emoji_window_messages_open = false;
+  }
+
+  toggleHoverOptionEditMessage() {
+    this.hoverOptionEditMessage_open = !this.hoverOptionEditMessage_open;
+  }
+
+  toggleEmojiWindowForMessage(index: number) {
+    setTimeout(() => {
+      this.emoji_window_messages_open = !this.emoji_window_messages_open;
+    }, 50);
+    this.channelService.selectedMessageMainChat$.next(this.chatMessages[index]);
   }
 
   addEmoji($event: any) {
     if ($event.emoji.native !== '🫥') {
       this.input_answer.nativeElement.value += $event.emoji.native;
-      //console.log($event.emoji);
       this.emoji_window_open = false;
     }
   }
