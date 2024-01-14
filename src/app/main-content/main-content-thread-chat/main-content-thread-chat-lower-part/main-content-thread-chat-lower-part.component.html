@@ -1,6 +1,6 @@
 <div class="chat">
     <div class="chat-content">
-        <div class="thread-anon-user-message">
+        <div class="thread-anon-user-message"  *ngIf="thread_subject?.creator !== this.user.name">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div>
                 <div class="anon-user-message-time-name">
@@ -19,12 +19,93 @@
             </div>
         </div>
 
+        <div class="thread-user-message"  *ngIf="thread_subject?.creator == this.user.name">
+            <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
+            <div class="flex-end">
+                <div class="user-message-time-name">
+                    <span>{{ thread_subject?.timestamp }}</span>
+                    <h3>{{ thread_subject?.creator }}</h3>
+                </div>
+                <div class="speech-bubble-user">
+                    {{ thread_subject?.message }}
+                </div>
+                <div class="user-message-emojis">
+                    <div class="user-message-emojis-showcase">
+                        <div>🎈</div>
+                        <span>1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="answer-timestamp">
             <span>2 Antworten</span>
             <div></div>
         </div>
 
-        <div class="thread-anon-user-message" *ngFor="let answer of threadAnswers">
+        <div class="emoji-window-messages-overlay" *ngIf="emoji_window_messages_open">
+            <div id="emoji-window-messages" class="emoji-window-messages">
+                <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addReaction($event)"></emoji-mart>
+            </div>
+        </div>
+
+        <div *ngFor="let answer of threadAnswers; let i = index">
+            <div class="thread-user-message" *ngIf="answer.creator == this.user.name">
+                <img class="user-message-avatar" src="{{ answer.avatar }}">
+                <div class="flex-end">
+                    <div class="user-message-time-name">
+                        <span>{{ answer.timestamp }}</span>
+                        <h3>{{ answer.creator }}</h3>
+                    </div>
+                    <div class="speech-bubble-user">
+                        {{ answer.message }}
+                    </div>
+                    <div class="user-message-emojis">
+                        <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
+                            <div>{{ reactions.reaction }}</div>
+                            <span>{{ reactions.amount }}</span>
+                        </div>
+                        <mat-icon>add_reaction</mat-icon>
+                    </div>
+                </div>
+
+                <div class="user-message-hover-options">
+                    <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
+                    <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
+                    <span *ngIf="hoverOptionEditMessage_open">
+                        <h1 class="hover-options-edit-message">
+                            Nachricht bearbeiten
+                        </h1>
+                    </span>
+                </div>
+            </div>
+
+            <div class="thread-anon-user-message" *ngIf="answer.creator !== this.user.name">
+                <img class="user-message-avatar" src="{{ answer.avatar }}">
+                <div>
+                    <div class="anon-user-message-time-name">
+                        <span>{{ answer.timestamp }}</span>
+                        <h3>{{ answer.creator }}</h3>
+                    </div>
+                    <div class="anon-speech-bubble-user">
+                        {{ answer.message }}
+                    </div>
+                    <div class="anon-user-message-emojis">
+                        <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
+                            <div>{{ reactions.reaction }}</div>
+                            <span>{{ reactions.amount }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="anon-message-hover-options">
+                    <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- <div class="thread-anon-user-message" *ngFor="let answer of threadAnswers"> OLD CODE!!!!!!!!!!!!! (will be removed later on)
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div>
                 <div class="anon-user-message-time-name">
@@ -44,7 +125,7 @@
             </div>
         </div>
 
-        <!-- <div class="thread-user-message">
+        <div class="thread-user-message">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div class="flex-end">
                 <div class="user-message-time-name">

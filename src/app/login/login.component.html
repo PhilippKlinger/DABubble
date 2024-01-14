@@ -1,7 +1,9 @@
 <section [ngSwitch]="switch_expression">
-    <div class="start-animation d-none">
+    <div class="start-animation">
+      <div class="start-animation-container">
         <img src="assets/img/Logo.svg" alt="">
         <p>DABubble</p>
+      </div>        
     </div>
     <header class="header">
         <div>
@@ -141,5 +143,15 @@
             <button (click)="setNewPassword()" class="btn-submit" mat-button type="submit">E-Mail senden</button>
           </div>
         </div>
+    </div>
+    <div id="register" class="popup d-none">
+      <p>Konto erfolgreich erstellt!</p>
+    </div>
+    <div id="new-pass" class="popup d-none">
+      <img src="assets/icons/send.svg" alt="">
+      <p>E-Mail gesendet!</p>
+    </div>
+    <div id="login" class="popup d-none">
+      <p>Erfolgreich angemeldet!</p>
     </div>
 </section>

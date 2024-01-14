@@ -37,7 +37,8 @@ export class ResetPasswordComponent {
         throw new Error('Fehlender oobCode');
       }
       await this.authService.confirmResetPassword(oobCode, this.user.password);
-      this.router.navigate(['/login']);
+      this.commonService.showPopup('reset-pw');
+      this.commonService.routeTo('login');
     } catch (error) {
       this.loginErrorPassword = true;
     }

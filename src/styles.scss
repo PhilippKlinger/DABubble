@@ -48,7 +48,11 @@ $Rosa-error: #ED1E79;
 $Background-Login: #545BEC;
 $White: #FFFFFF;
 html, body { height: 100%; }
-body { margin: 0; font-family: 'Nunito', "Helvetica Neue", sans-serif !important; }
+body { 
+  margin: 0; 
+  font-family: 'Nunito', "Helvetica Neue", sans-serif !important; 
+  overflow-x: hidden;
+}
 
 .mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 30px !important;
@@ -72,4 +76,20 @@ h1, h2, h3, input, textarea {
   font-size: $fs;
   line-height: $lh;
   text-align: $ta;
+}
+
+@mixin posAbs($pos: absolute, $t:0, $b:0, $r:0, $l:0) {
+  position: $pos;
+  top: $t; 
+  right: $r; 
+  bottom: $b; 
+  left: $l;
+}
+
+@mixin posAbs($pos: absolute, $t:null, $b:null, $r:null, $l:null) {
+  position: $pos;
+  @if $t != null { top: $t; };
+  @if $r != null { right: $r; };
+  @if $b != null { bottom: $b; };
+  @if $l != null { left: $l; };
 }
