@@ -10,12 +10,16 @@ import { UserService } from 'src/app/shared-services/user.service';
 })
 export class DialogEditProfileComponent {
  
+  newUserName: string = '';
+  newUserEmail: string = '';
   currentUser!: User;
   users: User[] = [];
 
   constructor(private channelService: ChannelsService, private userService: UserService){
     this.channelService.currentUserInfo$.subscribe((currentUser) => {
       this.currentUser = currentUser;
+      this.newUserName = currentUser.name;
+      this.newUserEmail = currentUser.email;
     });
     this.userService.users$.subscribe((users) => {
       this.users = users;
@@ -25,16 +29,12 @@ export class DialogEditProfileComponent {
   async saveChanges(): Promise<void> {
     try {
       const currentUserIndex = this.users.findIndex(user => user.id === this.currentUser.id);
-      console.log('currentUser', currentUserIndex)
       if (currentUserIndex !== -1) {
-        // Den passenden Benutzer in der Liste finden
         const userToUpdate = this.users[currentUserIndex];
-        console.log('user to update', userToUpdate)
-        // Die gewünschten Änderungen vornehmen
-        userToUpdate.name = this.currentUser.name;
-        userToUpdate.email = this.currentUser.email;
+        
+        userToUpdate.name = this.newUserName;
+        userToUpdate.email = this.newUserEmail;
 
-        // Benutzerinformationen aktualisieren
         await this.userService.updateUser(userToUpdate);
 
         const updatedUserJSON = JSON.stringify(userToUpdate);
@@ -44,5 +44,4 @@ export class DialogEditProfileComponent {
       console.error('Update User Info not possible:', error);
     }
   }
-
 }
