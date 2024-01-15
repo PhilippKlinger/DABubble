@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Message } from 'src/app/models/message.class';
 import { Reaction } from 'src/app/models/reaction.class';
 import { User } from 'src/app/models/user.class';
@@ -18,7 +18,6 @@ export class MainContentThreadChatLowerPartComponent {
   emoji_window_open: boolean = false;
   hoverOptionEditMessage_open: boolean = false;
   emoji_window_messages_open: boolean = false;
-  chatMessages: any = [];
   user: User = null!;
 
   constructor(private channelService: ChannelsService) {
@@ -33,13 +32,20 @@ export class MainContentThreadChatLowerPartComponent {
     });
   }
 
-  addReaction($event: any) {
-    const currentUserInfo = this.channelService.currentUserInfo$.value
-    
-    this.reaction.setReaction($event.emoji.native);
-    this.reaction.setCreator(currentUserInfo.name);
-    this.channelService.addReactionToMessage(this.reaction);
-    this.emoji_window_messages_open = false;
+  @HostListener('document:click', ['$event'])
+  documentClickHandler(event: MouseEvent): void {
+    if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
+      this.emoji_window_messages_open = false;
+    }
+  }
+
+  private isClickInsideContainer(event: MouseEvent): boolean {
+    let containerElement = document.getElementById('emoji-window-messages');
+
+    if (containerElement) {
+      return containerElement.contains(event.target as Node);
+    }
+    return false;
   }
 
   toggleHoverOptionEditMessage() {
@@ -50,7 +56,16 @@ export class MainContentThreadChatLowerPartComponent {
     setTimeout(() => {
       this.emoji_window_messages_open = !this.emoji_window_messages_open;
     }, 50);
-    this.channelService.selectedMessageMainChat$.next(this.chatMessages[index]);
+    this.channelService.selectedAnswerThreadChat$.next(this.threadAnswers[index]);
+  }
+
+  addReaction($event: any) {
+    const currentUserInfo = this.channelService.currentUserInfo$.value
+
+    this.reaction.setReaction($event.emoji.native);
+    this.reaction.setCreator(currentUserInfo.name);
+    this.channelService.addReactionToAnswer(this.reaction);
+    this.emoji_window_messages_open = false;
   }
 
   addEmoji($event: any) {
@@ -79,7 +94,7 @@ export class MainContentThreadChatLowerPartComponent {
 
   receiveThreadAnswers() {
     this.channelService.updateThreadAnswersOfSelectedMessage();
+    this.channelService.getReactionsOfAnswers();
     this.threadAnswers = this.channelService.threadAnswers;
-    console.log(this.threadAnswers);
   }
 }

@@ -12,7 +12,8 @@ import { User } from '../models/user.class';
 })
 export class ChannelsService {
   chatMessages: any = [];
-  threadAnswers = [];
+  threadAnswers: any = [];
+  answerReactions = [];
   messageReactions = [];
 
   // private channelsSubject = new BehaviorSubject<Channel[]>([]);
@@ -24,9 +25,10 @@ export class ChannelsService {
   public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public selectedMessageMainChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
+  public selectedAnswerThreadChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public currentUserInfo$: BehaviorSubject<User> = new BehaviorSubject<User>(null!);
 
-  private unsubChannels; 
+  private unsubChannels;
 
   constructor(private firestore: Firestore) {
     this.unsubChannels = this.subChannelsList();
@@ -56,6 +58,24 @@ export class ChannelsService {
     }
   }
 
+  getReactionsOfAnswers() {
+    const thread_subject = this.thread_subject$.value;
+    const selectedChannel = this.selectedChannel$.value;
+
+    if (selectedChannel && thread_subject) {
+      for (let i = 0; i < this.threadAnswers.length; i++) {
+        let answer = this.threadAnswers[i];
+
+        onSnapshot(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, answer), (snapshot: any) => {
+          this.answerReactions = snapshot.docs.map((doc: any) => doc.data());
+          this.threadAnswers[i].reactions = this.answerReactions;
+        });
+      }
+    } else {
+      console.log('no selected channel or thread subject available.');
+    }
+  }
+
   updateChatMessageOfSelectedChannel() {
     const selectedChannel = this.selectedChannel$.value;
 
@@ -64,11 +84,18 @@ export class ChannelsService {
     });
   }
 
+  refreshThreadSubject() {
+    const thread_subject = this.thread_subject$.value;
+    if (thread_subject) {
+      this.thread_subject$.next(thread_subject);
+    }
+  }
+
   setSelectedChannel(channel: Channel): void {
     this.selectedChannel$.next(channel);
   }
 
-  checkReactionExistence(reaction: Reaction) {
+  checkReactionExistenceOnMessage(reaction: Reaction) {
     let messageReactions: any = this.selectedMessageMainChat$.value.reactions;
 
     if (messageReactions) {
@@ -83,10 +110,50 @@ export class ChannelsService {
     }
   }
 
+  checkReactionExistenceOnAnswer(reaction: Reaction) {
+    let answerReactions: any = this.selectedAnswerThreadChat$.value.reactions;
+
+    if (answerReactions) {
+      for (let i = 0; i < answerReactions.length; i++) {
+        if (answerReactions[i].reaction == reaction.reaction) {
+          return { exists: true, amount: answerReactions[i].amount, id: answerReactions[i].id }
+        }
+      }
+      return { exists: false, amount: -1, id: null };
+    } else {
+      return { exists: false, amount: -1, id: null };
+    }
+  }
+
+  async addReactionToAnswer(reaction: Reaction) {
+    const selectedChannel = this.selectedChannel$.value;
+    const thread_subject = this.thread_subject$.value;
+    const selectedAnswerThreadChat = this.selectedAnswerThreadChat$.value;
+    let result = this.checkReactionExistenceOnAnswer(reaction);
+
+    if (selectedChannel && thread_subject && selectedAnswerThreadChat) {
+      if (result.exists) {
+        let reaction_amount = result.amount + 1;
+        reaction.setAmount(reaction_amount);
+        console.log(reaction_amount);
+        await updateDoc(this.getUpdateChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat, result.id), reaction.toJSON());
+      } else {
+        reaction.setAmount(1);
+        const docRef = await addDoc(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat), reaction.toJSON());
+        reaction.setId(docRef.id);
+        console.log(docRef.id);
+        await updateDoc(this.getUpdateChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat, docRef.id), reaction.toJSON());
+      }
+    } else {
+      console.error('No selected channel or selected message available.');
+    }
+    this.refreshThreadSubject();
+  }
+
   async addReactionToMessage(reaction: Reaction) {
     const selectedChannel = this.selectedChannel$.value;
     const selectedMessageMainChat = this.selectedMessageMainChat$.value;
-    let result = this.checkReactionExistence(reaction);
+    let result = this.checkReactionExistenceOnMessage(reaction);
 
     if (selectedChannel && selectedMessageMainChat) {
       if (result.exists) {
@@ -202,6 +269,10 @@ export class ChannelsService {
     return doc(this.firestore, `channels/${selectedChannel.id}/messages/${selectedMessageMainChat.id}/reactions/${id}`);
   }
 
+  getUpdateChannelsMessageAnswerReactionColRef(selectedChannel: Channel, thread_subject: Message, selectedAnswerThreadChat: Message, id: string) {
+    return doc(this.firestore, `channels/${selectedChannel.id}/messages/${thread_subject.id}/answers/${selectedAnswerThreadChat.id}/reactions/${id}`);
+  }
+
   getChannelsColRef(selectedChannel: Channel) {
     return collection(this.firestore, `channels/${selectedChannel.id}/messages`);
   }
@@ -212,6 +283,10 @@ export class ChannelsService {
 
   getChannelsMessageReactionColRef(selectedChannel: Channel, selectedMessageMainChat: Message) {
     return collection(this.firestore, `channels/${selectedChannel.id}/messages/${selectedMessageMainChat.id}/reactions`);
+  }
+
+  getChannelsMessageAnswerReactionColRef(selectedChannel: Channel, thread_subject: Message, selectedAnswerThreadChat: Message) {
+    return collection(this.firestore, `channels/${selectedChannel.id}/messages/${thread_subject.id}/answers/${selectedAnswerThreadChat.id}/reactions`);
   }
 
   getSingleDocRef(coldId: string, docID: string) {

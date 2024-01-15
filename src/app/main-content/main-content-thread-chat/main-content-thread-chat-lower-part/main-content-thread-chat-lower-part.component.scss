@@ -23,11 +23,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 450px;
-        margin-top: 60px;
+        margin-left: 350px;
+        margin-top: 50px;
         background-color: white;
         position: absolute;
-        box-shadow: 0px 6px 14px 0px #00000033;
+        box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.2);
         width: 270px;
         height: 60px;
         border-radius: 0px 30px 30px 30px;
@@ -61,6 +61,24 @@
             color: $Purple-1;
             scale: 1.1;
         }
+    }
+}
+
+.hover-options-edit-message {
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 30px;
+    width: fit-content;
+    text-wrap: nowrap;
+    margin-block-start: 0;
+    margin-block-end: 0;
+
+    &:hover {
+        background-color: $Bg-color;
+        font-weight: 700;
+        color: $Purple-1;
     }
 }
 
@@ -120,10 +138,24 @@
     cursor: default;
 }
 
+.emoji-window-messages-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.emoji-window-messages {
+    position: absolute;
+    z-index: 2;
+}
+
 .emoji-window {
     position: absolute;
     margin-top: -430px;
-    margin-left: 80px;
+    margin-left: -300px;
 }
 
 .d-none {
