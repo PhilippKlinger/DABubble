@@ -124,7 +124,7 @@
           </div>
         </div>
 
-        <div *ngSwitchCase="'forgotPassword'" class="container bg-white">
+        <div *ngSwitchCase="'forgotPassword'" class="container forgot-pw-container bg-white">
           <img (click)="changeSwitchCase('login')" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Passwort zurücksetzen</h1>
           <p>Bitte geben Sie Ihre E-Mail-Adresse ein.</p>
@@ -144,6 +144,12 @@
           </div>
         </div>
     </div>
+    <div *ngSwitchCase="'login'" class="create-profile bottom">
+      <span>Neu bei DABubble?</span>
+      <div class="submit-buttons d-flex-standard">
+        <button class="btn-guest" mat-button (click)="changeSwitchCase('signup')">Konto erstellen</button>
+      </div>
+    </div>
     <div id="register" class="popup d-none">
       <p>Konto erfolgreich erstellt!</p>
     </div>
@@ -154,4 +160,9 @@
     <div id="login" class="popup d-none">
       <p>Erfolgreich angemeldet!</p>
     </div>
+
+    <footer>
+        <a class="link cursor-pointer" (click)="changeSwitchCase('signup')">Impressum</a>
+        <a class="link cursor-pointer" (click)="changeSwitchCase('signup')">Datenschutz</a>
+    </footer>
 </section>
