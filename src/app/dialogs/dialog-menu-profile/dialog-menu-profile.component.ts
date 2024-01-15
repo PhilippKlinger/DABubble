@@ -35,10 +35,11 @@ export class DialogMenuProfileComponent {
   }
 
   openEditProfile() {
-    console.log(this.isLoggedInWithGoogle);
     if (!this.isLoggedInWithGoogle) {
       this.dialogRef.close();
       this.dialogService.openDialog('editProfile');
+    } else {
+      window.open("https://myaccount.google.com/")
     }
 
   }
