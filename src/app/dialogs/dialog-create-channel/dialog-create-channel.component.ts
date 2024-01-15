@@ -17,17 +17,21 @@ import { User } from 'src/app/models/user.class';
 export class DialogCreateChannelComponent {
 
   channel = new Channel();
-  
+  currentUser!: User;
 
-  constructor(private channelsService: ChannelsService, private dialogService: OpenDialogService, private dialogRef: MatDialogRef<DialogCreateChannelComponent>) { }
+  constructor(private channelsService: ChannelsService, private dialogService: OpenDialogService, private dialogRef: MatDialogRef<DialogCreateChannelComponent>) {
+    this.channelsService.currentUserInfo$.subscribe((currentUser) => {
+      this.currentUser = currentUser;
+    });
+   }
 
   createChannel(): void {
-    this.channel.setCreator();
+    this.channel.setCreator(this.currentUser.name);
     this.channel.setTimestampNow();
-    this.channel.addCreatorToMembers();
+    this.channel.addCreatorToMembers(this.currentUser);
     this.channelsService.createChannel(this.channel, 'channels').then(() => {
       this.channelsService.setSelectedChannel(this.channel);
-      console.log('selectd channel is:', this.channel);
+     
       this.dialogRef.close();
       this.dialogService.openDialog('addChannelmembers');
     }).catch(error => {

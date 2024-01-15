@@ -19,12 +19,13 @@ export class Channel {
         this.timestamp = Date.now();
       }
 
-    setCreator(): void {
-        this.creator = 'Test User';
+    setCreator(creatorName: string): void {
+        this.creator = creatorName;
     }
 
-    addCreatorToMembers(): void {
-        this.members = [{email: 'testuser@dev.com', id: '11sdf1s6f1s6f1', name: 'Test User', avatar: 'assets/avatars/avatar_0.svg' }];
+    
+    addCreatorToMembers(creator: any): void {
+        this.members = [creator];
     }
    
     public toJSON() {

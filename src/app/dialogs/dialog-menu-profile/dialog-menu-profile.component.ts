@@ -4,6 +4,7 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { UserService } from 'src/app/shared-services/user.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-dialog-menu-profile',
@@ -13,16 +14,33 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class DialogMenuProfileComponent {
 
   currentUser!: User;
+  isLoggedInWithGoogle: boolean = false;
 
-  constructor(private channelService: ChannelsService, private userService: UserService, private dialogService: OpenDialogService, private dialogRef: MatDialogRef<DialogMenuProfileComponent>){
+  constructor(private channelService: ChannelsService, private FbAuth: Auth, private dialogService: OpenDialogService, private dialogRef: MatDialogRef<DialogMenuProfileComponent>) {
     this.channelService.currentUserInfo$.subscribe((currentUser) => {
       this.currentUser = currentUser;
-    })
+    });
+    this.checkAuthenticationProvider();
   }
 
-  openEditProfile(){
-    this.dialogRef.close();
-  this.dialogService.openDialog('editProfile');
+  async checkAuthenticationProvider() {
+    try {
+      const user = await this.FbAuth.currentUser;
+      if (user) {
+        this.isLoggedInWithGoogle = user.providerData.some(provider => provider.providerId === 'google.com');
+      }
+    } catch (error) {
+      console.error('Error checking authentication provider:', error);
+    }
+  }
+
+  openEditProfile() {
+    console.log(this.isLoggedInWithGoogle);
+    if (!this.isLoggedInWithGoogle) {
+      this.dialogRef.close();
+      this.dialogService.openDialog('editProfile');
+    }
+
   }
 
 }

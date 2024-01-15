@@ -38,7 +38,6 @@ export class DialogAddChannelmembersComponent {
     });
     this.needToAddMoreMembersSubscription = this.dialogService.needToAddMoreMembers$.subscribe((state) => {
       this.needToAddMoreMembers = state;
-      console.log('zweiter member dialog geöffnet', state)
     })
   }
 
@@ -48,24 +47,23 @@ export class DialogAddChannelmembersComponent {
 
   filterUsers() {
     if (this.channel) {
-      const channelMembers = this.needToAddMoreMembers ? (this.channel.members || []) : [];
-           
-      this.filteredUsers = this.users.filter(user => {
-        const userIncluded = channelMembers.some(channelUser => channelUser.id === user.id);
-       
-        return (
-          user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
-          !this.selectedUsers.includes(user) &&
-          (this.needToAddMoreMembers ? !userIncluded : true)
-        );
-      });
+        const channelMembers = this.channel.members || [];
+        this.filteredUsers = this.users.filter(user => {
+            const userIncluded = channelMembers.some(channelUser => channelUser.id === user.id);
+            return (
+                user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
+                !this.selectedUsers.includes(user) &&
+                !userIncluded
+            );
+        });
     } else {
-      this.filteredUsers = this.users.filter(user =>
-        user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
-        !this.selectedUsers.includes(user)
-      );
+        this.filteredUsers = this.users.filter(user =>
+            user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
+            !this.selectedUsers.includes(user)
+        );
     }
-  }
+}
+
   
   selectUser(user: User) {
     this.selectedUsers.push(user);

@@ -23,7 +23,7 @@
         <input [(ngModel)]="newUserEmail" matInput placeholder="{{currentUser.email}}">
     </div>
     <div class="buttons">
-        <button mat-raised-button>Abbrechen</button>
+        <button mat-raised-button mat-dialog-close>Abbrechen</button>
         <button (click)="saveChanges()" mat-raised-button color="primary">Speichern</button>
     </div>
 </div>
