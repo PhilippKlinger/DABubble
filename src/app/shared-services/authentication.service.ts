@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, signOut, confirmPasswordReset} from '@angular/fire/auth';
+import { Router } from '@angular/router';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private auth: Auth) {}
+  constructor(
+    private auth: Auth, 
+    private userService: UserService, 
+    private router: Router
+  ) {}
 
   async login(email: string, password: string) {
     return signInWithEmailAndPassword(this.auth, email, password);
@@ -24,8 +30,20 @@ export class AuthService {
   }
 
   async logout() {
-    return signOut(this.auth);
+    try {
+      const userJson = sessionStorage.getItem('user');
+      if (userJson) {
+        const user = JSON.parse(userJson);
+        await this.userService.setUserOnlineStatus(user.id, false);
+        await signOut(this.auth);
+        sessionStorage.removeItem('user');
+        this.router.navigate(['/login']);
+      }
+    } catch (error) {
+      console.error('Fehler beim Abmelden', error);
+    }
   }
+
 
   async confirmResetPassword(oobCode: string, newPassword: string) {
     await confirmPasswordReset(this.auth, oobCode, newPassword);

@@ -30,20 +30,6 @@ export class MainContentProfileSelectorComponent {
   }
 
   logout() {
-    const userJson = sessionStorage.getItem('user');
-    if (userJson) {
-      const user = JSON.parse(userJson);
-      this.userService.setUserOnlineStatus(user.id, false)
-        .then(() => {
-          return this.authService.logout();
-        })
-        .then(() => {
-          sessionStorage.removeItem('user');
-          this.router.navigate(['/login']);
-        })
-        .catch(error => {
-          console.error('Fehler beim Abmelden', error);
-        });
-    }
+    this.authService.logout();
   }
 }

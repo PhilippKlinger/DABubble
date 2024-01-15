@@ -37,7 +37,7 @@
       <p>Name: {{ user.name }}</p>
       <p>Email: {{ user.email }}</p>
       <p>Channel ID: {{ user.id }}</p>
-      <button mat-raised-button color="primary">edit user</button>
+      <button mat-raised-button color="primary" (click)="deleteUser(user)">delete user</button>
     </li>
   </ul>
 </div>

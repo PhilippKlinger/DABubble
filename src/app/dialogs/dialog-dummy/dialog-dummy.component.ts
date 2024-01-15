@@ -59,6 +59,14 @@ export class DialogDummyComponent implements OnInit {
     this.dialogService.openDialog('editChannel');
   }
 
+  deleteUser(user: User): void {
+    this.userService.deleteUser('users', user.id).then(() => {
+      console.log('User gelöscht:', user.id);
+    }).catch(error => {
+      console.error('Fehler beim Löschen des Users:', error);
+    });
+  }
+
   ngOnDestroy() {
     this.unsubChannels.unsubscribe();
     this.unsubUser.unsubscribe();

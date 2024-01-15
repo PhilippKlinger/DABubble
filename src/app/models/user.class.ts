@@ -4,7 +4,7 @@ export class User {
     password: string;
     confirmPassword: string;
     email: string;
-    avatar: string;  //bild auf firestore laden oder pfad zu datei anzeigen??
+    avatar: string;
     onlineStatus: boolean = false;
 
     constructor(obj?: any) {
