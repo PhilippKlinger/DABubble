@@ -2,6 +2,7 @@ export class Message {
     id: string;
     message: string;
     creator: string;
+    creatorId:string;
     avatar: string;
     timestamp: string | number;
     reactions?: object;
@@ -10,6 +11,7 @@ export class Message {
         this.id = obj ? obj.id : '';
         this.message = obj ? obj.message : '';
         this.creator = obj ? obj.creator : '';
+        this.creatorId = obj ? obj.creatorId : '';
         this.avatar = obj ? obj.avatar : '';
         this.timestamp = obj ? obj.timestamp : '';
         this.reactions = obj ? obj.reactions : '';
@@ -40,6 +42,7 @@ export class Message {
             id: this.id,
             message: this.message,
             creator: this.creator,
+            creatorId: this.creatorId,
             avatar: this.avatar,
             timestamp: this.timestamp,
             reactions: this.reactions,

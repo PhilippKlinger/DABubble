@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, DocumentData, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, DocumentData, getDoc, getDocs } from '@angular/fire/firestore';
 import { Channel } from '../models/channel.class';
 import { BehaviorSubject } from 'rxjs';
 import { formatDate } from '@angular/common';
@@ -232,6 +232,21 @@ export class ChannelsService {
 
       this.channels$.next(channels);
     });
+  }
+
+  async updateUserNameInMessages(userId: string, newName: string) {
+    const channels = this.channels$.value;
+    for (const channel of channels) {
+      const messagesRef = this.getChannelsColRef(channel);
+      const querySnapshot = await getDocs(messagesRef);
+      querySnapshot.forEach(async (doc) => {
+        const message = doc.data() as Message;
+        if (message.creatorId === userId) {
+          const updatedMessage = { ...message, creatorName: newName };
+          await updateDoc(doc.ref, updatedMessage);
+        }
+      });
+    }
   }
 
   async deleteChannel(colId: string, docId: string) {
