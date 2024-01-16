@@ -25,6 +25,11 @@ export class MainContentMainChatLowerPartComponent {
   user: User = null!;
   hoverOptionEditMessage_open: boolean = false;
   messageReactions: any = [];
+  thread_subject: any = [];
+  editingMessage: boolean = false;
+  textareaCols!: number;
+  textAreaContent!: string;
+  editedText!: string;
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
@@ -36,9 +41,52 @@ export class MainContentMainChatLowerPartComponent {
       }
     });
 
+    this.channelService.thread_subject$.subscribe((thread_subject: Message) => {
+      this.thread_subject = thread_subject;
+      this.textAreaContent = this.thread_subject.message;
+    });
+
     this.channelService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
+  }
+
+  changedTextMessage(event: Event) {
+    this.editedText = (event.target as HTMLTextAreaElement).value
+  }
+
+  async saveEditedMessage() {
+    const thread_subject = this.channelService.thread_subject$.value
+    const editedText = this.editedText;
+
+    this.message.id = thread_subject.id;
+    this.message.setMessage(editedText.trim());
+    this.message.creator = thread_subject.creator;
+    this.message.avatar = thread_subject.avatar;
+    this.message.timestamp = thread_subject.timestamp;
+    this.message.reactions = thread_subject.reactions;
+    this.message.answered_number = thread_subject.answered_number;
+    this.message.latest_answer = thread_subject.latest_answer;
+
+    this.channelService.updateMessage(this.message);
+    this.toggleEditing();
+  }
+
+  editMessage(text: string) {
+    this.updateTextareaSize(text);
+    this.toggleHoverOptionEditMessage();
+    setTimeout(() => {
+      this.toggleEditing();
+    }, 100);
+  }
+
+  updateTextareaSize(text: string) {
+    const lines = text.split('\n');
+    this.textareaCols = Math.max(...lines.map(line => line.length));
+  }
+
+  toggleEditing() {
+    this.editingMessage = !this.editingMessage;
   }
 
   @HostListener('document:click', ['$event'])

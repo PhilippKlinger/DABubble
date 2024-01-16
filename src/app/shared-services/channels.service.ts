@@ -308,6 +308,14 @@ export class ChannelsService {
     }
   }
 
+  async updateMessage(message: Message) {
+    const selectedChannel = this.selectedChannel$.value;
+    const docRef = this.thread_subject$.value;
+
+    await updateDoc(this.getUpdatedChannelsColRef(selectedChannel!, docRef.id), message.toJSON());
+    this.setSelectedChannel(selectedChannel!);
+  }
+
   getChannelsRef() {
     return collection(this.firestore, 'channels');
   }
