@@ -8,9 +8,9 @@ $ImgWidthSmall: 70.65px;
 $AnnimationHeightSmall: 69.53px;
 
 section {
-    width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     background-color: $Bg-color; 
+    position: relative;
 }
 
 .d-flex-standard {
@@ -19,13 +19,13 @@ section {
 
 .start-animation-container {
     position: absolute;
-    top: calc(50% - ($AnnimationHeight / 2));
-    left: calc(50% - ($AnnimationWidth / 2));
+    top: calc(50vh - ($AnnimationHeight / 2));
+    left: calc(50vw - ($AnnimationWidth / 2));
     animation: moveLeftUp 1s forwards 2.5s;
     @include dFlex($g: 60px);
     @media (max-width: 700px) {
-        top: calc(50% - ($AnnimationHeightSmall / 2));
-        left: calc(50% - ($AnnimationWidthSmall / 2));
+        top: calc(50vh - ($AnnimationHeightSmall / 2));
+        left: calc(50vw - ($AnnimationWidthSmall / 2));
         animation: moveLeftUpSmall 1s forwards 2.5s;
     }
 }
@@ -76,9 +76,6 @@ section {
 .header {
     @include dFlex($jc: space-between);
     padding:75px;
-    span {
-        @include fonts($fw: 400, $fs: 18px);
-    }
 }
 
 .link {
@@ -92,6 +89,16 @@ section {
 
 .create-profile {
     @include dFlex($g: 16px, $fd: column);
+    span {
+        @include fonts($fw: 400, $fs: 18px);
+    }
+}
+
+.create-profile.bottom {
+    display: none;
+    .submit-buttons {
+        margin-bottom: 100px;
+    }    
 }
 
 
@@ -111,6 +118,7 @@ form {
     @include dFlex($fd: column);
     max-width: 606px;
     padding: 50px 60px;
+    margin-bottom: 100px;
     border-radius: 30px;
     p {
         @include fonts($fw: 400, $fs: 20px)
@@ -274,6 +282,9 @@ input {
 
 .avatar-container {
     min-height: 669px;
+    .error-txt.show {
+        text-align: center;
+    }
 }
 
 h2 {
@@ -292,6 +303,7 @@ h2 {
 }
 
 .avatar-img-container {
+    @include dFlex($g: 8px);
     img {
         width: 72px;
         height: 72px;
@@ -304,7 +316,7 @@ h2 {
     img.selected {
         border: 4px solid $Text-gray;
     }
-    @include dFlex($g: 8px);
+    
 }
 
 .own-img-container {
@@ -330,6 +342,13 @@ h2 {
     &.animate-in {
         animation: slideInFromRight 0.5s ease-out forwards;
     }
+}
+
+footer {
+    @include dFlex($g: 16px);
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
 }
 
 @keyframes slideInFromRight {
@@ -369,8 +388,8 @@ h2 {
 @keyframes moveLeftUp {
     0% {
         position: absolute;
-        top: calc(50% - ($AnnimationHeight / 2));
-        left: calc(50% - ($AnnimationWidth / 2));
+        top: calc(50vh - ($AnnimationHeight / 2));
+        left: calc(50vw - ($AnnimationWidth / 2));
     } 
     
     100% {
@@ -384,14 +403,14 @@ h2 {
 @keyframes moveLeftUpSmall {
     0% {
         position: absolute;
-        top: calc(50% - ($AnnimationHeightSmall / 2));
-        left: calc(50% - ($AnnimationWidthSmall / 2));
+        top: calc(50vh - ($AnnimationHeightSmall / 2));
+        left: calc(50vw - ($AnnimationWidthSmall / 2));
     } 
     
     100% {
         position: absolute;
         top: 0;
-        left: calc(50% - ($AnnimationWidthSmall / 2));
+        left: calc(50vw - ($AnnimationWidthSmall / 2));
     }
 }
 
@@ -402,5 +421,107 @@ h2 {
     100% {
         opacity: 0;
         display: none;
+    }
+}
+
+
+@media (max-width: 726px) {
+    header {
+        justify-content: center !important;
+    }
+    .container {
+        border-radius: 0;
+        h1 {
+            font-size: 32px;
+        }
+        p {
+            font-size: 17px;
+        }
+    }
+    .create-profile {
+        display: none;
+    }
+    .create-profile.bottom {
+        display: flex;
+    }
+
+    .avatar-container, .forgot-pw-container {
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .avatar-img-container {
+        img {
+            width: 60px;
+            height: 60px;
+        }
+    }
+    .selectedAvatar {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+@media (max-width: 620px) {
+    form span.error-txt {
+        font-size: 10px;
+    }
+
+    .arrow-back {
+        top: 15px;
+        left: 15px;
+    }
+}
+@media (max-width: 600px) {
+    .container {
+        padding: 50px 24px;
+    }
+    .own-img-container {
+        flex-direction: column;
+        .btn-end {
+            justify-content: center;
+        }
+    }
+}
+
+@media (max-width: 500px) {
+    .avatar-img-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 470px) {
+    .google-btn {
+        span {
+            @include fonts($fs: 15px);
+            &:hover {
+                @include fonts($fs: 15px);   
+            } 
+        }
+
+    }
+
+    .input-container {
+        margin-top: 20px;
+        span {
+            padding: 20px 10px;
+        }
+    }
+
+    input,.submit-buttons button {
+        font-size: 13px;
+    }
+
+    .privacy-container {
+        flex-direction: column;
+        margin: 0;
+    }
+}
+
+@media (max-width: 380px) {
+    .container {
+        padding: 50px 6px;
     }
 }

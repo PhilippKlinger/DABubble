@@ -15,6 +15,7 @@ export class ChannelsService {
   threadAnswers: any = [];
   answerReactions = [];
   messageReactions = [];
+  message = new Message();
 
   // private channelsSubject = new BehaviorSubject<Channel[]>([]);
   // channels$ = this.channelsSubject.asObservable();
@@ -24,6 +25,7 @@ export class ChannelsService {
   public channels$: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
   public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
+  public thread_subject_index$: BehaviorSubject<number> = new BehaviorSubject<number>(null!);
   public selectedMessageMainChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public selectedAnswerThreadChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public currentUserInfo$: BehaviorSubject<User> = new BehaviorSubject<User>(null!);
@@ -125,6 +127,34 @@ export class ChannelsService {
     }
   }
 
+  sortChatMessagesByTime() {
+    this.chatMessages.sort((a: any, b: any) => {
+      const timeA = this.parseDate(a.timestamp);
+      const timeB = this.parseDate(b.timestamp);
+      return timeA - timeB;
+    });
+  }
+
+  sortThreadAnswersByTime() {
+    this.threadAnswers.sort((a: any, b: any) => {
+      const timeA = this.parseDate(a.timestamp);
+      const timeB = this.parseDate(b.timestamp);
+      return timeA - timeB;
+    });
+  }
+
+  parseDate(timestamp: any) {
+    const dateParts = timestamp.split(' ')[0].split('-');
+    const timeParts = timestamp.split(' ')[1].split(':');
+    const year = parseInt(dateParts[2], 10);
+    const month = parseInt(dateParts[1], 10) - 1; // Monate in JavaScript sind 0-basiert
+    const day = parseInt(dateParts[0], 10);
+    const hours = parseInt(timeParts[0], 10);
+    const minutes = parseInt(timeParts[1], 10);
+
+    return new Date(year, month, day, hours, minutes).getTime();
+  }
+
   async addReactionToAnswer(reaction: Reaction) {
     const selectedChannel = this.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
@@ -174,9 +204,16 @@ export class ChannelsService {
     this.setSelectedChannel(selectedChannel!);
   }
 
+  selectMessageForThread(index: number) {
+    this.thread_subject$.next(this.chatMessages[index]);
+    this.thread_subject_index$.next(index);
+  }
+
+
   async pushThreadAnswerToMessage(answer: Message): Promise<void> {
     const selectedChannel = this.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
+    const thread_subject_index = this.thread_subject_index$.value;
 
     answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
     if (selectedChannel && thread_subject && thread_subject !== undefined) {
@@ -186,6 +223,8 @@ export class ChannelsService {
     } else {
       console.error('No selected channel or thread subject available.');
     }
+    this.setSelectedChannel(selectedChannel!);
+    this.selectMessageForThread(thread_subject_index!);
   }
 
   async pushMessageToChannel(message: Message): Promise<void> {
@@ -203,6 +242,22 @@ export class ChannelsService {
     }
 
     this.setSelectedChannel(selectedChannel!);
+  }
+
+  async increaseAnswerAndSetLatestAnswer(thread_subject: Message, answer: Message) {
+    const selectedChannel = this.selectedChannel$.value;
+    if (selectedChannel) {
+      this.message.timestamp = thread_subject.timestamp;
+      this.message.message = thread_subject.message;
+      this.message.id = thread_subject.id;
+      this.message.creator = thread_subject.creator;
+      this.message.avatar = thread_subject.avatar;
+      this.message.reactions = thread_subject.reactions;
+      this.message.answered_number = (thread_subject.answered_number + 1);
+      this.message.setLatestAnswer(answer.timestamp);
+      await updateDoc(this.getUpdatedChannelsColRef(selectedChannel, thread_subject.id), this.message.toJSON());
+    }
+    console.log(this.message.latest_answer);
   }
 
   async createChannel(channel: Channel, colId: 'channels'): Promise<void> {
@@ -266,6 +321,14 @@ export class ChannelsService {
         }
       );
     }
+  }
+
+  async updateMessage(message: Message) {
+    const selectedChannel = this.selectedChannel$.value;
+    const docRef = this.thread_subject$.value;
+
+    await updateDoc(this.getUpdatedChannelsColRef(selectedChannel!, docRef.id), message.toJSON());
+    this.setSelectedChannel(selectedChannel!);
   }
 
   getChannelsRef() {

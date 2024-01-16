@@ -11,7 +11,8 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 })
 export class MainContentThreadChatLowerPartComponent {
   @ViewChild('answer') input_answer!: ElementRef;
-  thread_subject: Message | null = null;
+  thread_subject: any = null;
+  thread_subject_time: any;
   threadAnswers: any = [];
   answer = new Message();
   reaction = new Reaction();
@@ -22,8 +23,10 @@ export class MainContentThreadChatLowerPartComponent {
 
   constructor(private channelService: ChannelsService) {
     this.channelService.thread_subject$.subscribe((value: Message) => {
-      //bei veränderung des observables wird folgende funktion ausgelöst
-      this.thread_subject = value;
+      if (value) {
+        this.thread_subject_time = this.getFormattedTime(value);
+        this.thread_subject = value;
+      }
       this.receiveThreadAnswers();
     });
 
@@ -81,6 +84,7 @@ export class MainContentThreadChatLowerPartComponent {
 
   sendAnswerToThread() {
     const currentUserInfo = this.channelService.currentUserInfo$.value
+    const thread_subject = this.channelService.thread_subject$.value
 
     if (this.input_answer.nativeElement.value.trim() !== '') {
       this.answer.setCreator(currentUserInfo.name);
@@ -88,6 +92,7 @@ export class MainContentThreadChatLowerPartComponent {
       this.answer.setAvatar(currentUserInfo.avatar);
       this.answer.setMessage(this.input_answer.nativeElement.value.trim());
       this.channelService.pushThreadAnswerToMessage(this.answer);
+      this.channelService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
       this.input_answer.nativeElement.value = '';
     }
   }
@@ -95,6 +100,14 @@ export class MainContentThreadChatLowerPartComponent {
   receiveThreadAnswers() {
     this.channelService.updateThreadAnswersOfSelectedMessage();
     this.channelService.getReactionsOfAnswers();
+    this.channelService.sortThreadAnswersByTime();
     this.threadAnswers = this.channelService.threadAnswers;
+  }
+
+  getFormattedTime(message: any) {
+    const timeParts = message.timestamp.split(' ')[1].split(':');
+    const hours = timeParts[0];
+    const minutes = timeParts[1];
+    return `${hours}:${minutes}`;
   }
 }

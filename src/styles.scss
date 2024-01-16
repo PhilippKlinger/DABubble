@@ -62,6 +62,27 @@ h1, h2, h3, input, textarea {
   font-family: 'Nunito', sans-serif !important;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $Bg-color;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $Purple-1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: $Purple-2;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 
 @mixin dFlex($jc:center, $ai:center, $g: 0px , $fd: row) {
   display: flex; 
