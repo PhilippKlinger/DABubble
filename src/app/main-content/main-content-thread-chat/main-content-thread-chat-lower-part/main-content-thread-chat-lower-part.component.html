@@ -4,7 +4,7 @@
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div>
                 <div class="anon-user-message-time-name">
-                    <span>{{ thread_subject?.timestamp }}</span>
+                    <span>{{ thread_subject_time }}</span>
                     <h3>{{ thread_subject?.creator }}</h3>
                 </div>
                 <div class="anon-speech-bubble-user">
@@ -23,7 +23,7 @@
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div class="flex-end">
                 <div class="user-message-time-name">
-                    <span>{{ thread_subject?.timestamp }}</span>
+                    <span>{{ thread_subject_time }}</span>
                     <h3>{{ thread_subject?.creator }}</h3>
                 </div>
                 <div class="speech-bubble-user">
@@ -54,7 +54,7 @@
                 <img class="user-message-avatar" src="{{ answer.avatar }}">
                 <div class="flex-end">
                     <div class="user-message-time-name">
-                        <span>{{ answer.timestamp }}</span>
+                        <span>{{ getFormattedTime(answer) }}</span>
                         <h3>{{ answer.creator }}</h3>
                     </div>
                     <div class="speech-bubble-user">
@@ -84,7 +84,7 @@
                 <img class="user-message-avatar" src="{{ answer.avatar }}">
                 <div>
                     <div class="anon-user-message-time-name">
-                        <span>{{ answer.timestamp }}</span>
+                        <span>{{ getFormattedTime(answer) }}</span>
                         <h3>{{ answer.creator }}</h3>
                     </div>
                     <div class="anon-speech-bubble-user">

@@ -101,6 +101,13 @@ export class MainContentMainChatLowerPartComponent {
     console.log(this.chatMessages)
   }
 
+  getFormattedTime(message: any) {
+    const timeParts = message.timestamp.split(' ')[1].split(':');
+    const hours = timeParts[0];
+    const minutes = timeParts[1];
+    return `${hours}:${minutes}`;
+  }
+
   openThread() {
     //setzt den thread_open boolean auf true.
     // Bei veränderung wird in Main-content.ts eine funktion ausgelöst da main content die function abonniert hat
