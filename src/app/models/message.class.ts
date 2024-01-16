@@ -5,6 +5,7 @@ export class Message {
     avatar: string;
     timestamp: string | number;
     reactions?: object;
+    answered_number: number;
 
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
@@ -13,6 +14,7 @@ export class Message {
         this.avatar = obj ? obj.avatar : '';
         this.timestamp = obj ? obj.timestamp : '';
         this.reactions = obj ? obj.reactions : '';
+        this.answered_number = obj ? obj.answered_number : '';
     }
 
     setTimestampNow(): void {
@@ -35,6 +37,10 @@ export class Message {
         this.id = id;
     }
 
+    setAnwers(): void {
+        this.answered_number = 0;
+    }
+
     public toJSON() {
         return {
             id: this.id,
@@ -43,6 +49,7 @@ export class Message {
             avatar: this.avatar,
             timestamp: this.timestamp,
             reactions: this.reactions,
+            answered_number: this.answered_number,
         }
     }
 }

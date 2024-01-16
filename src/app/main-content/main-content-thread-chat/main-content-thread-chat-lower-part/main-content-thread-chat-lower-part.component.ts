@@ -84,6 +84,7 @@ export class MainContentThreadChatLowerPartComponent {
 
   sendAnswerToThread() {
     const currentUserInfo = this.channelService.currentUserInfo$.value
+    const thread_subject = this.channelService.thread_subject$.value
 
     if (this.input_answer.nativeElement.value.trim() !== '') {
       this.answer.setCreator(currentUserInfo.name);
@@ -91,6 +92,7 @@ export class MainContentThreadChatLowerPartComponent {
       this.answer.setAvatar(currentUserInfo.avatar);
       this.answer.setMessage(this.input_answer.nativeElement.value.trim());
       this.channelService.pushThreadAnswerToMessage(this.answer);
+      this.channelService.increaseAnswerAmount(thread_subject);
       this.input_answer.nativeElement.value = '';
     }
   }

@@ -15,6 +15,7 @@ export class ChannelsService {
   threadAnswers: any = [];
   answerReactions = [];
   messageReactions = [];
+  message = new Message();
 
   // private channelsSubject = new BehaviorSubject<Channel[]>([]);
   // channels$ = this.channelsSubject.asObservable();
@@ -44,7 +45,6 @@ export class ChannelsService {
       });
     }
   }
-
 
   getReactionsOfMessages() {
     const selectedChannel = this.selectedChannel$.value;
@@ -232,6 +232,21 @@ export class ChannelsService {
     }
 
     this.setSelectedChannel(selectedChannel!);
+  }
+
+  async increaseAnswerAmount(thread_subject: Message) {
+    const selectedChannel = this.selectedChannel$.value;
+    if (selectedChannel) {
+      this.message.timestamp = thread_subject.timestamp;
+      this.message.message = thread_subject.message;
+      this.message.id = thread_subject.id;
+      this.message.creator = thread_subject.creator;
+      this.message.avatar = thread_subject.avatar;
+      this.message.reactions = thread_subject.reactions;
+      this.message.answered_number = (thread_subject.answered_number + 1);
+      await updateDoc(this.getUpdatedChannelsColRef(selectedChannel, thread_subject.id), this.message.toJSON());
+    }
+    console.log(this.message);
   }
 
   async createChannel(channel: Channel, colId: 'channels'): Promise<void> {

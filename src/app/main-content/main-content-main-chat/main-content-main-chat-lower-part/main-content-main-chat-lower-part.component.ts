@@ -98,7 +98,6 @@ export class MainContentMainChatLowerPartComponent {
     this.channelService.getReactionsOfMessages();
     this.channelService.sortChatMessagesByTime();
     this.chatMessages = this.channelService.chatMessages;
-    console.log(this.chatMessages)
   }
 
   getFormattedTime(message: any) {
@@ -121,6 +120,7 @@ export class MainContentMainChatLowerPartComponent {
       this.message.setCreator(currentUserInfo.name);
       this.message.setAvatar(currentUserInfo.avatar);
       this.message.setTimestampNow();
+      this.message.setAnwers();
       this.message.setMessage(this.input_message.nativeElement.value.trim());
       this.channelService.pushMessageToChannel(this.message);
       this.input_message.nativeElement.value = '';
