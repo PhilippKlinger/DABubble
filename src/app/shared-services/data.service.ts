@@ -6,7 +6,7 @@ import { Message } from '../models/message.class';
   providedIn: 'root'
 })
 export class DataService {
-  public thread_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  public thread_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public directmessage_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   getBooleanValue(): boolean {

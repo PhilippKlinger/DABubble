@@ -16,12 +16,22 @@
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div class="flex-end">
                     <div class="user-message-time-name">
-                        <span>{{ message.timestamp }}</span>
+                        <span>{{ getFormattedTime(message) }}</span>
                         <h3>{{ message.creator }}</h3>
                     </div>
-                    <div class="speech-bubble-user">
+
+                    <div *ngIf="(thread_subject?.id !== message.id || !editingMessage)" class="speech-bubble-user">
                         {{ message.message }}
                     </div>
+
+                    <div *ngIf="(thread_subject?.id == message.id && editingMessage)" class="speech-bubble-user-edit">
+                        <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="4" value="{{ textAreaContent }}"></textarea>
+                        <div>
+                            <button (click)="toggleEditing()" class="btn-cancel">Abbrechen</button>
+                            <button (click)="saveEditedMessage()" class="btn-save">Speichern</button>
+                        </div>
+                    </div>
+
                     <div class="user-message-emojis">
                         <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
                             <div>{{ reactions.reaction }}</div>
@@ -38,7 +48,7 @@
                     <mat-icon (click)="openThread()">insert_comment</mat-icon>
                     <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                     <span *ngIf="hoverOptionEditMessage_open">
-                        <h1 class="hover-options-edit-message">
+                        <h1 class="hover-options-edit-message" (click)="editMessage(message.message)">
                             Nachricht bearbeiten
                         </h1>
                     </span>
@@ -49,7 +59,7 @@
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div>
                     <div class="anon-user-message-time-name">
-                        <span>{{ message.timestamp }}</span>
+                        <span>{{ getFormattedTime(message) }}</span>
                         <h3>{{ message.creator }}</h3>
                     </div>
                     <div class="anon-speech-bubble-user">
@@ -57,8 +67,9 @@
                     </div>
                     <div class="anon-user-message-emojis">
                         <div class="anon-user-answer-container">
-                            <h3 (click)="openThread()">2 Antworten</h3>
-                            <span>Letzte Antwort 14:56</span>
+                            <h3 (click)="openThread()">{{ message.answered_number }} Antworten</h3>
+                            <span *ngIf="message.latest_answer !== ''">Letzte Antwort {{
+                                getFormattedTimeForLatestAnswer(message.latest_answer) }}</span>
                         </div>
                         <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
                             <div>{{ reactions.reaction }}</div>

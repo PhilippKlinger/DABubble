@@ -307,6 +307,61 @@ $Light-purple: #ADB0D9;
     line-height: 24.55px;
 }
 
+.speech-bubble-user-edit {
+    border: solid 1px $Light-purple;
+    background-color: white;
+    color: $Text-gray;
+    padding: 20px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: 400 !important;
+    line-height: 24.55px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: fit-content;
+
+    textarea {
+        font-size: inherit;
+        color: inherit;
+        background-color: inherit;
+        border: none;
+        width: 100%;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    div {
+        display: flex;
+        justify-content: flex-end;
+        gap: 32px;
+    }
+}
+
+.btn-cancel {
+    cursor: pointer;
+    border: solid 1px $Purple-1;
+    color: $Purple-1;
+    background-color: white;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 12px 25px;
+    border-radius: 50px
+}
+
+.btn-save {
+    cursor: pointer;
+    border: none;
+    color: white;
+    background-color: $Purple-1;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 12px 25px;
+    border-radius: 50px
+}
+
 .anon-speech-bubble-user {
     width: fit-content;
     background-color: $Bg-color;

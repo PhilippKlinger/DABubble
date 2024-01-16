@@ -56,7 +56,7 @@ export class DialogEditProfileComponent {
 
         //   // Temporäre Speicherung der neuen E-Mail-Adresse in Firestore
         //   await this.userService.updateUser(updatedUser);
-  
+
         //   // Sende Verifizierungs-E-Mail an die temporäre neue Adresse
         //   await sendEmailVerification({ ...user, email: this.newUserEmail });
         //   this.commonService.showPopup('EmailVerification');
@@ -72,6 +72,11 @@ export class DialogEditProfileComponent {
         userToUpdate.name = this.newUserName;
         userToUpdate.email = this.newUserEmail;
         await this.userService.updateUser(userToUpdate);
+
+        // // Aktualisiere den Namen in den Nachrichten
+        // debugger
+        // await this.channelService.updateUserNameInMessages(userToUpdate.id, this.newUserName);
+
         // Update channel members
         const channels = this.channelService.channels$.value;
         channels.forEach(channel => {

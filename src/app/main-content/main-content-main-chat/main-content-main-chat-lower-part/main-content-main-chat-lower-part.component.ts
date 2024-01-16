@@ -25,6 +25,11 @@ export class MainContentMainChatLowerPartComponent {
   user: User = null!;
   hoverOptionEditMessage_open: boolean = false;
   messageReactions: any = [];
+  thread_subject: any = [];
+  editingMessage: boolean = false;
+  textareaCols!: number;
+  textAreaContent!: string;
+  editedText!: string;
 
   constructor(private dataService: DataService, private channelService: ChannelsService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
@@ -36,9 +41,59 @@ export class MainContentMainChatLowerPartComponent {
       }
     });
 
+    this.channelService.thread_subject$.subscribe((thread_subject: Message) => {
+      if (thread_subject) { 
+        this.thread_subject = thread_subject;
+        this.textAreaContent = this.thread_subject.message;
+      } else {
+        //kann noch geändert werden
+        console.log('waiting for thread subject');
+        this.textAreaContent = '';
+      }
+    });
+    
+
     this.channelService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
+  }
+
+  changedTextMessage(event: Event) {
+    this.editedText = (event.target as HTMLTextAreaElement).value
+  }
+
+  async saveEditedMessage() {
+    const thread_subject = this.channelService.thread_subject$.value
+    const editedText = this.editedText;
+
+    this.message.id = thread_subject.id;
+    this.message.setMessage(editedText.trim());
+    this.message.creator = thread_subject.creator;
+    this.message.avatar = thread_subject.avatar;
+    this.message.timestamp = thread_subject.timestamp;
+    this.message.reactions = thread_subject.reactions;
+    this.message.answered_number = thread_subject.answered_number;
+    this.message.latest_answer = thread_subject.latest_answer;
+
+    this.channelService.updateMessage(this.message);
+    this.toggleEditing();
+  }
+
+  editMessage(text: string) {
+    this.updateTextareaSize(text);
+    this.toggleHoverOptionEditMessage();
+    setTimeout(() => {
+      this.toggleEditing();
+    }, 100);
+  }
+
+  updateTextareaSize(text: string) {
+    const lines = text.split('\n');
+    this.textareaCols = Math.max(...lines.map(line => line.length));
+  }
+
+  toggleEditing() {
+    this.editingMessage = !this.editingMessage;
   }
 
   @HostListener('document:click', ['$event'])
@@ -63,7 +118,7 @@ export class MainContentMainChatLowerPartComponent {
 
   addReaction($event: any) {
     const currentUserInfo = this.channelService.currentUserInfo$.value
-    
+
     this.reaction.setReaction($event.emoji.native);
     this.reaction.setCreator(currentUserInfo.name);
     this.channelService.addReactionToMessage(this.reaction);
@@ -91,29 +146,28 @@ export class MainContentMainChatLowerPartComponent {
 
   selectMessageForThread(index: number) {
     this.channelService.thread_subject$.next(this.chatMessages[index]);
+    this.channelService.thread_subject_index$.next(index);
   }
 
   receiveChatMessages() {
     this.channelService.updateChatMessageOfSelectedChannel();
     this.channelService.getReactionsOfMessages();
+    this.channelService.sortChatMessagesByTime();
     this.chatMessages = this.channelService.chatMessages;
-    this.sortChatMessages();
   }
 
-  customSort = (a: any, b: any) => {
-    const dateA = new Date(a.timestamp);
-    const dateB = new Date(b.timestamp);
-    if (dateA > dateB) {
-      return 1;
-    } else if (dateA < dateB) {
-      return -1;
-    } else {
-      return 0;
-    }
+  getFormattedTimeForLatestAnswer(latest_answer: any) {
+    const timeParts = latest_answer.split(' ')[1].split(':');
+    const hours = timeParts[0];
+    const minutes = timeParts[1];
+    return `${hours}:${minutes}`;
   }
 
-  sortChatMessages() {
-    this.chatMessages.sort(this.customSort);
+  getFormattedTime(message: any) {
+    const timeParts = message.timestamp.split(' ')[1].split(':');
+    const hours = timeParts[0];
+    const minutes = timeParts[1];
+    return `${hours}:${minutes}`;
   }
 
   openThread() {
@@ -129,6 +183,7 @@ export class MainContentMainChatLowerPartComponent {
       this.message.setCreator(currentUserInfo.name);
       this.message.setAvatar(currentUserInfo.avatar);
       this.message.setTimestampNow();
+      this.message.setAnwers();
       this.message.setMessage(this.input_message.nativeElement.value.trim());
       this.channelService.pushMessageToChannel(this.message);
       this.input_message.nativeElement.value = '';
