@@ -11,7 +11,7 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 })
 export class MainContentThreadChatLowerPartComponent {
   @ViewChild('answer') input_answer!: ElementRef;
-  thread_subject: Message | null = null;
+  thread_subject: any = null;
   threadAnswers: any = [];
   answer = new Message();
   reaction = new Reaction();

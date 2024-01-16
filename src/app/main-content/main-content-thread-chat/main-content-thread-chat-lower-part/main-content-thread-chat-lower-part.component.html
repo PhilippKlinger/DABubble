@@ -1,6 +1,6 @@
 <div class="chat">
     <div class="chat-content">
-        <div class="thread-anon-user-message"  *ngIf="thread_subject?.creator !== this.user.name">
+        <div class="thread-anon-user-message" *ngIf="thread_subject?.creator !== this.user.name">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div>
                 <div class="anon-user-message-time-name">
@@ -10,16 +10,16 @@
                 <div class="anon-speech-bubble-user">
                     {{ thread_subject?.message }}
                 </div>
-                <div class="anon-user-message-emojis">
-                    <div class="user-message-emojis-showcase">
-                        <div>🎈</div>
-                        <span>1</span>
+                <div class="user-message-emojis">
+                    <div class="user-message-emojis-showcase" *ngFor="let reactions of thread_subject?.reactions">
+                        <div>{{ reactions.reaction }}</div>
+                        <span>{{ reactions.amount }}</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="thread-user-message"  *ngIf="thread_subject?.creator == this.user.name">
+        <div class="thread-user-message" *ngIf="thread_subject?.creator == this.user.name">
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div class="flex-end">
                 <div class="user-message-time-name">
@@ -104,7 +104,7 @@
             </div>
         </div>
 
-        
+
         <!-- <div class="thread-anon-user-message" *ngFor="let answer of threadAnswers"> OLD CODE!!!!!!!!!!!!! (will be removed later on)
             <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
             <div>
@@ -163,7 +163,7 @@
             <div class="emoji-window" [ngClass]="{'d-none': !emoji_window_open}">
                 <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addEmoji($event)"></emoji-mart>
             </div>
-            
+
             <mat-icon (click)="toggleEmojiWindow()">sentiment_satisfied</mat-icon>
             <mat-icon>alternate_email</mat-icon>
         </div>
