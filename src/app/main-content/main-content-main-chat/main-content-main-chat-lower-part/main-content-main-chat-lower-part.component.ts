@@ -42,9 +42,16 @@ export class MainContentMainChatLowerPartComponent {
     });
 
     this.channelService.thread_subject$.subscribe((thread_subject: Message) => {
-      this.thread_subject = thread_subject;
-      this.textAreaContent = this.thread_subject.message;
+      if (thread_subject) { 
+        this.thread_subject = thread_subject;
+        this.textAreaContent = this.thread_subject.message;
+      } else {
+        //kann noch geändert werden
+        console.log('waiting for thread subject');
+        this.textAreaContent = '';
+      }
     });
+    
 
     this.channelService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
