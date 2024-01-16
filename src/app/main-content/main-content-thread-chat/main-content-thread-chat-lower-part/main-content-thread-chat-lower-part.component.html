@@ -10,7 +10,7 @@
                 <div class="anon-speech-bubble-user">
                     {{ thread_subject?.message }}
                 </div>
-                <div class="user-message-emojis">
+                <div class="anon-user-message-emojis">
                     <div class="user-message-emojis-showcase" *ngFor="let reactions of thread_subject?.reactions">
                         <div>{{ reactions.reaction }}</div>
                         <span>{{ reactions.amount }}</span>
@@ -30,9 +30,9 @@
                     {{ thread_subject?.message }}
                 </div>
                 <div class="user-message-emojis">
-                    <div class="user-message-emojis-showcase">
-                        <div>🎈</div>
-                        <span>1</span>
+                    <div class="user-message-emojis-showcase" *ngFor="let reactions of thread_subject?.reactions">
+                        <div>{{ reactions.reaction }}</div>
+                        <span>{{ reactions.amount }}</span>
                     </div>
                 </div>
             </div>

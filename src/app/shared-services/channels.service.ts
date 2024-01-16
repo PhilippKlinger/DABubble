@@ -45,6 +45,7 @@ export class ChannelsService {
     }
   }
 
+
   getReactionsOfMessages() {
     const selectedChannel = this.selectedChannel$.value;
 
@@ -123,6 +124,34 @@ export class ChannelsService {
     } else {
       return { exists: false, amount: -1, id: null };
     }
+  }
+
+  sortChatMessagesByTime() {
+    this.chatMessages.sort((a: any, b: any) => {
+      const timeA = this.parseDate(a.timestamp);
+      const timeB = this.parseDate(b.timestamp);
+      return timeA - timeB;
+    });
+  }
+
+  sortThreadAnswersByTime() {
+    this.threadAnswers.sort((a: any, b: any) => {
+      const timeA = this.parseDate(a.timestamp);
+      const timeB = this.parseDate(b.timestamp);
+      return timeA - timeB;
+    });
+  }
+
+  parseDate(timestamp: any) {
+    const dateParts = timestamp.split(' ')[0].split('-');
+    const timeParts = timestamp.split(' ')[1].split(':');
+    const year = parseInt(dateParts[2], 10);
+    const month = parseInt(dateParts[1], 10) - 1; // Monate in JavaScript sind 0-basiert
+    const day = parseInt(dateParts[0], 10);
+    const hours = parseInt(timeParts[0], 10);
+    const minutes = parseInt(timeParts[1], 10);
+
+    return new Date(year, month, day, hours, minutes).getTime();
   }
 
   async addReactionToAnswer(reaction: Reaction) {

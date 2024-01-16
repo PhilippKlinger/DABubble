@@ -95,6 +95,7 @@ export class MainContentThreadChatLowerPartComponent {
   receiveThreadAnswers() {
     this.channelService.updateThreadAnswersOfSelectedMessage();
     this.channelService.getReactionsOfAnswers();
+    this.channelService.sortThreadAnswersByTime();
     this.threadAnswers = this.channelService.threadAnswers;
   }
 }

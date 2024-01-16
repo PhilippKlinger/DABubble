@@ -63,7 +63,7 @@ export class MainContentMainChatLowerPartComponent {
 
   addReaction($event: any) {
     const currentUserInfo = this.channelService.currentUserInfo$.value
-    
+
     this.reaction.setReaction($event.emoji.native);
     this.reaction.setCreator(currentUserInfo.name);
     this.channelService.addReactionToMessage(this.reaction);
@@ -96,24 +96,9 @@ export class MainContentMainChatLowerPartComponent {
   receiveChatMessages() {
     this.channelService.updateChatMessageOfSelectedChannel();
     this.channelService.getReactionsOfMessages();
+    this.channelService.sortChatMessagesByTime();
     this.chatMessages = this.channelService.chatMessages;
-    this.sortChatMessages();
-  }
-
-  customSort = (a: any, b: any) => {
-    const dateA = new Date(a.timestamp);
-    const dateB = new Date(b.timestamp);
-    if (dateA > dateB) {
-      return 1;
-    } else if (dateA < dateB) {
-      return -1;
-    } else {
-      return 0;
-    }
-  }
-
-  sortChatMessages() {
-    this.chatMessages.sort(this.customSort);
+    console.log(this.chatMessages)
   }
 
   openThread() {
