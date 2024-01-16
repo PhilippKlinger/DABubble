@@ -1,3 +1,5 @@
+import { Timestamp } from "@angular/fire/firestore";
+
 export class Message {
     id: string;
     message: string;
@@ -6,6 +8,7 @@ export class Message {
     timestamp: string | number;
     reactions?: object;
     answered_number: number;
+    latest_answer: string | number;
 
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
@@ -15,6 +18,7 @@ export class Message {
         this.timestamp = obj ? obj.timestamp : '';
         this.reactions = obj ? obj.reactions : '';
         this.answered_number = obj ? obj.answered_number : '';
+        this.latest_answer = obj ? obj.latest_answer : '';
     }
 
     setTimestampNow(): void {
@@ -41,6 +45,10 @@ export class Message {
         this.answered_number = 0;
     }
 
+    setLatestAnswer(timestamp: string | number): void {
+        this.latest_answer = timestamp;
+    }
+
     public toJSON() {
         return {
             id: this.id,
@@ -50,6 +58,7 @@ export class Message {
             timestamp: this.timestamp,
             reactions: this.reactions,
             answered_number: this.answered_number,
+            latest_answer: this.latest_answer,
         }
     }
 }

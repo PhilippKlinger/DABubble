@@ -25,6 +25,7 @@ export class ChannelsService {
   public channels$: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
   public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
+  public thread_subject_index$: BehaviorSubject<number> = new BehaviorSubject<number>(null!);
   public selectedMessageMainChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public selectedAnswerThreadChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public currentUserInfo$: BehaviorSubject<User> = new BehaviorSubject<User>(null!);
@@ -203,9 +204,16 @@ export class ChannelsService {
     this.setSelectedChannel(selectedChannel!);
   }
 
+  selectMessageForThread(index: number) {
+    this.thread_subject$.next(this.chatMessages[index]);
+    this.thread_subject_index$.next(index);
+  }
+
+
   async pushThreadAnswerToMessage(answer: Message): Promise<void> {
     const selectedChannel = this.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
+    const thread_subject_index = this.thread_subject_index$.value;
 
     answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
     if (selectedChannel && thread_subject && thread_subject !== undefined) {
@@ -215,6 +223,8 @@ export class ChannelsService {
     } else {
       console.error('No selected channel or thread subject available.');
     }
+    this.setSelectedChannel(selectedChannel!);
+    this.selectMessageForThread(thread_subject_index!);
   }
 
   async pushMessageToChannel(message: Message): Promise<void> {
@@ -234,7 +244,7 @@ export class ChannelsService {
     this.setSelectedChannel(selectedChannel!);
   }
 
-  async increaseAnswerAmount(thread_subject: Message) {
+  async increaseAnswerAndSetLatestAnswer(thread_subject: Message, answer: Message) {
     const selectedChannel = this.selectedChannel$.value;
     if (selectedChannel) {
       this.message.timestamp = thread_subject.timestamp;
@@ -244,9 +254,10 @@ export class ChannelsService {
       this.message.avatar = thread_subject.avatar;
       this.message.reactions = thread_subject.reactions;
       this.message.answered_number = (thread_subject.answered_number + 1);
+      this.message.setLatestAnswer(answer.timestamp);
       await updateDoc(this.getUpdatedChannelsColRef(selectedChannel, thread_subject.id), this.message.toJSON());
     }
-    console.log(this.message);
+    console.log(this.message.latest_answer);
   }
 
   async createChannel(channel: Channel, colId: 'channels'): Promise<void> {

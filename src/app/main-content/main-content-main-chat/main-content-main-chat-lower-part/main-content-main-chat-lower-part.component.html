@@ -58,7 +58,7 @@
                     <div class="anon-user-message-emojis">
                         <div class="anon-user-answer-container">
                             <h3 (click)="openThread()">{{ message.answered_number }} Antworten</h3>
-                            <span>Letzte Antwort 14:56</span>
+                            <span *ngIf="message.latest_answer !== ''">Letzte Antwort {{ getFormattedTimeForLatestAnswer(message.latest_answer) }}</span>
                         </div>
                         <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
                             <div>{{ reactions.reaction }}</div>

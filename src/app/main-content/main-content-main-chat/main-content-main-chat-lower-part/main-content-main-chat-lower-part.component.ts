@@ -91,6 +91,7 @@ export class MainContentMainChatLowerPartComponent {
 
   selectMessageForThread(index: number) {
     this.channelService.thread_subject$.next(this.chatMessages[index]);
+    this.channelService.thread_subject_index$.next(index);
   }
 
   receiveChatMessages() {
@@ -98,6 +99,13 @@ export class MainContentMainChatLowerPartComponent {
     this.channelService.getReactionsOfMessages();
     this.channelService.sortChatMessagesByTime();
     this.chatMessages = this.channelService.chatMessages;
+  }
+
+  getFormattedTimeForLatestAnswer(latest_answer: any) {
+    const timeParts = latest_answer.split(' ')[1].split(':');
+    const hours = timeParts[0];
+    const minutes = timeParts[1];
+    return `${hours}:${minutes}`;
   }
 
   getFormattedTime(message: any) {

@@ -92,7 +92,7 @@ export class MainContentThreadChatLowerPartComponent {
       this.answer.setAvatar(currentUserInfo.avatar);
       this.answer.setMessage(this.input_answer.nativeElement.value.trim());
       this.channelService.pushThreadAnswerToMessage(this.answer);
-      this.channelService.increaseAnswerAmount(thread_subject);
+      this.channelService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
       this.input_answer.nativeElement.value = '';
     }
   }
