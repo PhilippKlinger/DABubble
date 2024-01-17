@@ -33,21 +33,27 @@ export class LoginComponent {
   constructor(private authService: AuthService, private userService: UserService, private storageService: StorageService, private commonService: CommonService) {}
 
   async login() {
-    if (await this.checkUserExists()) {
-      this.authService.login(this.user.email, this.user.password)
-      .then((userCredential) => {
-        this.setUserOnline(userCredential);
-        this.commonService.showPopup('login');
-        this.commonService.routeTo('main-content');
-      })
-      .catch(error => {
-        debugger
-        if (error.code === 'auth/too-many-requests' || error.code === 'auth/invalid-credential' || error.code === 'auth/missing-password' || error.errors.message === 'INVALID_LOGIN_CREDENTIAL') {
-          this.loginErrorPassword = true;
-        }
-      });
-    }  
+    const userExists = await this.checkUserExists();    
+    if (userExists) {
+      const isUserVerified = await this.authService.userVerified();  
+      if (isUserVerified) {
+        this.authService.login(this.user.email, this.user.password)
+          .then((userCredential) => {
+            this.setUserOnline(userCredential);
+            this.commonService.showPopup('login');
+            this.commonService.routeTo('main-content');
+          })
+          .catch(error => {
+            if (error.code === 'auth/too-many-requests' || error.code === 'auth/invalid-credential' || error.code === 'auth/missing-password' || (error.errors && error.errors.message === 'INVALID_LOGIN_CREDENTIAL')) {
+              this.loginErrorPassword = true;
+            }
+          });
+      } else {
+        this.commonService.showVerifyPopup('verifiy-mail');
+      }
+    }
   }
+  
 
   async setUserOnline(userCredential: any) {
     let userId = userCredential.user.uid; 
@@ -149,13 +155,13 @@ export class LoginComponent {
     if (this.avatarFile) {
       await this.storageService.uploadFile(this.avatarFile);
     }   
-    this.authService.register(this.user.email, this.user.password)
-      .then((userCredential) => {
-        this.createNormalUser(userCredential);
-      })
-      .catch((error) => {
-        console.log(error);
-      }); 
+    try {
+      const userCredential = await this.authService.register(this.user.email, this.user.password);
+      await this.authService.sendVerificationEmail();
+      this.createNormalUser(userCredential);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   createNormalUser(userCredential: any) {

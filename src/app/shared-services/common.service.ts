@@ -33,6 +33,19 @@ export class CommonService {
     };    
   }
 
+  showVerifyPopup(popup_name:string) {
+    const popup = document.getElementById(popup_name);
+    if (popup) {
+      popup.classList.remove('d-none');
+      popup.classList.add('animate-in'); 
+    };    
+    setTimeout(() => {
+      if (popup) {
+        popup.classList.add('d-none');
+      }
+    }, 2000);
+  }
+
   routeTo(router_link: string) {
     setTimeout(() => {
       this.router.navigate([`/${router_link}`]);
