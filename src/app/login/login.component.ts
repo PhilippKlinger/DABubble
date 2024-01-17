@@ -41,7 +41,8 @@ export class LoginComponent {
         this.commonService.routeTo('main-content');
       })
       .catch(error => {
-        if (error.code === 'auth/too-many-requests' || error.code === 'auth/invalid-credential' || error.code === 'auth/missing-password') {
+        debugger
+        if (error.code === 'auth/too-many-requests' || error.code === 'auth/invalid-credential' || error.code === 'auth/missing-password' || error.errors.message === 'INVALID_LOGIN_CREDENTIAL') {
           this.loginErrorPassword = true;
         }
       });

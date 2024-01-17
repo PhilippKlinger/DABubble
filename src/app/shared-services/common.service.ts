@@ -25,7 +25,9 @@ export class CommonService {
 
   showPopup(popup_name:string) {
     const popup = document.getElementById(popup_name);
-    if (popup) {
+    const popup_Background = document.getElementById(popup_name + "-bg");
+    if (popup && popup_Background) {
+      popup_Background.classList.remove('d-none');
       popup.classList.remove('d-none');
       popup.classList.add('animate-in'); 
     };    

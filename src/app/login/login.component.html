@@ -16,6 +16,10 @@
     </header>
     <div class="login d-flex-standard">
         <div *ngSwitchCase="'login'" class="container bg-white">
+          <div id="login-bg" class="overlay d-none"></div>
+          <div id="login" class="popup d-none">
+            <p>Erfolgreich angemeldet!</p>
+          </div>
           <h1>Anmeldung</h1>
           <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>    
           <form (ngSubmit)="login()">            
@@ -100,6 +104,10 @@
         
 
         <div *ngSwitchCase="'avatar'" class="container bg-white avatar-container">
+          <div id="register-bg" class="overlay d-none"></div>
+          <div id="register" class="popup d-none">
+            <p>Konto erfolgreich erstellt!</p>
+          </div>
           <img (click)="changeToSignupAndUncheck()" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Wähle deinen Avatar</h1>
           <img class="selectedAvatar" [src]="selectedAvatar" alt="">
@@ -125,6 +133,11 @@
         </div>
 
         <div *ngSwitchCase="'forgotPassword'" class="container forgot-pw-container bg-white">
+          <div id="new-pass-bg" class="overlay d-none"></div>
+          <div id="new-pass" class="popup d-none">
+            <img src="assets/icons/send.svg" alt="">
+            <p>E-Mail gesendet!</p>
+          </div>
           <img (click)="changeSwitchCase('login')" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Passwort zurücksetzen</h1>
           <p>Bitte geben Sie Ihre E-Mail-Adresse ein.</p>
@@ -150,16 +163,9 @@
         <button class="btn-guest" mat-button (click)="changeSwitchCase('signup')">Konto erstellen</button>
       </div>
     </div>
-    <div id="register" class="popup d-none">
-      <p>Konto erfolgreich erstellt!</p>
-    </div>
-    <div id="new-pass" class="popup d-none">
-      <img src="assets/icons/send.svg" alt="">
-      <p>E-Mail gesendet!</p>
-    </div>
-    <div id="login" class="popup d-none">
-      <p>Erfolgreich angemeldet!</p>
-    </div>
+    
+    
+    
 
     <footer>
         <a class="link cursor-pointer" (click)="changeSwitchCase('signup')">Impressum</a>
