@@ -148,15 +148,15 @@
             <div>              
               <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets/icons/mail.svg">
-                <input type="email" matInput placeholder="beispielname@email.com" [(ngModel)]="user.email" name="email" required>
+                <input #emailInputForgetPw="ngModel" type="email" matInput placeholder="beispielname@email.com" [(ngModel)]="user.email" name="email" required>
                 <img src="assets/icons/empty.svg">
               </div>
-              <span [class.show]="loginErrorUser" class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span> 
+              <span [class.show]="(loginErrorUser || !validateEmail(user.email)) && emailInputForgetPw.dirty" class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span> 
               <p>Wir senden Ihnen eine E-Mail, über die Sie Ihr Passwort ändern können.</p>   
             </div>  
           </form>
           <div class="btn-end submit-buttons mt-32">
-            <button (click)="setNewPassword()" class="btn-submit" mat-button type="submit">E-Mail senden</button>
+            <button (click)="setNewPassword()" class="btn-submit" mat-button [disabled]="!validateEmail(this.user.email)" type="submit">E-Mail senden</button>
           </div>
         </div>
     </div>
