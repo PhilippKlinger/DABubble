@@ -84,7 +84,7 @@ export class LoginComponent {
 
   loginGuest() {
     this.loginErrorUser = false;
-    this.authService.login('guest@guest.com', 'Guestlogin')
+    this.authService.login('guestLogin@guest.com', 'Guestlogin')
       .then((userCredential) => {
         this.setUserOnline(userCredential);
         this.commonService.showPopup('login');  
