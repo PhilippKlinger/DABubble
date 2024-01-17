@@ -1,0 +1,20 @@
+@import './../login/login.component.scss';
+
+.submit-buttons {
+    margin-top: 16px;
+}
+
+.container {
+    h1 {
+        margin-bottom: 0px;
+    }
+}   
+
+.login {
+    @include dFlex($fd: column);
+}
+
+.tokenErr {
+    margin-top: 16px;
+    @include fonts($fs: 18px);
+}

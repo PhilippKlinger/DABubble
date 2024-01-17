@@ -59,6 +59,7 @@ import { UserService } from './shared-services/user.service';
 import { CommonService } from './shared-services/common.service';
 import { StorageService } from './shared-services/storage.service';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { EmailVerificationComponent } from './email-verification/email-verification.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
     MainContentDirectmessageChatLowerPartComponent,
     DialogShowChannelmembersComponent,
     ResetPasswordComponent,
+    EmailVerificationComponent,
   ],
   imports: [
     BrowserModule,
