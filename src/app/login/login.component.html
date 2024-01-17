@@ -96,7 +96,7 @@
             <div class="privacy-container">
               <div (click)="changeCheckboxCheck($event)" class="checkbox"></div>
               <p>Ich stimme der</p>
-              <a class="link privacy-policy" href="">Datenschutzerklärung</a>
+              <a class="link privacy-policy" href="http://localhost:4200/privacy-policy" target="_blank">Datenschutzerklärung</a>
               <p>zu</p>
             </div>
             <div class="btn-end submit-buttons d-flex-standard">
@@ -167,7 +167,7 @@
       </div>
     </div>  
     <footer>
-        <a class="link cursor-pointer">Impressum</a>
-        <a class="link cursor-pointer">Datenschutz</a>
+        <a (click)="routeTo('imprint',0)" class="link cursor-pointer">Impressum</a>
+        <a (click)="routeTo('privacy-policy',0)" class="link cursor-pointer">Datenschutz</a>
     </footer>
 </section>

@@ -38,7 +38,7 @@ export class ResetPasswordComponent {
       }
       await this.authService.confirmResetPassword(oobCode, this.user.password);
       this.commonService.showPopup('reset-pw');
-      this.commonService.routeTo('login');
+      this.commonService.routeTo('login', 2000);
     } catch (error) {
       this.loginErrorPassword = true;
     }

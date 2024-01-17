@@ -50,6 +50,10 @@ import { MainContentDirectmessageChatUpperPartComponent } from './main-content/m
 import { MainContentDirectmessageChatLowerPartComponent } from './main-content/main-content-directmessage-chat/main-content-directmessage-chat-lower-part/main-content-directmessage-chat-lower-part.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { DialogShowChannelmembersComponent } from './dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { EmailVerificationComponent } from './email-verification/email-verification.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { ImprintComponent } from './imprint/imprint.component';
 
 import { AuthService } from './shared-services/authentication.service';
 import { ChannelsService } from './shared-services/channels.service';
@@ -58,8 +62,7 @@ import { OpenDialogService } from './shared-services/open-dialog.service';
 import { UserService } from './shared-services/user.service';
 import { CommonService } from './shared-services/common.service';
 import { StorageService } from './shared-services/storage.service';
-import { PickerComponent } from '@ctrl/ngx-emoji-mart';
-import { EmailVerificationComponent } from './email-verification/email-verification.component';
+
 
 @NgModule({
   declarations: [
@@ -89,6 +92,8 @@ import { EmailVerificationComponent } from './email-verification/email-verificat
     DialogShowChannelmembersComponent,
     ResetPasswordComponent,
     EmailVerificationComponent,
+    PrivacyPolicyComponent,
+    ImprintComponent,
   ],
   imports: [
     BrowserModule,

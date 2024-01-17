@@ -5,6 +5,8 @@ import { MainContentComponent } from './main-content/main-content.component';
 import { LoginComponent } from './login/login.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { EmailVerificationComponent } from './email-verification/email-verification.component';
+import { ImprintComponent } from './imprint/imprint.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -13,6 +15,8 @@ const routes: Routes = [
   { path: 'main-content', component: MainContentComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'verify-email', component: EmailVerificationComponent },
+  { path: 'imprint', component: ImprintComponent },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
 ];
 
 @NgModule({

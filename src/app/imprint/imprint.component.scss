@@ -1,0 +1,11 @@
+@import './../login/login.component.scss';
+
+.container {
+    h1 {
+        margin-bottom: 0px;
+    }
+}   
+
+.login {
+    @include dFlex($fd: column);
+}

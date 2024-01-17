@@ -41,7 +41,7 @@ export class LoginComponent {
           .then((userCredential) => {
             this.setUserOnline(userCredential);
             this.commonService.showPopup('login');
-            this.commonService.routeTo('main-content');
+            this.commonService.routeTo('main-content', 2000);
           })
           .catch(error => {
             if (error.code === 'auth/too-many-requests' || error.code === 'auth/invalid-credential' || error.code === 'auth/missing-password' || (error.errors && error.errors.message === 'INVALID_LOGIN_CREDENTIAL')) {
@@ -84,7 +84,7 @@ export class LoginComponent {
       .then((userCredential) => {
         this.setUserOnline(userCredential);
         this.commonService.showPopup('login');  
-        this.commonService.routeTo('main-content');
+        this.commonService.routeTo('main-content', 2000);
       })
   }
 
@@ -96,7 +96,7 @@ export class LoginComponent {
         this.checkGooleUserExistsAndCreate(googleUser);
         await this.setUserOnline(result);
         this.commonService.showPopup('login');
-        this.commonService.routeTo('main-content');
+        this.commonService.routeTo('main-content', 2000);
       } else {        
         console.log("Google-Konto hat keine gültige E-Mail oder keinen Namen.");
       }
@@ -251,4 +251,9 @@ export class LoginComponent {
         fileInput.click();
     } 
   }
+
+  routeTo(router_link: string , seconds: number) {
+    this.commonService.routeTo(router_link, seconds);
+  }
+
 }

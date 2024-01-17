@@ -46,9 +46,9 @@ export class CommonService {
     }, 2000);
   }
 
-  routeTo(router_link: string) {
+  routeTo(router_link: string , seconds: number) {
     setTimeout(() => {
       this.router.navigate([`/${router_link}`]);
-    }, 2000);
+    }, seconds);
   }
 }
