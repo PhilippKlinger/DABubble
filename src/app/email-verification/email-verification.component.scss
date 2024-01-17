@@ -1,9 +1,5 @@
 @import './../login/login.component.scss';
 
-.submit-buttons {
-    margin-top: 16px;
-}
-
 .container {
     h1 {
         margin-bottom: 0px;
@@ -14,7 +10,15 @@
     @include dFlex($fd: column);
 }
 
-.tokenErr {
-    margin-top: 16px;
-    @include fonts($fs: 18px);
+
+@media (max-width: 726px) {
+    .container {
+        border-radius: 30px;
+    }
+}
+
+@media (max-width: 474px) {
+    .container {
+        border-radius: 0;
+    }
 }
