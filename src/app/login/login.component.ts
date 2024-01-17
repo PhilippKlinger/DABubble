@@ -4,6 +4,8 @@ import { User } from '../models/user.class';
 import { UserService } from '../shared-services/user.service';
 import { StorageService } from '../shared-services/storage.service';
 import { CommonService } from '../shared-services/common.service';
+import { UserCredential } from 'firebase/auth';
+
 
 @Component({
   selector: 'app-login',
@@ -29,30 +31,32 @@ export class LoginComponent {
   switch_expression: string = "login";
   loginErrorUser: boolean = false;
   loginErrorPassword: boolean = false;
+  currentUserCredential: UserCredential | null;
 
-  constructor(private authService: AuthService, private userService: UserService, private storageService: StorageService, private commonService: CommonService) {}
+  constructor(private authService: AuthService, private userService: UserService, private storageService: StorageService, private commonService: CommonService) {this.currentUserCredential = null;}
 
   async login() {
     const userExists = await this.checkUserExists();    
     if (userExists) {
-      const isUserVerified = await this.authService.userVerified();  
-      if (isUserVerified) {
-        this.authService.login(this.user.email, this.user.password)
-          .then((userCredential) => {
+      this.authService.login(this.user.email, this.user.password)
+        .then((userCredential) => {
+          this.currentUserCredential = userCredential;
+          if (userCredential.user.emailVerified) {
             this.setUserOnline(userCredential);
             this.commonService.showPopup('login');
             this.commonService.routeTo('main-content', 2000);
-          })
-          .catch(error => {
-            if (error.code === 'auth/too-many-requests' || error.code === 'auth/invalid-credential' || error.code === 'auth/missing-password' || (error.errors && error.errors.message === 'INVALID_LOGIN_CREDENTIAL')) {
-              this.loginErrorPassword = true;
-            }
-          });
-      } else {
-        this.commonService.showVerifyPopup('verifiy-mail');
-      }
+          } else {
+            this.commonService.showVerifyPopup('verifiy-mail-login');
+          }
+        })
+        .catch(error => {
+          if (error.code === 'auth/too-many-requests' || error.code === 'auth/invalid-credential' || error.code === 'auth/missing-password' || (error.errors && error.errors.message === 'INVALID_LOGIN_CREDENTIAL')) {
+            this.loginErrorPassword = true;
+          }
+        })
     }
-  }
+}
+
   
 
   async setUserOnline(userCredential: any) {
@@ -189,12 +193,12 @@ export class LoginComponent {
 
   async setNewPassword() {
     if (await this.checkUserExists()) {
-      this.loginErrorUser = false;
-      this.authService.resetPassword(this.user.email)
-      .then (() => { 
-        this.commonService.showPopup('new-pass');
-        this.switchLogin('new-pass');
-      });
+        this.loginErrorUser = false;
+        this.authService.resetPassword(this.user.email)
+        .then (() => { 
+          this.commonService.showPopup('new-pass');
+          this.switchLogin('new-pass');
+        });    
     }
   }
  

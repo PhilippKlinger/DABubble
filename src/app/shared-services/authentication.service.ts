@@ -17,11 +17,6 @@ export class AuthService {
     return signInWithEmailAndPassword(this.auth, email, password);
   }
 
-  async userVerified() {
-    const user = this.auth.currentUser;
-    return user?.emailVerified || false;
-  }
-
   async register(email: string, password: string) {
     return createUserWithEmailAndPassword(this.auth, email, password);
   }
