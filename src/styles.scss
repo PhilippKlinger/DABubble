@@ -83,6 +83,10 @@ h1, h2, h3, input, textarea {
   background: transparent;
 }
 
+.d-none {
+  display: none !important;
+}
+
 
 @mixin dFlex($jc:center, $ai:center, $g: 0px , $fd: row) {
   display: flex; 

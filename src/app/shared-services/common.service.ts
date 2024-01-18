@@ -51,4 +51,11 @@ export class CommonService {
       this.router.navigate([`/${router_link}`]);
     }, seconds);
   }
+
+  triggerFileInput() {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+        fileInput.click();
+    } 
+  }
 }

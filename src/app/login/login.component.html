@@ -124,7 +124,7 @@
             <p>eigenes Bild verwenden</p>
             <div class="submit-buttons btn-end">  
               <input id="fileInput" class="d-none" type="file" (change)="onFileSelected($event)" accept=".jpg,.jpeg,.png" />            
-              <button class="btn-guest" mat-button (click)="triggerFileInput()">
+              <button class="btn-guest" mat-button (click)="this.commonService.triggerFileInput()">
                   Datei hochladen
               </button>
             </div>
@@ -167,7 +167,7 @@
       </div>
     </div>  
     <footer>
-        <a (click)="routeTo('imprint',0)" class="link cursor-pointer">Impressum</a>
-        <a (click)="routeTo('privacy-policy',0)" class="link cursor-pointer">Datenschutz</a>
+        <a (click)="this.commonService.routeTo('imprint',0)" class="link cursor-pointer">Impressum</a>
+        <a (click)="this.commonService.routeTo('privacy-policy',0)" class="link cursor-pointer">Datenschutz</a>
     </footer>
 </section>

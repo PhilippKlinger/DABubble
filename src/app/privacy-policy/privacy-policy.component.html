@@ -10,7 +10,7 @@
   </header>
   <div class="login">
     <div class="container bg-white">
-        <img (click)="backToLogin('login', 0)" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
+        <img (click)="this.commonService.routeTo('login', 0)" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
       <h1>Datenschutzerklärung</h1>
       <p>
         Verantwortlicher im Sinne der Datenschutzgesetze, insbesondere der
@@ -223,7 +223,7 @@
     </div>
   </div>
   <footer>
-    <a class="link cursor-pointer">Impressum</a>
-    <a class="link cursor-pointer">Datenschutz</a>
+    <a (click)="this.commonService.routeTo('imprint',0)" class="link cursor-pointer">Impressum</a>
+    <a (click)="this.commonService.routeTo('privacy-policy',0)" class="link cursor-pointer">Datenschutz</a>
   </footer>
 </section>

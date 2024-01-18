@@ -33,7 +33,7 @@ export class LoginComponent {
   loginErrorPassword: boolean = false;
   currentUserCredential: UserCredential | null;
 
-  constructor(private authService: AuthService, private userService: UserService, private storageService: StorageService, private commonService: CommonService) {this.currentUserCredential = null;}
+  constructor(private authService: AuthService, private userService: UserService, private storageService: StorageService, public commonService: CommonService) {this.currentUserCredential = null;}
 
   async login() {
     const userExists = await this.checkUserExists();    
@@ -249,12 +249,7 @@ export class LoginComponent {
     }
   }
 
-  triggerFileInput() {
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-    if (fileInput) {
-        fileInput.click();
-    } 
-  }
+  
 
   routeTo(router_link: string , seconds: number) {
     this.commonService.routeTo(router_link, seconds);

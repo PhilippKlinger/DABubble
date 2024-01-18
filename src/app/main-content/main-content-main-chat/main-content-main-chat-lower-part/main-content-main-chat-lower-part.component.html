@@ -98,7 +98,11 @@
     <textarea #message class="chat-input-design" placeholder="Nachricht an #Entwicklerteam"></textarea>
     <div class="chat-input-lower-position">
         <div class="chat-input-options">
-            <mat-icon>add</mat-icon>
+            <div>
+                <input id="fileInput" class="d-none" type="file"  accept=".jpg,.jpeg,.png" /> 
+                <mat-icon>add</mat-icon>
+            </div>
+            
             <div class="chat-input-line"></div>
 
             <div class="emoji-window" [ngClass]="{'d-none': !emoji_window_open}">
