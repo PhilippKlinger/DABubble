@@ -47,7 +47,7 @@ export class DialogDummyComponent implements OnInit {
   }
 
   deleteChannel(channel: Channel): void {
-    this.channelsService.deleteChannel('channels', channel.id).then(() => {
+    this.channelsService.deleteChannel(channel).then(() => {
       console.log('Channel gelöscht:', channel.id);
     }).catch(error => {
       console.error('Fehler beim Löschen des Kanals:', error);

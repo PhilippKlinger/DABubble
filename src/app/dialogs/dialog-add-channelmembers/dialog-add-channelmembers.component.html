@@ -2,7 +2,7 @@
     <header>
         <div class="dialog-head">
             <span>Leute hinzufügen</span>
-            <button mat-icon-button mat-dialog-close>
+            <button *ngIf="needToAddMoreMembers" mat-icon-button mat-dialog-close>
                 <mat-icon>close</mat-icon>
             </button>
         </div>
@@ -14,8 +14,8 @@
 
     <div class="add-section" *ngIf="!needToAddMoreMembers">
         <mat-radio-group [(ngModel)]="selectedOption">
-            <mat-radio-button color="primary" value="allMembers">Alle Mitglieder von OfficeTeam
-                hinzufügen</mat-radio-button>
+            <mat-radio-button color="primary" value="allMembers">Alle Mitglieder aus Workspace hinzufügen</mat-radio-button>
+            <mat-radio-button color="primary" value="noMembers">Vorerst <strong>keine</strong> weiteren Mitglieder hinzufügen</mat-radio-button>
             <mat-radio-button color="primary" value="specificMembers">Bestimmte Leute hinzufügen</mat-radio-button>
         </mat-radio-group>
     </div>
@@ -52,6 +52,7 @@
 
 
     <div class="button">
-        <button mat-raised-button color="primary" (click)="addChannelMembers()">Hinzufügen</button>
+        <button *ngIf="!needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!selectedOption" (click)="addChannelMembers()">Hinzufügen</button>
+        <button *ngIf="needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!selectedUsers.length" (click)="addChannelMembers()">Hinzufügen</button>
     </div>
 </div>

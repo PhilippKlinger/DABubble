@@ -1,8 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
+import { User } from 'src/app/models/user.class';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
+import { take } from 'rxjs/operators';
+
 
 
 @Component({
@@ -17,13 +20,26 @@ export class DialogEditChannelComponent {
   isEditingName: boolean = false;
   isEditingDescription: boolean = false;
   channel: Channel | null = null;
-  selectedChannelSubscription: Subscription;
+  newChannelName: string = '';
+  newChannelDescription: string = '';
+  currentUser!: User;
+  private destroyed$ = new Subject<void>();
 
   constructor(private channelsService: ChannelsService, private dialogRef: MatDialogRef<DialogEditChannelComponent>) {
-    this.selectedChannelSubscription = this.channelsService.selectedChannel$.subscribe((channel) => {
+    this.channelsService.selectedChannel$.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(channel => {
       this.channel = channel;
+      this.newChannelName = channel?.name || '';
+      this.newChannelDescription = channel?.description || '';
     });
-   }
+
+    this.channelsService.currentUserInfo$.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(user => {
+      this.currentUser = user;
+    });
+  }
 
   toggleEditing(field: 'name' | 'description'): void {
     if (field === 'name') {
@@ -34,15 +50,43 @@ export class DialogEditChannelComponent {
   }
 
   saveChanges(field: 'name' | 'description'): void {
-    this.channelsService.updateChannel(this.channel)
-    if (field === 'name') {
-      this.isEditingName = false;
-    } else if (field === 'description') {
-      this.isEditingDescription = false;
+    if (this.channel) {
+      if (field === 'name') {
+        this.channel.name = this.newChannelName;
+        this.isEditingName = false;
+      } else if (field === 'description') {
+        this.channel.description = this.newChannelDescription;
+        this.isEditingDescription = false;
+      }
+      this.channelsService.updateChannel(this.channel);
     }
   }
 
+  leaveChannel(): void {
+    if (this.channel && this.currentUser) {
+      this.channel.members = this.channel.members.filter(member => member.id !== this.currentUser.id);
+      this.channelsService.updateChannel(this.channel);
+  
+      if (this.channel.members.length === 0) {
+        this.channelsService.deleteChannel(this.channel).then(() => {
+          this.channelsService.channels$.pipe(
+            take(1) 
+          ).subscribe(channels => {
+            const newSelectedChannel = channels[0];
+            this.channelsService.setSelectedChannel(newSelectedChannel);
+          });
+        });
+      } else {
+        this.channelsService.setSelectedChannel(this.channel);
+      }
+      this.dialogRef.close();
+    }
+  }
+  
+  
+
   ngOnDestroy(): void {
-    this.selectedChannelSubscription.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }

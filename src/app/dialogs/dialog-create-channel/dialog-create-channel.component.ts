@@ -33,7 +33,7 @@ export class DialogCreateChannelComponent {
       this.channelsService.setSelectedChannel(this.channel);
      
       this.dialogRef.close();
-      this.dialogService.openDialog('addChannelmembers');
+      this.dialogService.openDialog('addChannelmembers', true);
     }).catch(error => {
       console.error('Fehler beim Erstellen des Kanals:', error);
     });

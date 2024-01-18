@@ -12,7 +12,6 @@
         <div class="name">
             <span>Channel-Name</span>
         </div>
-        <!-- <p>#</p> -->
         <input [(ngModel)]="channel.name" matInput placeholder="# z.B. Kooperationsprojekte">
     </div>
     <div class="name-input">
@@ -22,6 +21,6 @@
         <input [(ngModel)]="channel.description" matInput placeholder="Dein Text hier">
     </div>
     <div class="button">
-        <button mat-raised-button color="primary" (click)="createChannel()">Erstellen</button>
+        <button mat-raised-button color="primary" [disabled]="!channel.name" (click)="createChannel()">Erstellen</button>
     </div>
 </div>

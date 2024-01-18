@@ -9,10 +9,14 @@ import { BehaviorSubject } from 'rxjs';
 
 export class UserService {
 
-    private usersSubject = new BehaviorSubject<User[]>([]);
-    users$ = this.usersSubject.asObservable();
-    private selectedUserSubject = new BehaviorSubject<User | null>(null);
-    selectedUser$ = this.selectedUserSubject.asObservable();
+  public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
+  public selectedUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  
+
+    // private usersSubject = new BehaviorSubject<User[]>([]);
+    // users$ = this.usersSubject.asObservable();
+    // private selectedUserSubject = new BehaviorSubject<User | null>(null);
+    // selectedUser$ = this.selectedUserSubject.asObservable();
 
     private unsubUsers;
 
@@ -36,7 +40,7 @@ export class UserService {
             let data = doc.data() as User;
             return new User({ ...data, id: doc.id });
           });
-          this.usersSubject.next(users);
+          this.users$.next(users);
         });
     }
 
@@ -79,7 +83,7 @@ export class UserService {
     }
 
     setSelectedUser(user: User): void {
-      this.selectedUserSubject.next(user);
+      this.selectedUser$.next(user);
       console.log('selected User is:', user)
     }
 

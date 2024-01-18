@@ -15,8 +15,10 @@ import { DialogShowChannelmembersComponent } from '../dialogs/dialog-show-channe
 })
 export class OpenDialogService {
 
-  private needToAddMoreMembersSubject = new BehaviorSubject<boolean>(false);
-  needToAddMoreMembers$ = this.needToAddMoreMembersSubject.asObservable();
+  public needToAddMoreMembers$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  // private needToAddMoreMembersSubject = new BehaviorSubject<boolean>(false);
+  // needToAddMoreMembers$ = this.needToAddMoreMembersSubject.asObservable();
 
   /**
    * Mapping of component keys to their corresponding Angular component types.
@@ -47,16 +49,18 @@ export class OpenDialogService {
    * @param {string} componentKey - Key corresponding to the desired dialog component.
    * @returns {void}
    */
-  openDialog(componentKey: string): void {
+  openDialog(componentKey: string, disableClose: boolean = false): void {
     const selectedComponent = this.dialogComponents[componentKey];
     if (selectedComponent) {
-      this.dialog.open(selectedComponent);
+      this.dialog.open(selectedComponent, {
+        disableClose: disableClose
+      });
     } else {
       console.error(`Component with key ${componentKey} not found.`);
     }
   }
 
   setNeedToAddMoreMembers(value: boolean): void {
-    this.needToAddMoreMembersSubject.next(value);
+    this.needToAddMoreMembers$.next(value);
   }
 }

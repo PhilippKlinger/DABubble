@@ -21,6 +21,8 @@ export class ChannelsService {
   // channels$ = this.channelsSubject.asObservable();
   // private selectedChannelSubject = new BehaviorSubject<Channel | null>(null);
   // selectedChannel$ = this.selectedChannelSubject.asObservable();
+  // private currentUserInfoSubject = new BehaviorSubject<User>(null!);
+  // currentUserInfo$ = this.currentUserInfoSubject.asObservable();
 
   public channels$: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
   public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
@@ -304,12 +306,13 @@ export class ChannelsService {
     }
   }
 
-  async deleteChannel(colId: string, docId: string) {
-    await deleteDoc(this.getSingleDocRef(colId, docId)).catch(
-      (error) => {
-        console.error(error)
-      }
-    )
+  async deleteChannel(channel: Channel | null) {
+    if (channel && channel.id) {
+      const docRef = this.getSingleDocRef('channels', channel.id);
+      await deleteDoc(docRef).catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   async updateChannel(channel: Channel | null) {
@@ -321,6 +324,15 @@ export class ChannelsService {
         }
       );
     }
+  }
+
+  async refreshChannelsList() {
+    const querySnapshot = await getDocs(this.getChannelsRef());
+    const channels = querySnapshot.docs.map((doc) => {
+      const data = doc.data() as Channel;
+      return new Channel({ ...data, id: doc.id });
+    });
+    this.channels$.next(channels);
   }
 
   async updateMessage(message: Message) {
