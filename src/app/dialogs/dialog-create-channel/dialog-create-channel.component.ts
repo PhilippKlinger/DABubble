@@ -18,6 +18,7 @@ export class DialogCreateChannelComponent {
 
   channel = new Channel();
   currentUser!: User;
+  isChannelNameTaken: boolean = false;
 
   constructor(private channelsService: ChannelsService, private dialogService: OpenDialogService, private dialogRef: MatDialogRef<DialogCreateChannelComponent>) {
     this.channelsService.currentUserInfo$.subscribe((currentUser) => {
@@ -25,18 +26,29 @@ export class DialogCreateChannelComponent {
     });
    }
 
-  createChannel(): void {
-    this.channel.setCreator(this.currentUser.name);
-    this.channel.setTimestampNow();
-    this.channel.addCreatorToMembers(this.currentUser);
-    this.channelsService.createChannel(this.channel, 'channels').then(() => {
-      this.channelsService.setSelectedChannel(this.channel);
-     
-      this.dialogRef.close();
-      this.dialogService.openDialog('addChannelmembers', true);
-    }).catch(error => {
-      console.error('Fehler beim Erstellen des Kanals:', error);
+   onInput() {
+    this.checkChannelName();
+   }
+
+   checkChannelName(): void {
+    this.channelsService.channels$.subscribe(channels => {
+      this.isChannelNameTaken = channels.some(channel => channel.name === this.channel.name);
     });
   }
 
+  createChannel(): void {
+    if (!this.isChannelNameTaken) {
+      this.channel.setCreator(this.currentUser.name);
+      this.channel.setTimestampNow();
+      this.channel.addCreatorToMembers(this.currentUser);
+      this.channelsService.createChannel(this.channel, 'channels').then(() => {
+        this.channelsService.setSelectedChannel(this.channel);
+        this.dialogRef.close();
+        this.dialogService.openDialog('addChannelmembers', true);
+      }).catch(error => {
+        console.error('Fehler beim Erstellen des Kanals:', error);
+      });
+    }
+  }
 }
+

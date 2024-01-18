@@ -12,7 +12,7 @@
         <div class="name">
             <span>Channel-Name</span>
         </div>
-        <input [(ngModel)]="channel.name" matInput placeholder="# z.B. Kooperationsprojekte">
+        <input (input)="onInput()" [(ngModel)]="channel.name" matInput placeholder="# z.B. Kooperationsprojekte">
     </div>
     <div class="name-input">
         <div class="name">
@@ -21,6 +21,8 @@
         <input [(ngModel)]="channel.description" matInput placeholder="Dein Text hier">
     </div>
     <div class="button">
-        <button mat-raised-button color="primary" [disabled]="!channel.name" (click)="createChannel()">Erstellen</button>
+        <button mat-raised-button color="primary" (click)="createChannel()" [disabled]="isChannelNameTaken">
+            {{ isChannelNameTaken ? 'Channel-Name vergeben' : 'Erstellen' }}
+          </button>
     </div>
 </div>

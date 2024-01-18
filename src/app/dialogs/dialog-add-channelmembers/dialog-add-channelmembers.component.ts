@@ -40,7 +40,6 @@ export class DialogAddChannelmembersComponent {
 
   onInput() {
     this.filterUsers();
-    console.log('selectedUser lenght =', this.selectedUsers.length)
   }
 
   filterUsers() {
