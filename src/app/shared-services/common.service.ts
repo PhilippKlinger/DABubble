@@ -52,8 +52,8 @@ export class CommonService {
     }, seconds);
   }
 
-  triggerFileInput() {
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+  triggerFileInput(inputId: string) {
+    const fileInput = document.getElementById(inputId) as HTMLInputElement;
     if (fileInput) {
         fileInput.click();
     } 

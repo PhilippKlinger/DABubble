@@ -96,11 +96,17 @@
 
 <div class="chat-input">
     <textarea #message class="chat-input-design" placeholder="Nachricht an #Entwicklerteam"></textarea>
+    <!-- Test for File upload -->
+    <!-- <div *ngIf="uploadedFileLink">
+        <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
+        <button (click)="removeUploadedFile()">Entfernen</button>
+    </div> -->
     <div class="chat-input-lower-position">
         <div class="chat-input-options">
             <div>
-                <input id="fileInput" class="d-none" type="file"  accept=".jpg,.jpeg,.png" /> 
-                <mat-icon>add</mat-icon>
+                <!-- Test for File upload -->
+                <!-- <input id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />  -->
+                <mat-icon (click)="this.commonService.triggerFileInput('fileInput-main-chat')">add</mat-icon>
             </div>
             
             <div class="chat-input-line"></div>

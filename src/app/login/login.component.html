@@ -124,7 +124,7 @@
             <p>eigenes Bild verwenden</p>
             <div class="submit-buttons btn-end">  
               <input id="fileInput" class="d-none" type="file" (change)="onFileSelected($event)" accept=".jpg,.jpeg,.png" />            
-              <button class="btn-guest" mat-button (click)="this.commonService.triggerFileInput()">
+              <button class="btn-guest" mat-button (click)="this.commonService.triggerFileInput('fileInput')">
                   Datei hochladen
               </button>
             </div>

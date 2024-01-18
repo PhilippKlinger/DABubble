@@ -6,6 +6,8 @@ import { Subscription } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
 import { Reaction } from 'src/app/models/reaction.class';
 import { User } from 'src/app/models/user.class';
+import { CommonService } from 'src/app/shared-services/common.service';
+import { StorageService } from 'src/app/shared-services/storage.service';
 
 @Component({
   selector: 'app-main-content-main-chat-lower-part',
@@ -31,7 +33,9 @@ export class MainContentMainChatLowerPartComponent {
   textAreaContent!: string;
   editedText!: string;
 
-  constructor(private dataService: DataService, private channelService: ChannelsService) {
+  uploadedFileLink: string | null = null;
+
+  constructor(private dataService: DataService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
@@ -184,7 +188,13 @@ export class MainContentMainChatLowerPartComponent {
       this.message.setAvatar(currentUserInfo.avatar);
       this.message.setTimestampNow();
       this.message.setAnwers();
-      this.message.setMessage(this.input_message.nativeElement.value.trim());
+      /* debugger
+      if (this.uploadedFileLink) {
+        const messageWithLink = this.input_message.nativeElement.value.trim() + "\nDatei: " + this.uploadedFileLink;
+        this.message.setMessage(messageWithLink);
+      } else { */
+        this.message.setMessage(this.input_message.nativeElement.value.trim());
+     /*  }    */   
       this.channelService.pushMessageToChannel(this.message);
       this.input_message.nativeElement.value = '';
     }
@@ -193,4 +203,21 @@ export class MainContentMainChatLowerPartComponent {
   ngOnDestroy() {
     this.unsubChannels.unsubscribe();
   }
+/* 
+  async handleFileInput(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const uploadedUrl = await this.storageService.uploadFile(file);
+        this.uploadedFileLink = uploadedUrl;
+      } catch (error) {
+        console.error('Fehler beim Hochladen der Datei', error);
+      }
+    }
+  }
+
+  removeUploadedFile() {
+    this.uploadedFileLink = null;
+  }
+ */
 }
