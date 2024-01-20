@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
@@ -10,6 +10,10 @@ import { User } from 'src/app/models/user.class';
   styleUrls: ['./main-content-main-chat-upper-part.component.scss']
 })
 export class MainContentMainChatUpperPartComponent {
+  @ViewChild('triggerElement1', { static: true }) triggerElement1!: ElementRef;
+  @ViewChild('triggerElement2', { static: true }) triggerElement2!: ElementRef;
+  @ViewChild('triggerElement3', { static: true }) triggerElement3!: ElementRef;
+
   selectedChannel!: Channel | null;
   unsubChannels!: Subscription;
   members: User[] = [];
@@ -26,10 +30,24 @@ export class MainContentMainChatUpperPartComponent {
     });
   }
 
-  openDialog(componentKey: string): void {
+  openDialog(componentKey: string, triggerNumber?: number): void {
     this.dialogService.setNeedToAddMoreMembers(true);
-    this.dialogService.openDialog(componentKey);
+    let triggerElement: ElementRef | null = null;
+
+    if (triggerNumber === 1 && this.triggerElement1) {
+      triggerElement = this.triggerElement1;
+    } else if (triggerNumber === 2 && this.triggerElement2) {
+      triggerElement = this.triggerElement2;
+    } else if (triggerNumber === 3 && this.triggerElement3) {
+      triggerElement = this.triggerElement3;
+    }
+    if (triggerElement) {
+      this.dialogService.openDialog(componentKey, false, triggerElement);
+    } else {
+      this.dialogService.openDialog(componentKey);
+    }
   }
+
 
   ngOnDestroy() {
     this.unsubChannels.unsubscribe();

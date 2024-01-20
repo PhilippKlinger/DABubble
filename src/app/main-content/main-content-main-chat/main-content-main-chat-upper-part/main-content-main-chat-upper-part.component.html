@@ -1,12 +1,12 @@
 <nav>
-    <div class="channel-name" (click)="openDialog('editChannel')">
+    <div #triggerElement1 class="channel-name" (click)="openDialog('editChannel', 1)">
         <mat-icon class="tag">tag</mat-icon>
         <span>{{ selectedChannel?.name }}</span>
         <mat-icon>keyboard_arrow_down</mat-icon>
     </div>
 
-    <div class="main-chat-person-section">
-        <div class="avatar-count" (click)="openDialog('showChannelmembers')">
+    <div  class="main-chat-person-section">
+        <div #triggerElement2 class="avatar-count" (click)="openDialog('showChannelmembers', 2)">
             <div class="avatar-container">
                 <div *ngFor="let member of members">
                     <img src="{{member.avatar}}">
@@ -15,7 +15,7 @@
             <span>{{ members.length }}</span>
         </div>
 
-        <div class="add-person-btn" (click)="openDialog('addChannelmembers')"> 
+        <div #triggerElement3 class="add-person-btn" (click)="openDialog('addChannelmembers', 3)"> 
             <mat-icon class="rotate-icon custom-icon">person_add</mat-icon>
         </div>
     </div>

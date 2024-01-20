@@ -58,6 +58,18 @@ body {
   border-radius: 30px !important;
 }
 
+.dialog-edit-channel-no-radius {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-top-left-radius: 0 !important;
+  }
+}
+
+.dialog-show-channelmembers-no-radius {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-top-right-radius: 0 !important;
+  }
+}
+
 h1, h2, h3, input, textarea {
   font-family: 'Nunito', sans-serif !important;
 }

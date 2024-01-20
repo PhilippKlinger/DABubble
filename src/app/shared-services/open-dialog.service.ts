@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Injectable, ElementRef  } from '@angular/core';
+import { MatDialog, MatDialogConfig  } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/portal';
 import { DialogShowProfileComponent } from '../dialogs/dialog-show-profile/dialog-show-profile.component';
 import { DialogEditProfileComponent } from '../dialogs/dialog-edit-profile/dialog-edit-profile.component';
@@ -17,14 +17,7 @@ export class OpenDialogService {
 
   public needToAddMoreMembers$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  // private needToAddMoreMembersSubject = new BehaviorSubject<boolean>(false);
-  // needToAddMoreMembers$ = this.needToAddMoreMembersSubject.asObservable();
-
-  /**
-   * Mapping of component keys to their corresponding Angular component types.
-   *
-   * @type {Record<string, ComponentType<unknown>>}
-   */
+  
   dialogComponents: Record<string, ComponentType<unknown>> = {
     'showProfile': DialogShowProfileComponent,
     'menuProfile': DialogMenuProfileComponent,
@@ -35,30 +28,46 @@ export class OpenDialogService {
     'showChannelmembers': DialogShowChannelmembersComponent
   };
 
-  /**
-   * Creates an instance of OpenDialogService.
-   *
-   * @constructor
-   * @param {MatDialog} dialog - Angular Material dialog service.
-   */
+  
   constructor(private dialog: MatDialog) { }
 
-  /**
-   * Opens a dialog with the specified component key.
-   *
-   * @param {string} componentKey - Key corresponding to the desired dialog component.
-   * @returns {void}
-   */
-  openDialog(componentKey: string, disableClose: boolean = false): void {
+  
+  openDialog(componentKey: string, disableClose: boolean = false, origin?: ElementRef): void {
     const selectedComponent = this.dialogComponents[componentKey];
     if (selectedComponent) {
-      this.dialog.open(selectedComponent, {
-        disableClose: disableClose
-      });
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = disableClose;
+
+      if (componentKey === 'editChannel' && origin) {
+        dialogConfig.panelClass = 'dialog-edit-channel-no-radius';
+        const rect = origin.nativeElement.getBoundingClientRect();
+        dialogConfig.position = { top: `${rect.bottom}px`, left: `${rect.left}px` };
+      }
+
+      if (componentKey === 'showChannelmembers' && origin) {
+        dialogConfig.panelClass = 'dialog-show-channelmembers-no-radius';
+        const rect = origin.nativeElement.getBoundingClientRect();
+        const dialogWidth = 450; // Feste Breite des Dialogs
+        // Berechnung der linken Position, um den Dialog rechtsbündig zum Trigger-Element zu positionieren
+        const leftPosition = rect.right - dialogWidth;
+        dialogConfig.position = { top: `${rect.bottom}px`, left: `${leftPosition}px` };
+      }
+
+      if (componentKey === 'addChannelmembers' && origin) {
+        dialogConfig.panelClass = 'dialog-show-channelmembers-no-radius';
+        const rect = origin.nativeElement.getBoundingClientRect();
+        const dialogWidth = 500; // Feste Breite des Dialogs
+        // Berechnung der linken Position, um den Dialog rechtsbündig zum Trigger-Element zu positionieren
+        const leftPosition = rect.right - dialogWidth;
+        dialogConfig.position = { top: `${rect.bottom}px`, left: `${leftPosition}px` };
+      }
+
+      this.dialog.open(selectedComponent, dialogConfig);
     } else {
       console.error(`Component with key ${componentKey} not found.`);
     }
-  }
+}
+
 
   setNeedToAddMoreMembers(value: boolean): void {
     this.needToAddMoreMembers$.next(value);

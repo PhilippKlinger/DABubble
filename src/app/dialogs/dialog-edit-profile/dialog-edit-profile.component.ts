@@ -3,9 +3,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { UserService } from 'src/app/shared-services/user.service';
-import { Auth, updateEmail, updateProfile, sendEmailVerification } from '@angular/fire/auth';
+import { Auth, updateEmail, updateProfile, verifyBeforeUpdateEmail } from '@angular/fire/auth';
 import { AuthService } from 'src/app/shared-services/authentication.service';
 import { CommonService } from 'src/app/shared-services/common.service';
+import { updateCurrentUser } from '@angular/fire/auth';
 
 
 @Component({
@@ -19,7 +20,6 @@ export class DialogEditProfileComponent {
   newUserEmail: string = '';
   currentUser!: User;
   users: User[] = [];
-
 
   constructor(
     private auth: Auth,
@@ -36,46 +36,46 @@ export class DialogEditProfileComponent {
     });
     this.userService.users$.subscribe((users) => {
       this.users = users;
-    })
-
+    });
   }
 
   async saveChanges(): Promise<void> {
     try {
       const user = await this.auth.currentUser;
-      const currentUserIndex = this.users.findIndex(u => u.id === this.currentUser.id);
+      if (!user) {
+        console.error('Kein gültiger Benutzer gefunden');
+        return;
+      }
 
-      if (currentUserIndex !== -1 && user) {
-        const userToUpdate = this.users[currentUserIndex];
+      const updatedUser = {
+        ...user,
+        displayName: this.newUserName,
+        email: this.newUserEmail
+      };
+      const userToUpdate = this.users.find(u => u.id === this.currentUser.id);
+      if (!userToUpdate) {
+        console.error('Aktueller Benutzer nicht in der Benutzerliste gefunden');
+        return;
+      }
+      
+    // Aktualisieren des Profilnamens
+    if (this.newUserName !== user.displayName) {
+      await updateProfile(user, {
+        displayName: this.newUserName
+      });
+    }
 
-        // Überprüfe, ob die E-Mail geändert wurde
-        // if (this.newUserEmail !== user.email) {
-        //    // Erstelle eine neue Instanz von User und füge tempEmail hinzu
-        // const updatedUser = new User(userToUpdate);
-        // updatedUser.tempEmail = this.newUserEmail;
-
-        //   // Temporäre Speicherung der neuen E-Mail-Adresse in Firestore
-        //   await this.userService.updateUser(updatedUser);
-
-        //   // Sende Verifizierungs-E-Mail an die temporäre neue Adresse
-        //   await sendEmailVerification({ ...user, email: this.newUserEmail });
-        //   this.commonService.showPopup('EmailVerification');
-        //   return;
-        // }
-
-        // Update Username in Firebase Auth
-        await updateProfile(user, {
-          displayName: this.newUserName,
-        });
+    // Aktualisieren der E-Mail-Adresse
+    if (this.newUserEmail !== user.email) {
+      await verifyBeforeUpdateEmail(user, this.newUserEmail);
+      
+    }
 
         // Update user info in Firestore
         userToUpdate.name = this.newUserName;
         userToUpdate.email = this.newUserEmail;
         await this.userService.updateUser(userToUpdate);
 
-        // // Aktualisiere den Namen in den Nachrichten
-        // debugger
-        // await this.channelService.updateUserNameInMessages(userToUpdate.id, this.newUserName);
 
         // Update channel members
         const channels = this.channelService.channels$.value;
@@ -91,11 +91,11 @@ export class DialogEditProfileComponent {
 
         this.dialogRef.close();
         await this.authService.logout();
-      }
+      
     } catch (error) {
       console.error('Error updating user info:', error);
     }
   }
-
-
 }
+
+
