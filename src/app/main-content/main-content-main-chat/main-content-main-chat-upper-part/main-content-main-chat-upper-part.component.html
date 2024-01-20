@@ -8,7 +8,7 @@
     <div  class="main-chat-person-section">
         <div #triggerElement2 class="avatar-count" (click)="openDialog('showChannelmembers', 2)">
             <div class="avatar-container">
-                <div *ngFor="let member of members">
+                <div *ngFor="let member of members | slice:0:4">
                     <img src="{{member.avatar}}">
                 </div>
             </div >
