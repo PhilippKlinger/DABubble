@@ -32,7 +32,6 @@ export class MainContentMainChatLowerPartComponent {
   textareaCols!: number;
   textAreaContent!: string;
   editedText!: string;
-
   uploadedFileLink: string | null = null;
 
   constructor(private dataService: DataService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {

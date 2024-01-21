@@ -1,8 +1,24 @@
 <div class="chat">
     <div #chat_content class="chat-content">
-        <div class="chat-timestamp">
+        <!-- <div class="chat-timestamp">
             <div></div>
             <span>Momentan</span>
+        </div> -->
+
+        <div *ngIf="selectedChannel" class="channel-created-message">
+            <div class="channel-created-message-header">
+                <mat-icon>tag</mat-icon>
+                <h1>{{ selectedChannel.name }}</h1>
+            </div>
+            <div>
+                <span>{{ selectedChannel.creator }} hat diesen Channel am {{ selectedChannel.timestamp }} erstellt.
+                    Das ist der Anfang des Channels</span>
+                <h2>
+                    <mat-icon class="tag">tag</mat-icon>
+                    {{ selectedChannel.name }}
+                    <span>.</span>
+                </h2>
+            </div>
         </div>
 
         <div class="emoji-window-messages-overlay" *ngIf="emoji_window_messages_open">
@@ -25,7 +41,8 @@
                     </div>
 
                     <div *ngIf="(thread_subject?.id == message.id && editingMessage)" class="speech-bubble-user-edit">
-                        <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="4" value="{{ textAreaContent }}"></textarea>
+                        <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="4"
+                            value="{{ textAreaContent }}"></textarea>
                         <div>
                             <button (click)="toggleEditing()" class="btn-cancel">Abbrechen</button>
                             <button (click)="saveEditedMessage()" class="btn-save">Speichern</button>
@@ -108,7 +125,7 @@
                 <!-- <input id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />  -->
                 <mat-icon (click)="this.commonService.triggerFileInput('fileInput-main-chat')">add</mat-icon>
             </div>
-            
+
             <div class="chat-input-line"></div>
 
             <div class="emoji-window" [ngClass]="{'d-none': !emoji_window_open}">
