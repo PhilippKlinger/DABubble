@@ -62,6 +62,59 @@ export class MainContentMainChatLowerPartComponent {
     });
   }
 
+  // checkPartingLine(index: number) {
+  //   let chatMessages = this.chatMessages;
+  //   let currentMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index].timestamp);
+
+  //   if (chatMessages[index -1]) {
+  //     let previousMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index - 1].timestamp);
+  //     if (previousMessageTimestamp.month == currentMessageTimestamp.month) {
+  //       if (previousMessageTimestamp.day == currentMessageTimestamp.day) {
+  //         return false;
+  //       } else if ((previousMessageTimestamp.day + 1) == currentMessageTimestamp.day) {
+  //         return true;
+  //       } else if ((previousMessageTimestamp.day + 2) == currentMessageTimestamp.day) {
+  //         return true;
+  //       } else {
+  //         return true;
+  //       }
+  //     } else {
+  //       return true;
+  //     }
+  //   }
+
+  //   else {
+  //     return false;
+  //   }
+  // }
+
+  // returnPartingLineValue(index: number) {
+  //   let chatMessages = this.chatMessages;
+  //   let currentMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index].timestamp);
+
+  //   if (chatMessages[index -1]) {
+  //     let previousMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index - 1].timestamp);
+
+  //     if (previousMessageTimestamp.month == currentMessageTimestamp.month) {
+  //       if (previousMessageTimestamp.day == currentMessageTimestamp.day) {
+  //         return 'diese nachricht sollte im idealfall nicht existieren';
+  //       } else if ((previousMessageTimestamp.day + 1) == currentMessageTimestamp.day) {
+  //         return 'heute';
+  //       } else if ((previousMessageTimestamp.day + 2) == currentMessageTimestamp.day) {
+  //         return 'gestern';
+  //       } else {
+  //         return `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}.`;
+  //       }
+  //     } else {
+  //       return `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}.`;
+  //     }
+  //   }
+
+  //   else {
+  //     return 'diese nachricht sollte im idealfall nicht existieren';
+  //   }
+  // }
+
   getDatePartsFromFormattedDate(formattedDate?: string): { day: number, month: number, year: number } {
     const parts = (formattedDate ?? '').split(' ')[0].split('-');
 
@@ -77,17 +130,17 @@ export class MainContentMainChatLowerPartComponent {
     const timestampNow = this.getDatePartsFromFormattedDate(formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US'));
 
     if (timestampNow.year == selectedChannelTimestamp.year) {
-        if (timestampNow.month == selectedChannelTimestamp.month) {
-            if (timestampNow.day == selectedChannelTimestamp.day) {
-              return 'heute'
-            } else if ((timestampNow.day - 1) == selectedChannelTimestamp.day) {
-              return 'gestern'
-            } else {
-              return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
-            }
+      if (timestampNow.month == selectedChannelTimestamp.month) {
+        if (timestampNow.day == selectedChannelTimestamp.day) {
+          return 'heute'
+        } else if ((timestampNow.day - 1) == selectedChannelTimestamp.day) {
+          return 'gestern'
         } else {
           return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
         }
+      } else {
+        return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
+      }
     } else {
       return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
     }

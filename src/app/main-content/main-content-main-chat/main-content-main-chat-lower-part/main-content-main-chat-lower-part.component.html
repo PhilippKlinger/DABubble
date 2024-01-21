@@ -1,9 +1,5 @@
 <div class="chat">
     <div #chat_content class="chat-content">
-        <!-- <div class="chat-timestamp">
-            <div></div>
-            <span>Momentan</span>
-        </div> -->
 
         <div *ngIf="selectedChannel" class="channel-created-message">
             <div class="channel-created-message-header">
@@ -12,7 +8,8 @@
             </div>
             <div>
                 <span>
-                    {{ checkChannelCreator() }} diesen Channel am {{ checkChannelCreationTime() }} erstellt. Das ist der Anfang des Channels
+                    {{ checkChannelCreator() }} diesen Channel am {{ checkChannelCreationTime() }} erstellt. Das ist der
+                    Anfang des Channels
                 </span>
                 <h2>
                     <mat-icon class="tag">tag</mat-icon>
@@ -29,6 +26,12 @@
         </div>
 
         <div *ngFor="let message of chatMessages; let i = index" (click)="selectMessageForThread(i)">
+
+            <!-- <div class="chat-timestamp" *ngIf="checkPartingLine(i)">
+                <div></div>
+                <span>{{ returnPartingLineValue(i) }}</span>
+            </div> -->
+
             <div class="user-message" *ngIf="message.creator == this.user.name">
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div class="flex-end">
@@ -113,7 +116,8 @@
 </div>
 
 <div class="chat-input">
-    <textarea (keyup.enter)="sendMessageToChannel()" #message class="chat-input-design" placeholder="Nachricht an #Entwicklerteam"></textarea>
+    <textarea (keyup.enter)="sendMessageToChannel()" #message class="chat-input-design"
+        placeholder="Nachricht an #Entwicklerteam"></textarea>
     <!-- Test for File upload -->
     <!-- <div *ngIf="uploadedFileLink">
         <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
