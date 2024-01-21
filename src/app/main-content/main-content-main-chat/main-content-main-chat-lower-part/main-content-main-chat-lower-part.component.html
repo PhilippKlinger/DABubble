@@ -113,7 +113,7 @@
 </div>
 
 <div class="chat-input">
-    <textarea #message class="chat-input-design" placeholder="Nachricht an #Entwicklerteam"></textarea>
+    <textarea (keyup.enter)="sendMessageToChannel()" #message class="chat-input-design" placeholder="Nachricht an #Entwicklerteam"></textarea>
     <!-- Test for File upload -->
     <!-- <div *ngIf="uploadedFileLink">
         <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>

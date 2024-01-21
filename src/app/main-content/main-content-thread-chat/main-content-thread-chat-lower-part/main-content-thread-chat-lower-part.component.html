@@ -153,7 +153,7 @@
 </div>
 
 <div class="chat-input">
-    <textarea #answer class="chat-input-design" name="" id="" cols="" rows=""
+    <textarea (keyup.enter)="sendAnswerToThread()" #answer class="chat-input-design" name="" id="" cols="" rows=""
         placeholder="Nachricht an #Entwicklerteam"></textarea>
     <div class="chat-input-lower-position">
         <div class="chat-input-options">
