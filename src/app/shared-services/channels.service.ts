@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, DocumentData, getDoc, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, DocumentData, getDoc, getDocs, Unsubscribe } from '@angular/fire/firestore';
 import { Channel } from '../models/channel.class';
 import { BehaviorSubject } from 'rxjs';
 import { formatDate } from '@angular/common';
@@ -16,6 +16,7 @@ export class ChannelsService {
   answerReactions = [];
   messageReactions = [];
   message = new Message();
+  private initialChannelSet = false;
 
   // private channelsSubject = new BehaviorSubject<Channel[]>([]);
   // channels$ = this.channelsSubject.asObservable();
@@ -286,24 +287,33 @@ export class ChannelsService {
         const data = doc.data() as Channel;
         return new Channel({ ...data, id: doc.id });
       });
-  
-      // // Ermitteln des ersten Channels, in dem der Benutzer Mitglied ist
-      // const currentUser = this.currentUserInfo$.value;
-      // const firstMemberChannel = channels.find(channel => 
-      //   channel.members.some(member => member.id === currentUser.id)
-      // );
-  
-      // // Setzen des Channels, wenn der Benutzer in einem der Channels Mitglied ist
-      // if (firstMemberChannel) {
-      //   this.setSelectedChannel(firstMemberChannel);
-      // } else {
-      //   console.log("Sie sind in keinem Channel Mitglied.");
+
+      // if (!this.initialChannelSet && channels.length > 0) {
+      //   this.initialChannelSet = true;
+      //   const currentUser = this.currentUserInfo$.value;
+      //   const firstMemberChannel = channels.find(channel => 
+      //     channel.members.some(member => member.id === currentUser.id)
+      //   );
+         
+      //   if (firstMemberChannel) {
+      //     this.setSelectedChannel(firstMemberChannel);
+      //   } else {
+      //     console.log("Sie sind in keinem Channel Mitglied.");
+      //   }
       // }
-  
       this.channels$.next(channels);
     });
+    
   }
   
+  setInitialChannelSelection() {
+   
+    
+  }
+
+  resetInitialChannelSelection() {
+    this.initialChannelSet = false;
+  }
 
   async updateUserNameInMessages(userId: string, newName: string) {
     const channels = this.channels$.value;

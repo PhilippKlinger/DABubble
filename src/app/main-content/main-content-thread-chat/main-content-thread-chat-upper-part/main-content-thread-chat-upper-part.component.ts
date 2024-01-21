@@ -16,7 +16,7 @@ export class MainContentThreadChatUpperPartComponent {
   constructor(private dataService: DataService, private ChannelsService: ChannelsService) {
     this.unsubChannels = this.ChannelsService.selectedChannel$.subscribe(selectedChannel => {
       this.selectedChannel = selectedChannel;
-      console.log(this.selectedChannel)
+      // console.log(this.selectedChannel)
     });
   }
 

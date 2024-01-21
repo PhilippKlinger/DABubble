@@ -5,7 +5,7 @@ import { UserService } from '../shared-services/user.service';
 import { StorageService } from '../shared-services/storage.service';
 import { CommonService } from '../shared-services/common.service';
 import { UserCredential } from 'firebase/auth';
-
+import { ChannelsService } from '../shared-services/channels.service';
 
 @Component({
   selector: 'app-login',
@@ -33,10 +33,14 @@ export class LoginComponent {
   loginErrorPassword: boolean = false;
   currentUserCredential: UserCredential | null;
 
-  constructor(private authService: AuthService, private userService: UserService, private storageService: StorageService, public commonService: CommonService) {this.currentUserCredential = null;}
+  constructor(private authService: AuthService,
+    private userService: UserService,
+    private storageService: StorageService,
+    public commonService: CommonService,
+    private channelsService: ChannelsService) { this.currentUserCredential = null; }
 
   async login() {
-    const userExists = await this.checkUserExists();    
+    const userExists = await this.checkUserExists();
     if (userExists) {
       this.authService.login(this.user.email, this.user.password)
         .then((userCredential) => {
@@ -55,20 +59,17 @@ export class LoginComponent {
           }
         })
     }
-}
-
-  
+  }
 
   async setUserOnline(userCredential: any) {
-    let userId = userCredential.user.uid; 
+    let userId = userCredential.user.uid;
     await this.userService.setUserOnlineStatus(userId, true);
     let userInfo = await this.userService.getUserInfos(userId);
-    if (userInfo) {        
+    if (userInfo) {
       sessionStorage.setItem('user', JSON.stringify(userInfo));
     }
   }
 
-  
 
   async checkUserExists() {
     this.loginErrorUser = false;
@@ -87,7 +88,7 @@ export class LoginComponent {
     this.authService.login('guestLogin@guest.com', 'Guestlogin')
       .then((userCredential) => {
         this.setUserOnline(userCredential);
-        this.commonService.showPopup('login');  
+        this.commonService.showPopup('login');
         this.commonService.routeTo('main-content', 2000);
       })
   }
@@ -101,7 +102,7 @@ export class LoginComponent {
         await this.setUserOnline(result);
         this.commonService.showPopup('login');
         this.commonService.routeTo('main-content', 2000);
-      } else {        
+      } else {
         console.log("Google-Konto hat keine gültige E-Mail oder keinen Namen.");
       }
     } catch (error) {
@@ -110,7 +111,7 @@ export class LoginComponent {
   }
 
   async checkGooleUserExistsAndCreate(googleUser: any) {
-    let userExists = await this.userService.userExistsByEmail(googleUser.email);  
+    let userExists = await this.userService.userExistsByEmail(googleUser.email);
     if (!userExists) {
       this.createNewGoogleUser(googleUser);
     }
@@ -123,17 +124,17 @@ export class LoginComponent {
       avatar: 'assets/avatars/google.svg',
       onlineStatus: true,
       id: googleUser.uid
-    });  
+    });
     await this.userService.createUser(newUser, 'users');
   }
 
   isFormValid() {
     return this.validateEmail(this.user.email) &&
-           this.user.name.length >= 5 &&
-           this.user.password.length >= 8 &&
-           this.user.password === this.user.confirmPassword &&
-           this.isCheckboxChecked;
-           
+      this.user.name.length >= 5 &&
+      this.user.password.length >= 8 &&
+      this.user.password === this.user.confirmPassword &&
+      this.isCheckboxChecked;
+
   }
 
   validateEmail(email: string): boolean {
@@ -152,13 +153,13 @@ export class LoginComponent {
       this.loginErrorUser = true;
     }
   }
-  
+
 
   async register() {
     this.loginErrorUser = false;
     if (this.avatarFile) {
       await this.storageService.uploadFile(this.avatarFile);
-    }   
+    }
     try {
       const userCredential = await this.authService.register(this.user.email, this.user.password);
       await this.authService.sendVerificationEmail();
@@ -177,31 +178,31 @@ export class LoginComponent {
     this.switchLogin('register')
   }
 
-  switchLogin(popup_name:string) {
+  switchLogin(popup_name: string) {
     setTimeout(() => {
       this.setDNonePopup(popup_name);
       this.changeSwitchCase('login');
-    },2000);
+    }, 2000);
   }
 
-  setDNonePopup(popup_name:string) {
+  setDNonePopup(popup_name: string) {
     const popup = document.getElementById(popup_name);
     if (popup) {
-      popup.classList.add('d-none'); 
-    };  
+      popup.classList.add('d-none');
+    };
   }
 
   async setNewPassword() {
     if (await this.checkUserExists()) {
-        this.loginErrorUser = false;
-        this.authService.resetPassword(this.user.email)
-        .then (() => { 
+      this.loginErrorUser = false;
+      this.authService.resetPassword(this.user.email)
+        .then(() => {
           this.commonService.showPopup('new-pass');
           this.switchLogin('new-pass');
-        });    
+        });
     }
   }
- 
+
 
   changeInputPasswordToTxt(event: MouseEvent): void {
     this.commonService.changeInputPasswordToTxt(event);
@@ -217,7 +218,7 @@ export class LoginComponent {
     if ((this.switch_expression === 'avatar' && newSwitchCase === 'signup') || (this.switch_expression === 'forgotPassword' && newSwitchCase === 'login')) {
     } else if (newSwitchCase === 'signup' || newSwitchCase === 'forgotPassword' || newSwitchCase === 'login') {
       this.user = new User();
-    } 
+    }
     this.loginErrorUser = false;
     this.switch_expression = newSwitchCase;
   }
@@ -235,7 +236,7 @@ export class LoginComponent {
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (!input.files){
+    if (!input.files) {
       return;
     }
     const file = input.files[0];
@@ -244,14 +245,14 @@ export class LoginComponent {
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     this.errorUploadFile = !validTypes.includes(fileType) || file.size > MAX_FILE_SIZE;
     if (!this.errorUploadFile) {
-        this.selectedAvatar = URL.createObjectURL(file);
-        this.avatarFile = file;
+      this.selectedAvatar = URL.createObjectURL(file);
+      this.avatarFile = file;
     }
   }
 
-  
 
-  routeTo(router_link: string , seconds: number) {
+
+  routeTo(router_link: string, seconds: number) {
     this.commonService.routeTo(router_link, seconds);
   }
 
