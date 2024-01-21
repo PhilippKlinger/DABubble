@@ -2,12 +2,13 @@ import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/shared-services/data.service';
 import { Message } from './../../../models/message.class'
 import { ChannelsService } from 'src/app/shared-services/channels.service';
-import { Subscription } from 'rxjs';
+import { Subscription, timestamp } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
 import { Reaction } from 'src/app/models/reaction.class';
 import { User } from 'src/app/models/user.class';
 import { CommonService } from 'src/app/shared-services/common.service';
 import { StorageService } from 'src/app/shared-services/storage.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-main-content-main-chat-lower-part',
@@ -45,7 +46,7 @@ export class MainContentMainChatLowerPartComponent {
     });
 
     this.channelService.thread_subject$.subscribe((thread_subject: Message) => {
-      if (thread_subject) { 
+      if (thread_subject) {
         this.thread_subject = thread_subject;
         this.textAreaContent = this.thread_subject.message;
       } else {
@@ -54,11 +55,50 @@ export class MainContentMainChatLowerPartComponent {
         this.textAreaContent = '';
       }
     });
-    
+
 
     this.channelService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
+  }
+
+  getDatePartsFromFormattedDate(formattedDate?: string): { day: number, month: number, year: number } {
+    const parts = (formattedDate ?? '').split(' ')[0].split('-');
+
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const year = parseInt(parts[2], 10);
+
+    return { day, month, year };
+  }
+
+  checkChannelCreationTime() {
+    const selectedChannelTimestamp = this.getDatePartsFromFormattedDate(this.channelService.selectedChannel$.value?.timestamp.toString());
+    const timestampNow = this.getDatePartsFromFormattedDate(formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US'));
+
+    if (timestampNow.year == selectedChannelTimestamp.year) {
+        if (timestampNow.month == selectedChannelTimestamp.month) {
+            if (timestampNow.day == selectedChannelTimestamp.day) {
+              return 'heute'
+            } else if ((timestampNow.day - 1) == selectedChannelTimestamp.day) {
+              return 'gestern'
+            } else {
+              return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
+            }
+        } else {
+          return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
+        }
+    } else {
+      return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
+    }
+  }
+
+  checkChannelCreator() {
+    if (this.selectedChannel?.creator == this.user.name) {
+      return 'Du hast';
+    } else {
+      return `${this.selectedChannel?.creator} hat`;
+    }
   }
 
   changedTextMessage(event: Event) {
@@ -192,8 +232,8 @@ export class MainContentMainChatLowerPartComponent {
         const messageWithLink = this.input_message.nativeElement.value.trim() + "\nDatei: " + this.uploadedFileLink;
         this.message.setMessage(messageWithLink);
       } else { */
-        this.message.setMessage(this.input_message.nativeElement.value.trim());
-     /*  }    */   
+      this.message.setMessage(this.input_message.nativeElement.value.trim());
+      /*  }    */
       this.channelService.pushMessageToChannel(this.message);
       this.input_message.nativeElement.value = '';
     }
@@ -202,21 +242,21 @@ export class MainContentMainChatLowerPartComponent {
   ngOnDestroy() {
     this.unsubChannels.unsubscribe();
   }
-/* 
-  async handleFileInput(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      try {
-        const uploadedUrl = await this.storageService.uploadFile(file);
-        this.uploadedFileLink = uploadedUrl;
-      } catch (error) {
-        console.error('Fehler beim Hochladen der Datei', error);
+  /* 
+    async handleFileInput(event: any) {
+      const file = event.target.files[0];
+      if (file) {
+        try {
+          const uploadedUrl = await this.storageService.uploadFile(file);
+          this.uploadedFileLink = uploadedUrl;
+        } catch (error) {
+          console.error('Fehler beim Hochladen der Datei', error);
+        }
       }
     }
-  }
-
-  removeUploadedFile() {
-    this.uploadedFileLink = null;
-  }
- */
+  
+    removeUploadedFile() {
+      this.uploadedFileLink = null;
+    }
+   */
 }

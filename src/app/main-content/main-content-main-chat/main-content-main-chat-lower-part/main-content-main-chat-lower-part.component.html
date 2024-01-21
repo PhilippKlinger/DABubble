@@ -11,8 +11,9 @@
                 <h1>{{ selectedChannel.name }}</h1>
             </div>
             <div>
-                <span>{{ selectedChannel.creator }} hat diesen Channel am {{ selectedChannel.timestamp }} erstellt.
-                    Das ist der Anfang des Channels</span>
+                <span>
+                    {{ checkChannelCreator() }} diesen Channel am {{ checkChannelCreationTime() }} erstellt. Das ist der Anfang des Channels
+                </span>
                 <h2>
                     <mat-icon class="tag">tag</mat-icon>
                     {{ selectedChannel.name }}
