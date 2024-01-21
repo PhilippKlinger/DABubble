@@ -24,6 +24,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 import { DialogShowProfileComponent } from './dialogs/dialog-show-profile/dialog-show-profile.component';
@@ -119,6 +120,7 @@ import { StorageService } from './shared-services/storage.service';
     MatTooltipModule,
     MatRadioModule,
     PickerComponent,
+    MatSnackBarModule,
   ],
   providers: [
     OpenDialogService,

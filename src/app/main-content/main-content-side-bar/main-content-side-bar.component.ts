@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
+import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { DataService } from 'src/app/shared-services/data.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-main-content-side-bar',
   templateUrl: './main-content-side-bar.component.html',
@@ -18,10 +19,17 @@ export class MainContentSideBarComponent {
 
   channels: Channel[] = [];
   unsubChannels!: Subscription;
+  currentUser!: User;
 
-  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService, private dataService: DataService) {
+  constructor(private dialogService: OpenDialogService,
+    private channelsService: ChannelsService,
+    private dataService: DataService,
+    private snackBar: MatSnackBar) {
     this.unsubChannels = this.channelsService.channels$.subscribe(channels => {
       this.channels = channels;
+    });
+    this.channelsService.currentUserInfo$.subscribe((currentUser) => {
+      this.currentUser = currentUser;
     });
   }
 
@@ -30,10 +38,29 @@ export class MainContentSideBarComponent {
   }
 
   openChannel(channel: Channel): void {
-    this.channelsService.setSelectedChannel(channel);
-    //aktualisiert die variable in meiner data.service.ts, woraufhin sich die variable in der main-component mit aktualisiert
-    this.dataService.directmessage_open$.next(false);
+    if (this.channelsService.isCurrentUserChannelMember(channel)) {
+      this.channelsService.setSelectedChannel(channel);
+      // this.dataService.directmessage_open$.next(false);
+    } else {
+      this.showNotAMemberPopup();
+     
+    }
+
   }
+
+  showNotAMemberPopup(): void {
+    let snackbarRef = this.snackBar.open('Sie sind kein Mitglied dieses Channels.', 'Schließen', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
+  
+    // snackbarRef.afterDismissed().subscribe(() => {
+    //   this.dataService.directmessage_open$.next(true);
+    // });
+  }
+  
+
 
   openDialog(componentKey: string): void {
     this.dialogService.setNeedToAddMoreMembers(false);

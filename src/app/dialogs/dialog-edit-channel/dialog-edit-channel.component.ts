@@ -64,24 +64,34 @@ export class DialogEditChannelComponent {
 
   leaveChannel(): void {
     if (this.channel && this.currentUser) {
-      this.channel.members = this.channel.members.filter(member => member.id !== this.currentUser.id);
-      this.channelsService.updateChannel(this.channel);
-  
-      if (this.channel.members.length === 0) {
-        this.channelsService.deleteChannel(this.channel).then(() => {
-          this.channelsService.channels$.pipe(
-            take(1) 
-          ).subscribe(channels => {
-            const newSelectedChannel = channels[0];
-            this.channelsService.setSelectedChannel(newSelectedChannel);
-          });
-        });
-      } else {
-        this.channelsService.setSelectedChannel(this.channel);
-      }
-      this.dialogRef.close();
+        this.channel.members = this.channel.members.filter(member => member.id !== this.currentUser.id);
+        this.channelsService.updateChannel(this.channel);
+        if (this.channel.members.length === 0) {
+            this.channelsService.deleteChannel(this.channel).then(() => {
+                this.selectNextAvailableChannel();
+            });
+        } else {
+            this.channelsService.setSelectedChannel(this.channel);
+        }
+        this.dialogRef.close();
     }
-  }
+}
+
+selectNextAvailableChannel(): void {
+    this.channelsService.channels$.pipe(
+        take(1)
+    ).subscribe(channels => {
+        const firstMemberChannel = channels.find(channel => 
+            this.channelsService.isCurrentUserChannelMember(channel)
+        );
+        if (firstMemberChannel) {
+            this.channelsService.setSelectedChannel(firstMemberChannel);
+        } else {
+            console.log("Sie sind in keinem Channel Mitglied.");
+        }
+    });
+}
+
   
   
 

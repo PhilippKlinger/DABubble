@@ -99,6 +99,11 @@ export class ChannelsService {
     this.selectedChannel$.next(channel);
   }
 
+  isCurrentUserChannelMember(channel: Channel): boolean {
+    const currentUser = this.currentUserInfo$.value;
+    return channel.members.some(member => member.id === currentUser.id);
+  }
+
   checkReactionExistenceOnMessage(reaction: Reaction) {
     let messageReactions: any = this.selectedMessageMainChat$.value.reactions;
 
@@ -281,15 +286,24 @@ export class ChannelsService {
         const data = doc.data() as Channel;
         return new Channel({ ...data, id: doc.id });
       });
-      //hier entweder bestimmten channel auswählen oder zuletzt besuchten channel anzeigen
-      // if (channels.length > 0) {
-      //   const firstChannel = channels[0];
-      //   this.setSelectedChannel(firstChannel);
+  
+      // // Ermitteln des ersten Channels, in dem der Benutzer Mitglied ist
+      // const currentUser = this.currentUserInfo$.value;
+      // const firstMemberChannel = channels.find(channel => 
+      //   channel.members.some(member => member.id === currentUser.id)
+      // );
+  
+      // // Setzen des Channels, wenn der Benutzer in einem der Channels Mitglied ist
+      // if (firstMemberChannel) {
+      //   this.setSelectedChannel(firstMemberChannel);
+      // } else {
+      //   console.log("Sie sind in keinem Channel Mitglied.");
       // }
-
+  
       this.channels$.next(channels);
     });
   }
+  
 
   async updateUserNameInMessages(userId: string, newName: string) {
     const channels = this.channels$.value;
