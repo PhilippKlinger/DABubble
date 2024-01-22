@@ -7,12 +7,13 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { EmailVerificationComponent } from './email-verification/email-verification.component';
 import { ImprintComponent } from './imprint/imprint.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { canActivate } from './shared-services/auth-guard.service';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: '', component: LoginComponent, },
   { path: 'login', component: LoginComponent },
-  { path: 'dialogs', component: DialogDummyComponent },
-  { path: 'main-content', component: MainContentComponent },
+  { path: 'dialogs', component: DialogDummyComponent, canActivate: [canActivate] },
+  { path: 'main-content', component: MainContentComponent, canActivate: [canActivate] }, 
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'verify-email', component: EmailVerificationComponent },
   { path: 'imprint', component: ImprintComponent },

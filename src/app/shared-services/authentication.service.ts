@@ -61,4 +61,9 @@ export class AuthService {
   async confirmResetPassword(oobCode: string, newPassword: string) {
     await confirmPasswordReset(this.auth, oobCode, newPassword);
   }
+
+  isLoggedIn(): boolean {
+    return this.auth.currentUser !=null;  
+  }
+
 }
