@@ -12,8 +12,8 @@ import { canActivate } from './shared-services/auth-guard.service';
 const routes: Routes = [
   { path: '', component: LoginComponent, },
   { path: 'login', component: LoginComponent },
-  { path: 'dialogs', component: DialogDummyComponent, canActivate: [canActivate] },
-  { path: 'main-content', component: MainContentComponent, canActivate: [canActivate] }, 
+  { path: 'dialogs', component: DialogDummyComponent },
+  { path: 'main-content', component: MainContentComponent}, //canActivate: [canActivate] },  kann für die bearbeitungszeit deaktiviert werden
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'verify-email', component: EmailVerificationComponent },
   { path: 'imprint', component: ImprintComponent },

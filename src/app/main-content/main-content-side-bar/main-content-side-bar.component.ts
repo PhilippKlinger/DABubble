@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
 import { User } from 'src/app/models/user.class';
@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './main-content-side-bar.component.html',
   styleUrls: ['./main-content-side-bar.component.scss']
 })
-export class MainContentSideBarComponent {
+export class MainContentSideBarComponent implements OnInit {
   channel_icon: string = 'arrow_drop_down';
   channels_opened: boolean = true;
   directmessage_icon: string = 'arrow_drop_down';
@@ -21,17 +21,24 @@ export class MainContentSideBarComponent {
   unsubChannels!: Subscription;
   currentUser!: User;
 
+  private readonly guestChannelId = 'rPEeeKbPjmAqXQdonOsg';
+
   constructor(private dialogService: OpenDialogService,
     private channelsService: ChannelsService,
     private dataService: DataService,
     private snackBar: MatSnackBar) {
+      this.channelsService.currentUserInfo$.subscribe((currentUser) => {
+        this.currentUser = currentUser;
+      });
     this.unsubChannels = this.channelsService.channels$.subscribe(channels => {
       this.channels = channels;
     });
-    this.channelsService.currentUserInfo$.subscribe((currentUser) => {
-      this.currentUser = currentUser;
-    });
   }
+  ngOnInit(): void {
+    this.updateChannelList();
+  }
+
+  
 
   openDM() {
     this.dataService.directmessage_open$.next(true);
@@ -45,14 +52,14 @@ export class MainContentSideBarComponent {
         this.channelsService.setSelectedChannel(channel);
         this.dataService.thread_open$.next(false);
         counter++;
-  
+
         if (counter === 5) {
           clearInterval(intervalId); // Stoppt das Intervall, nachdem es dreimal aufgerufen wurde
         }
       }, 100);
     } else {
       this.showNotAMemberPopup();
-     
+
     }
 
   }
@@ -63,12 +70,12 @@ export class MainContentSideBarComponent {
       horizontalPosition: 'center',
       verticalPosition: 'top'
     });
-  
+
     // snackbarRef.afterDismissed().subscribe(() => {
     //   this.dataService.directmessage_open$.next(true);
     // });
   }
-  
+
 
 
   openDialog(componentKey: string): void {
@@ -99,6 +106,15 @@ export class MainContentSideBarComponent {
   editChannel(channel: Channel): void {
     this.channelsService.setSelectedChannel(channel);
     this.dialogService.openDialog('editChannel');
+  }
+
+  updateChannelList() {
+   
+    if (this.currentUser && this.currentUser.email === 'guestLogin@guest.com') {
+      this.channels = this.channels.filter(channel => channel.id === this.guestChannelId);
+    } else {
+      this.channels = this.channels.filter(channel => channel.id !== this.guestChannelId);
+    }
   }
 
   ngOnDestroy() {

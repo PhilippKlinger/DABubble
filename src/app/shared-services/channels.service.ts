@@ -22,6 +22,7 @@ export class ChannelsService {
 
   constructor(private firestore: Firestore) {
     this.unsubChannels = this.subChannelsList();
+    console.log(this.currentUserInfo$)
   }
 
   setSelectedChannel(channel: Channel): void {
