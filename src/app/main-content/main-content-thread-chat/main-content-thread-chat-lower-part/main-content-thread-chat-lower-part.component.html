@@ -1,7 +1,7 @@
 <div class="chat">
     <div class="chat-content">
         <div class="thread-anon-user-message" *ngIf="thread_subject?.creator !== this.user.name">
-            <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
+            <img class="user-message-avatar" src="{{ thread_subject?.avatar }}">
             <div>
                 <div class="anon-user-message-time-name">
                     <span>{{ thread_subject_time }}</span>
@@ -20,7 +20,7 @@
         </div>
 
         <div class="thread-user-message" *ngIf="thread_subject?.creator == this.user.name">
-            <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
+            <img class="user-message-avatar" src="{{ thread_subject?.avatar }}">
             <div class="flex-end">
                 <div class="user-message-time-name">
                     <span>{{ thread_subject_time }}</span>
@@ -103,52 +103,6 @@
                 </div>
             </div>
         </div>
-
-
-        <!-- <div class="thread-anon-user-message" *ngFor="let answer of threadAnswers"> OLD CODE!!!!!!!!!!!!! (will be removed later on)
-            <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
-            <div>
-                <div class="anon-user-message-time-name">
-                    <span>{{ answer.timestamp }}</span>
-                    <h3>{{ answer.creator }}</h3>
-                </div>
-                <div class="anon-speech-bubble-user">
-                    {{ answer.message }}
-                </div>
-                <div class="anon-user-message-emojis">
-
-                    <div class="user-message-emojis-showcase">
-                        <div>👍</div>
-                        <span>1</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="thread-user-message">
-            <img class="user-message-avatar" src="../../../../assets/avatars/avatar_1.svg">
-            <div class="flex-end">
-                <div class="user-message-time-name">
-                    <span>14:04 Uhr</span>
-                    <h3>Frederik Beck</h3>
-                </div>
-                <div class="speech-bubble-user">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Tempore nostrum minus exercitationem aliquam incidunt ducimus. Voluptate commodi nihil ipsum
-                    molestias itaque quae quidem eligendi aperiam recusandae, optio vel earum sunt.
-                </div>
-                <div class="user-message-emojis">
-                    <div class="user-message-emojis-showcase">
-                        <div>🎈</div>
-                        <span>1</span>
-                    </div>
-                    <div class="user-message-emojis-showcase">
-                        <div>👽</div>
-                        <span>1</span>
-                    </div>
-                    <mat-icon>add_reaction</mat-icon>
-                </div>
-            </div>
-        </div> -->
     </div>
 </div>
 
