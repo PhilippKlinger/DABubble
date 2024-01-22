@@ -162,14 +162,17 @@ export class ChannelsService {
   parseDate(timestamp: any) {
     const dateParts = timestamp.split(' ')[0].split('-');
     const timeParts = timestamp.split(' ')[1].split(':');
+    const secondsParts = timeParts[2].split(':'); // Neues Array für Sekunden hinzufügen
+
     const year = parseInt(dateParts[2], 10);
     const month = parseInt(dateParts[1], 10) - 1; // Monate in JavaScript sind 0-basiert
     const day = parseInt(dateParts[0], 10);
     const hours = parseInt(timeParts[0], 10);
     const minutes = parseInt(timeParts[1], 10);
+    const seconds = parseInt(secondsParts[0], 10);
 
-    return new Date(year, month, day, hours, minutes).getTime();
-  }
+    return new Date(year, month, day, hours, minutes, seconds).getTime();
+}
 
   async addReactionToAnswer(reaction: Reaction) {
     const selectedChannel = this.selectedChannel$.value;
@@ -231,7 +234,7 @@ export class ChannelsService {
     const thread_subject = this.thread_subject$.value;
     const thread_subject_index = this.thread_subject_index$.value;
 
-    answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
+    answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm:ss', 'en-US');
     if (selectedChannel && thread_subject && thread_subject !== undefined) {
       const docRef = await addDoc(this.getChannelsMessageColRef(selectedChannel, thread_subject), answer.toJSON());
       answer.setId(docRef.id);
@@ -246,7 +249,7 @@ export class ChannelsService {
   async pushMessageToChannel(message: Message): Promise<void> {
     const selectedChannel = this.selectedChannel$.value;
 
-    message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
+    message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm:ss', 'en-US');
     //try and catch besser ??
     if (selectedChannel) {
       const docRef = await addDoc(this.getChannelsColRef(selectedChannel), message.toJSON());
