@@ -58,7 +58,11 @@ export class ChannelsService {
 
       onSnapshot(this.getChannelsMessageReactionColRef(selectedChannel!, message), (snapshot: any) => {
         this.messageReactions = snapshot.docs.map((doc: any) => doc.data());
-        this.chatMessages[i].reactions = this.messageReactions;
+        try {
+          this.chatMessages[i].reactions = this.messageReactions;
+        } catch {
+          console.log("couldn't set reaction to the message.")
+        }
       });
     }
   }
@@ -73,7 +77,11 @@ export class ChannelsService {
 
         onSnapshot(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, answer), (snapshot: any) => {
           this.answerReactions = snapshot.docs.map((doc: any) => doc.data());
-          this.threadAnswers[i].reactions = this.answerReactions;
+          try {
+            this.threadAnswers[i].reactions = this.answerReactions;
+          } catch {
+            console.log("couldn't set reaction to the answer.")
+          }
         });
       }
     } else {
@@ -294,7 +302,7 @@ export class ChannelsService {
       //   const firstMemberChannel = channels.find(channel => 
       //     channel.members.some(member => member.id === currentUser.id)
       //   );
-         
+
       //   if (firstMemberChannel) {
       //     this.setSelectedChannel(firstMemberChannel);
       //   } else {
@@ -303,12 +311,12 @@ export class ChannelsService {
       // }
       this.channels$.next(channels);
     });
-    
+
   }
-  
+
   setInitialChannelSelection() {
-   
-    
+
+
   }
 
   resetInitialChannelSelection() {

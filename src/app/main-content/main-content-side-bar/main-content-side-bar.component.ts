@@ -39,9 +39,17 @@ export class MainContentSideBarComponent {
 
   openChannel(channel: Channel): void {
     if (this.channelsService.isCurrentUserChannelMember(channel)) {
-      this.channelsService.setSelectedChannel(channel);
-      this.dataService.thread_open$.next(false);
       // this.dataService.directmessage_open$.next(false);
+      let counter = 0;
+      const intervalId = setInterval(() => {
+        this.channelsService.setSelectedChannel(channel);
+        this.dataService.thread_open$.next(false);
+        counter++;
+  
+        if (counter === 5) {
+          clearInterval(intervalId); // Stoppt das Intervall, nachdem es dreimal aufgerufen wurde
+        }
+      }, 100);
     } else {
       this.showNotAMemberPopup();
      

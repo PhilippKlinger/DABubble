@@ -274,8 +274,16 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   selectMessageForThread(index: number) {
-    this.channelService.thread_subject$.next(this.chatMessages[index]);
-    this.channelService.thread_subject_index$.next(index);
+    let counter = 0;
+    const intervalId = setInterval(() => {
+      this.channelService.thread_subject$.next(this.chatMessages[index]);
+      this.channelService.thread_subject_index$.next(index);
+      counter++;
+
+      if (counter === 6) {
+        clearInterval(intervalId); // Stoppt das Intervall, nachdem es dreimal aufgerufen wurde
+      }
+    }, 30);
   }
 
   receiveChatMessages() {
