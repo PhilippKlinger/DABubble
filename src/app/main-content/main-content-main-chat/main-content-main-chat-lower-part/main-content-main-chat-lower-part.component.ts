@@ -62,9 +62,34 @@ export class MainContentMainChatLowerPartComponent {
     });
   }
 
+  extractWeekdayAndMonth(date?: string): { weekday: string, month: string } {
+    const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+
+    let dateParts = (date ?? '').split(' ');
+    let dayMonthYear = dateParts[0].split('-');
+    let time = dateParts[1].split(':');
+
+    let day = parseInt(dayMonthYear[0], 10);
+    let month = parseInt(dayMonthYear[1], 10) - 1; // Monate im JavaScript Date-Objekt sind 0-basiert
+    let year = parseInt(dayMonthYear[2], 10);
+    let hour = parseInt(time[0], 10);
+    let minute = parseInt(time[1], 10);
+
+    let dateObject = new Date(year, month, day, hour, minute);
+    let weekdayIndex = dateObject.getDay();
+    let monthIndex = dateObject.getMonth();
+
+    let weekday = weekdays[weekdayIndex];
+    let monthName = months[monthIndex];
+
+    return { weekday, month: monthName };
+  }
+
   returnPartingLineValue(index: number): { text: string, boolean: boolean } {
     let chatMessages = this.chatMessages;
     let currentMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index].timestamp);
+    let currentMessageWeekdayAndMonth = this.extractWeekdayAndMonth(chatMessages[index].timestamp);
 
     if (chatMessages[index - 1]) {
       let previousMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index - 1].timestamp);
@@ -95,21 +120,21 @@ export class MainContentMainChatLowerPartComponent {
           } else {
             // Dieser Monat aber nicht der selbe Tag
             return {
-              'text': `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}`,
+              'text': `${currentMessageWeekdayAndMonth.weekday}, ${currentMessageTimestamp.day}. ${currentMessageWeekdayAndMonth.month}`,
               'boolean': true,
             };
           }
         } else {
           //nicht dieser Monat
           return {
-            'text': `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}`,
+            'text': `${currentMessageWeekdayAndMonth.weekday}, ${currentMessageTimestamp.day}. ${currentMessageWeekdayAndMonth.month}`,
             'boolean': true,
           };
         }
       } else {
         //nicht dieses Jahr
         return {
-          'text': `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}`,
+          'text': `${currentMessageWeekdayAndMonth.weekday}, ${currentMessageTimestamp.day}. ${currentMessageWeekdayAndMonth.month}, ${currentMessageTimestamp.year}`,
           'boolean': true,
         };
       }
@@ -117,7 +142,7 @@ export class MainContentMainChatLowerPartComponent {
     else {
       // keine vorherige nachricht verfügbar
       return {
-        'text': `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}`,
+        'text': `${currentMessageWeekdayAndMonth.weekday}, ${currentMessageTimestamp.day}. ${currentMessageWeekdayAndMonth.month}, ${currentMessageTimestamp.year}`,
         'boolean': true,
       };
     }
