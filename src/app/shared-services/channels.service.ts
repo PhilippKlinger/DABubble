@@ -12,7 +12,7 @@ import { User } from '../models/user.class';
 export class ChannelsService {
  
   private initialChannelSet = false;
-
+  private readonly guestChannelId = 'rPEeeKbPjmAqXQdonOsg';
 
   public channels$: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
   public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
@@ -22,7 +22,6 @@ export class ChannelsService {
 
   constructor(private firestore: Firestore) {
     this.unsubChannels = this.subChannelsList();
-    console.log(this.currentUserInfo$)
   }
 
   setSelectedChannel(channel: Channel): void {
@@ -47,31 +46,52 @@ export class ChannelsService {
     }
   }
 
-
   subChannelsList() {
     return onSnapshot(this.getChannelsRef(), (querySnapshot) => {
-      const channels = querySnapshot.docs.map((doc) => {
+      let channels = querySnapshot.docs.map((doc) => {
         const data = doc.data() as Channel;
         return new Channel({ ...data, id: doc.id });
       });
 
-      // if (!this.initialChannelSet && channels.length > 0) {
-      //   this.initialChannelSet = true;
-      //   const currentUser = this.currentUserInfo$.value;
-      //   const firstMemberChannel = channels.find(channel => 
-      //     channel.members.some(member => member.id === currentUser.id)
-      //   );
-
-      //   if (firstMemberChannel) {
-      //     this.setSelectedChannel(firstMemberChannel);
-      //   } else {
-      //     console.log("Sie sind in keinem Channel Mitglied.");
-      //   }
-      // }
+      // Filter channels based on the user type
+      channels = this.filterChannelsBasedOnUserType(channels);
       this.channels$.next(channels);
     });
-
   }
+
+  private filterChannelsBasedOnUserType(channels: Channel[]): Channel[] {
+    const currentUser = this.currentUserInfo$.value;
+    if (currentUser && currentUser.email === 'guestLogin@guest.com') {
+      return channels.filter(channel => channel.id === this.guestChannelId);
+    } else {
+      return channels.filter(channel => channel.id !== this.guestChannelId);
+    }
+  }
+
+  // subChannelsList() {
+  //   return onSnapshot(this.getChannelsRef(), (querySnapshot) => {
+  //     const channels = querySnapshot.docs.map((doc) => {
+  //       const data = doc.data() as Channel;
+  //       return new Channel({ ...data, id: doc.id });
+  //     });
+
+  //     // if (!this.initialChannelSet && channels.length > 0) {
+  //     //   this.initialChannelSet = true;
+  //     //   const currentUser = this.currentUserInfo$.value;
+  //     //   const firstMemberChannel = channels.find(channel => 
+  //     //     channel.members.some(member => member.id === currentUser.id)
+  //     //   );
+
+  //     //   if (firstMemberChannel) {
+  //     //     this.setSelectedChannel(firstMemberChannel);
+  //     //   } else {
+  //     //     console.log("Sie sind in keinem Channel Mitglied.");
+  //     //   }
+  //     // }
+  //     this.channels$.next(channels);
+  //   });
+
+  // }
 
   // setInitialChannelSelection() {
 

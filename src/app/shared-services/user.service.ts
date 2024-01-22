@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 export class UserService {
 
   public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
-  public selectedUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  public selectedUserforProfileView$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
 
   private unsubUsers;
@@ -78,8 +78,7 @@ export class UserService {
   }
 
   setSelectedUser(user: User): void {
-    this.selectedUser$.next(user);
-    console.log('selected User is:', user)
+    this.selectedUserforProfileView$.next(user);
   }
 
   async userExistsByEmail(email: string): Promise<boolean> {

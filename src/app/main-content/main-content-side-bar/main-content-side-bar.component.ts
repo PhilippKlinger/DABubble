@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './main-content-side-bar.component.html',
   styleUrls: ['./main-content-side-bar.component.scss']
 })
-export class MainContentSideBarComponent implements OnInit {
+export class MainContentSideBarComponent {
   channel_icon: string = 'arrow_drop_down';
   channels_opened: boolean = true;
   directmessage_icon: string = 'arrow_drop_down';
@@ -20,8 +20,6 @@ export class MainContentSideBarComponent implements OnInit {
   channels: Channel[] = [];
   unsubChannels!: Subscription;
   currentUser!: User;
-
-  private readonly guestChannelId = 'rPEeeKbPjmAqXQdonOsg';
 
   constructor(private dialogService: OpenDialogService,
     private channelsService: ChannelsService,
@@ -34,11 +32,7 @@ export class MainContentSideBarComponent implements OnInit {
       this.channels = channels;
     });
   }
-  ngOnInit(): void {
-    this.updateChannelList();
-  }
-
-  
+   
 
   openDM() {
     this.dataService.directmessage_open$.next(true);
@@ -106,15 +100,6 @@ export class MainContentSideBarComponent implements OnInit {
   editChannel(channel: Channel): void {
     this.channelsService.setSelectedChannel(channel);
     this.dialogService.openDialog('editChannel');
-  }
-
-  updateChannelList() {
-   
-    if (this.currentUser && this.currentUser.email === 'guestLogin@guest.com') {
-      this.channels = this.channels.filter(channel => channel.id === this.guestChannelId);
-    } else {
-      this.channels = this.channels.filter(channel => channel.id !== this.guestChannelId);
-    }
   }
 
   ngOnDestroy() {

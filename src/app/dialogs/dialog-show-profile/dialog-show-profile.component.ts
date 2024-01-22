@@ -21,7 +21,7 @@ export class DialogShowProfileComponent {
     this.selectedChannelSubscription = this.channelsService.selectedChannel$.subscribe((channel) => {
       this.channel = channel;
     });
-    this.selectedUserSubscription = this.userService.selectedUser$.subscribe((user) => {
+    this.selectedUserSubscription = this.userService.selectedUserforProfileView$.subscribe((user) => {
       this.user = user;
     })
   }
