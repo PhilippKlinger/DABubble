@@ -1,0 +1,13 @@
+
+D:\Developer Akademie\Projekte\DABubble>git pull 
+Already up to date.
+
+D:\Developer Akademie\Projekte\DABubble>git add . 
+
+D:\Developer Akademie\Projekte\DABubble>git commit -m "added authGuard for routing - manual url key input" 
+[main 9303622] added authGuard for routing - manual url key input
+ 4 files changed, 26 insertions(+), 3 deletions(-)
+ create mode 100644 prevent
+ create mode 100644 src/app/shared-services/auth-guard.service.ts
+
+D:\Developer Akademie\Projekte\DABubble>git push 

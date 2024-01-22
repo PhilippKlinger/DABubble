@@ -9,6 +9,7 @@ import { User } from 'src/app/models/user.class';
 import { CommonService } from 'src/app/shared-services/common.service';
 import { StorageService } from 'src/app/shared-services/storage.service';
 import { formatDate } from '@angular/common';
+import { MessagesService } from 'src/app/shared-services/messages.service';
 
 @Component({
   selector: 'app-main-content-main-chat-lower-part',
@@ -35,7 +36,7 @@ export class MainContentMainChatLowerPartComponent {
   editedText!: string;
   uploadedFileLink: string | null = null;
 
-  constructor(private dataService: DataService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
+  constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
@@ -45,7 +46,7 @@ export class MainContentMainChatLowerPartComponent {
       }
     });
 
-    this.channelService.thread_subject$.subscribe((thread_subject: Message) => {
+    this.messagesService.thread_subject$.subscribe((thread_subject: Message) => {
       if (thread_subject) {
         this.thread_subject = thread_subject;
         this.textAreaContent = this.thread_subject.message;
@@ -192,7 +193,7 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   async saveEditedMessage() {
-    const thread_subject = this.channelService.thread_subject$.value
+    const thread_subject = this.messagesService.thread_subject$.value
     const editedText = this.editedText;
 
     this.message.id = thread_subject.id;
@@ -204,7 +205,7 @@ export class MainContentMainChatLowerPartComponent {
     this.message.answered_number = thread_subject.answered_number;
     this.message.latest_answer = thread_subject.latest_answer;
 
-    this.channelService.updateMessage(this.message);
+    this.messagesService.updateMessage(this.message);
     this.toggleEditing();
   }
 
@@ -250,7 +251,7 @@ export class MainContentMainChatLowerPartComponent {
 
     this.reaction.setReaction($event.emoji.native);
     this.reaction.setCreator(currentUserInfo.name);
-    this.channelService.addReactionToMessage(this.reaction);
+    this.messagesService.addReactionToMessage(this.reaction);
     this.emoji_window_messages_open = false;
   }
 
@@ -266,7 +267,7 @@ export class MainContentMainChatLowerPartComponent {
     setTimeout(() => {
       this.emoji_window_messages_open = !this.emoji_window_messages_open;
     }, 50);
-    this.channelService.selectedMessageMainChat$.next(this.chatMessages[index]);
+    this.messagesService.selectedMessageMainChat$.next(this.chatMessages[index]);
   }
 
   toggleEmojiWindow() {
@@ -276,8 +277,8 @@ export class MainContentMainChatLowerPartComponent {
   selectMessageForThread(index: number) {
     let counter = 0;
     const intervalId = setInterval(() => {
-      this.channelService.thread_subject$.next(this.chatMessages[index]);
-      this.channelService.thread_subject_index$.next(index);
+      this.messagesService.thread_subject$.next(this.chatMessages[index]);
+      this.messagesService.thread_subject_index$.next(index);
       counter++;
 
       if (counter === 6) {
@@ -287,10 +288,10 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   receiveChatMessages() {
-    this.channelService.updateChatMessageOfSelectedChannel();
-    this.channelService.getReactionsOfMessages();
-    this.channelService.sortChatMessagesByTime();
-    this.chatMessages = this.channelService.chatMessages;
+    this.messagesService.updateChatMessageOfSelectedChannel();
+    this.messagesService.getReactionsOfMessages();
+    this.messagesService.sortChatMessagesByTime();
+    this.chatMessages = this.messagesService.chatMessages;
   }
 
   getFormattedTimeForLatestAnswer(latest_answer: any) {
@@ -328,7 +329,7 @@ export class MainContentMainChatLowerPartComponent {
       } else { */
       this.message.setMessage(this.input_message.nativeElement.value.trim());
       /*  }    */
-      this.channelService.pushMessageToChannel(this.message);
+      this.messagesService.pushMessageToChannel(this.message);
       this.input_message.nativeElement.value = '';
     }
   }

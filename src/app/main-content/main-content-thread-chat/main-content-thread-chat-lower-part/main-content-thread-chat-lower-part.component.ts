@@ -3,6 +3,7 @@ import { Message } from 'src/app/models/message.class';
 import { Reaction } from 'src/app/models/reaction.class';
 import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
+import { MessagesService } from 'src/app/shared-services/messages.service';
 
 @Component({
   selector: 'app-main-content-thread-chat-lower-part',
@@ -21,8 +22,8 @@ export class MainContentThreadChatLowerPartComponent {
   emoji_window_messages_open: boolean = false;
   user: User = null!;
 
-  constructor(private channelService: ChannelsService) {
-    this.channelService.thread_subject$.subscribe((value: Message) => {
+  constructor(private channelService: ChannelsService, private messagesService: MessagesService) {
+    this.messagesService.thread_subject$.subscribe((value: Message) => {
       if (value) {
         this.thread_subject_time = this.getFormattedTime(value);
         this.thread_subject = value;
@@ -59,7 +60,7 @@ export class MainContentThreadChatLowerPartComponent {
     setTimeout(() => {
       this.emoji_window_messages_open = !this.emoji_window_messages_open;
     }, 50);
-    this.channelService.selectedAnswerThreadChat$.next(this.threadAnswers[index]);
+    this.messagesService.selectedAnswerThreadChat$.next(this.threadAnswers[index]);
   }
 
   addReaction($event: any) {
@@ -67,7 +68,7 @@ export class MainContentThreadChatLowerPartComponent {
 
     this.reaction.setReaction($event.emoji.native);
     this.reaction.setCreator(currentUserInfo.name);
-    this.channelService.addReactionToAnswer(this.reaction);
+    this.messagesService.addReactionToAnswer(this.reaction);
     this.emoji_window_messages_open = false;
   }
 
@@ -84,24 +85,24 @@ export class MainContentThreadChatLowerPartComponent {
 
   sendAnswerToThread() {
     const currentUserInfo = this.channelService.currentUserInfo$.value
-    const thread_subject = this.channelService.thread_subject$.value
+    const thread_subject = this.messagesService.thread_subject$.value
 
     if (this.input_answer.nativeElement.value.trim() !== '') {
       this.answer.setCreator(currentUserInfo.name);
       this.answer.setTimestampNow();
       this.answer.setAvatar(currentUserInfo.avatar);
       this.answer.setMessage(this.input_answer.nativeElement.value.trim());
-      this.channelService.pushThreadAnswerToMessage(this.answer);
-      this.channelService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
+      this.messagesService.pushThreadAnswerToMessage(this.answer);
+      this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
       this.input_answer.nativeElement.value = '';
     }
   }
 
   receiveThreadAnswers() {
-    this.channelService.updateThreadAnswersOfSelectedMessage();
-    this.channelService.getReactionsOfAnswers();
-    this.channelService.sortThreadAnswersByTime();
-    this.threadAnswers = this.channelService.threadAnswers;
+    this.messagesService.updateThreadAnswersOfSelectedMessage();
+    this.messagesService.getReactionsOfAnswers();
+    this.messagesService.sortThreadAnswersByTime();
+    this.threadAnswers = this.messagesService.threadAnswers;
   }
 
   getFormattedTime(message: any) {
