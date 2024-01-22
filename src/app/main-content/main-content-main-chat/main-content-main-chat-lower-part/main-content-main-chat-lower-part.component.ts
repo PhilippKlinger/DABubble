@@ -62,58 +62,66 @@ export class MainContentMainChatLowerPartComponent {
     });
   }
 
-  // checkPartingLine(index: number) {
-  //   let chatMessages = this.chatMessages;
-  //   let currentMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index].timestamp);
+  returnPartingLineValue(index: number): { text: string, boolean: boolean } {
+    let chatMessages = this.chatMessages;
+    let currentMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index].timestamp);
 
-  //   if (chatMessages[index -1]) {
-  //     let previousMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index - 1].timestamp);
-  //     if (previousMessageTimestamp.month == currentMessageTimestamp.month) {
-  //       if (previousMessageTimestamp.day == currentMessageTimestamp.day) {
-  //         return false;
-  //       } else if ((previousMessageTimestamp.day + 1) == currentMessageTimestamp.day) {
-  //         return true;
-  //       } else if ((previousMessageTimestamp.day + 2) == currentMessageTimestamp.day) {
-  //         return true;
-  //       } else {
-  //         return true;
-  //       }
-  //     } else {
-  //       return true;
-  //     }
-  //   }
+    if (chatMessages[index - 1]) {
+      let previousMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index - 1].timestamp);
+      let lastMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[chatMessages.length - 1].timestamp);
+      let today = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
+      let todayTimestamp = this.getDatePartsFromFormattedDate(today);
 
-  //   else {
-  //     return false;
-  //   }
-  // }
-
-  // returnPartingLineValue(index: number) {
-  //   let chatMessages = this.chatMessages;
-  //   let currentMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index].timestamp);
-
-  //   if (chatMessages[index -1]) {
-  //     let previousMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index - 1].timestamp);
-
-  //     if (previousMessageTimestamp.month == currentMessageTimestamp.month) {
-  //       if (previousMessageTimestamp.day == currentMessageTimestamp.day) {
-  //         return 'diese nachricht sollte im idealfall nicht existieren';
-  //       } else if ((previousMessageTimestamp.day + 1) == currentMessageTimestamp.day) {
-  //         return 'heute';
-  //       } else if ((previousMessageTimestamp.day + 2) == currentMessageTimestamp.day) {
-  //         return 'gestern';
-  //       } else {
-  //         return `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}.`;
-  //       }
-  //     } else {
-  //       return `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}.`;
-  //     }
-  //   }
-
-  //   else {
-  //     return 'diese nachricht sollte im idealfall nicht existieren';
-  //   }
-  // }
+      if (currentMessageTimestamp.year == previousMessageTimestamp.year) {
+        if (currentMessageTimestamp.month == previousMessageTimestamp.month) {
+          if (currentMessageTimestamp.day == previousMessageTimestamp.day) {
+            //der selbe tag
+            return {
+              'text': `nicht verfügbar`,
+              'boolean': false,
+            };
+          } else if (currentMessageTimestamp.day == todayTimestamp.day) {
+            //heute
+            return {
+              'text': `Heute`,
+              'boolean': true,
+            };
+          } else if (lastMessageTimestamp.day - 1 == currentMessageTimestamp.day) {
+            //gesetern
+            return {
+              'text': `Gestern`,
+              'boolean': true,
+            };
+          } else {
+            // Dieser Monat aber nicht der selbe Tag
+            return {
+              'text': `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}`,
+              'boolean': true,
+            };
+          }
+        } else {
+          //nicht dieser Monat
+          return {
+            'text': `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}`,
+            'boolean': true,
+          };
+        }
+      } else {
+        //nicht dieses Jahr
+        return {
+          'text': `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}`,
+          'boolean': true,
+        };
+      }
+    }
+    else {
+      // keine vorherige nachricht verfügbar
+      return {
+        'text': `${currentMessageTimestamp.day}.${currentMessageTimestamp.month}.${currentMessageTimestamp.year}`,
+        'boolean': true,
+      };
+    }
+  }
 
   getDatePartsFromFormattedDate(formattedDate?: string): { day: number, month: number, year: number } {
     const parts = (formattedDate ?? '').split(' ')[0].split('-');
