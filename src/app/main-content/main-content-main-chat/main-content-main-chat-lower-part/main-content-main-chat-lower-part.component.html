@@ -32,7 +32,7 @@
                 <span>{{ returnPartingLineValue(i).text }}</span>
             </div>
 
-            <div class="user-message" *ngIf="message.creator == this.user.name">
+            <div class="user-message" *ngIf="message.creator == this.user.name" (dblclick)="openThread()">
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div class="flex-end">
                     <div class="user-message-time-name">
@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-            <div class="anon-user-message" *ngIf="message.creator !== this.user.name">
+            <div class="anon-user-message" *ngIf="message.creator !== this.user.name" (dblclick)="openThread()">
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div>
                     <div class="anon-user-message-time-name">
@@ -88,7 +88,8 @@
                     </div>
                     <div class="anon-user-message-emojis">
                         <div class="anon-user-answer-container">
-                            <h3 (click)="openThread()">{{ message.answered_number }} Antworten</h3>
+                            <h3 (click)="openThread()" *ngIf="message.answered_number != 0">{{ message.answered_number
+                                }} Antworten</h3>
                             <span *ngIf="message.latest_answer !== ''">Letzte Antwort {{
                                 getFormattedTimeForLatestAnswer(message.latest_answer) }}</span>
                         </div>

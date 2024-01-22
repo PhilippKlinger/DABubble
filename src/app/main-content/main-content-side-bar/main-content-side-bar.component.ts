@@ -40,6 +40,7 @@ export class MainContentSideBarComponent {
   openChannel(channel: Channel): void {
     if (this.channelsService.isCurrentUserChannelMember(channel)) {
       this.channelsService.setSelectedChannel(channel);
+      this.dataService.thread_open$.next(false);
       // this.dataService.directmessage_open$.next(false);
     } else {
       this.showNotAMemberPopup();
