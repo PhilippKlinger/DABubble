@@ -54,7 +54,7 @@ export class MessagesService {
     }
   }
 
-getReactionsOfAnswers() {
+  getReactionsOfAnswers() {
     const thread_subject = this.thread_subject$.value;
     const selectedChannel = this.channelsService.selectedChannel$.value;
 
@@ -152,7 +152,7 @@ getReactionsOfAnswers() {
     const seconds = parseInt(secondsParts[0], 10);
 
     return new Date(year, month, day, hours, minutes, seconds).getTime();
-}
+  }
 
   async addReactionToAnswer(reaction: Reaction) {
     const selectedChannel = this.channelsService.selectedChannel$.value;

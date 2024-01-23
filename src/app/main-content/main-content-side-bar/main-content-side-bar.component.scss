@@ -1,12 +1,5 @@
 @import './../../../styles.scss';
 
-$Bg-color: #ECEEFE;
-$Light-purple: #ADB0D9;
-$Text-gray: #686868;
-$Purple-1: #444DF2;
-$Purple-2: #797EF3;
-$Purple-3: #535AF1;
-
 section {
     background-color: white;
     border-radius: 30px;
@@ -150,6 +143,8 @@ section {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow-y: scroll;
+    height: 25vh;
 
     div {
         display: flex;
@@ -200,6 +195,8 @@ section {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    overflow-y: scroll;
+    height: 25vh;
 }
 
 .side-bar-profile {
@@ -245,7 +242,18 @@ section {
     height: 10px;
     border-radius: 100%;
     border: 2px solid $Bg-color;
-    background-color: #92C83E;
+    background-color: $online-green;
+}
+
+.offline {
+    position: absolute;
+    right: 0px;
+    bottom: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    border: 2px solid $Bg-color;
+    background-color: $Text-gray;
 }
 
 li {

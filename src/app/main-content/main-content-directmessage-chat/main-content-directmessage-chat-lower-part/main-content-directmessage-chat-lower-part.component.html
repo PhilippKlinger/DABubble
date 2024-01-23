@@ -4,15 +4,15 @@
         <div class="dm-chat-start">
             <div class="dm-chat-start-profile">
                 <div class="profile-picture">
-                    <img src="../../../assets/avatars/avatar_1.svg">
+                    <img src="{{dm_user?.avatar }}">
                 </div>
                 <span>
-                    Frederick Beck
+                    {{ dm_user?.name }}
                 </span>
             </div>
             <div class="dm-chat-start-msg">
                 <span>Diese Unterhaltung findet nur zwischen</span>
-                <h4>@Name</h4>
+                <h4>@{{ dm_user?.name }}</h4>
                 <span>und dir statt</span>
             </div>
         </div>
@@ -105,8 +105,8 @@
 </div>
 
 <div class="chat-input">
-    <textarea (keyup.enter)="sendMessageToChannel()" #message class="chat-input-design"
-        placeholder="Nachricht an "></textarea>
+    <textarea (keyup.enter)="sendMessageToUser()" #message class="chat-input-design"
+        placeholder="Nachricht an {{ dm_user?.name }} "></textarea>
     <!-- Test for File upload -->
     <!-- <div *ngIf="uploadedFileLink">
         <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
@@ -129,6 +129,6 @@
             <mat-icon (click)="toggleEmojiWindow()">sentiment_satisfied</mat-icon>
             <mat-icon>alternate_email</mat-icon>
         </div>
-        <mat-icon class="chat-input-send" (click)="sendMessageToChannel()">send</mat-icon>
+        <mat-icon class="chat-input-send" (click)="sendMessageToUser()">send</mat-icon>
     </div>
 </div>

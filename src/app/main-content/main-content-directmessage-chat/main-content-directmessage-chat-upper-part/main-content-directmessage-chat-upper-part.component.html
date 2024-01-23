@@ -1,9 +1,10 @@
 <nav>
     <div class="channel-name">
         <div class="profile-picture">
-            <img src="../../../assets/avatars/avatar_1.svg">
-            <div class="online"></div>
+            <img src="{{ dm_user?.avatar }}">
+            <div *ngIf="dm_user?.onlineStatus" class="online"></div>
+            <div *ngIf="!dm_user?.onlineStatus" class="offline"></div>
         </div>
-        <span>Frederick Beck</span>
+        <span>{{ dm_user?.name }}</span>
     </div>
 </nav>

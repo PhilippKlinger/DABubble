@@ -1,8 +1,5 @@
 @import './../../../../styles.scss';
 
-$Bg-color: #ECEEFE;
-$Purple-3: #535AF1;
-
 nav {
     border-top-right-radius: 30px;
     border-top-left-radius: 30px;
@@ -55,5 +52,16 @@ nav {
     height: 10px;
     border-radius: 100%;
     border: 2px solid $Bg-color;
-    background-color: #92C83E;
+    background-color: $online-green;
+}
+
+.offline {
+    position: absolute;
+    right: 0px;
+    bottom: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    border: 2px solid $Bg-color;
+    background-color: $Text-gray;
 }

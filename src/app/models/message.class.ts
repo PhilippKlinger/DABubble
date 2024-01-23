@@ -4,7 +4,7 @@ export class Message {
     id: string;
     message: string;
     creator: string;
-    creatorId:string;
+    creatorId: string;
     avatar: string;
     timestamp: string | number;
     reactions?: object;
@@ -25,6 +25,10 @@ export class Message {
 
     setTimestampNow(): void {
         this.timestamp = Date.now();
+    }
+
+    setCreatorId(id: string): void {
+        this.creatorId = id;
     }
 
     setCreator(name: string): void {

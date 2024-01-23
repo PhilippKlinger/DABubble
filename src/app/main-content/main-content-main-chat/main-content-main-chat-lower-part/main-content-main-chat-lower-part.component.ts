@@ -319,6 +319,7 @@ export class MainContentMainChatLowerPartComponent {
 
     if (this.input_message.nativeElement.value.trim() !== '') {
       this.message.setCreator(currentUserInfo.name);
+      this.message.setCreatorId(currentUserInfo.id);
       this.message.setAvatar(currentUserInfo.avatar);
       this.message.setTimestampNow();
       this.message.setAnwers();

@@ -6,6 +6,7 @@ import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { CommonService } from 'src/app/shared-services/common.service';
 import { MessagesService } from 'src/app/shared-services/messages.service';
+import { UserService } from 'src/app/shared-services/user.service';
 
 @Component({
   selector: 'app-main-content-directmessage-chat-lower-part',
@@ -20,6 +21,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
   reaction = new Reaction();
   chatMessages: any = [];
   user: User = null!;
+  dm_user: User | null = null!
   thread_subject: any = [];
   editingMessage: boolean = false;
   editedText!: string;
@@ -27,8 +29,11 @@ export class MainContentDirectmessageChatLowerPartComponent {
   textAreaContent!: string;
   hoverOptionEditMessage_open: boolean = false;
 
-  constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService) {
 
+  constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
+    this.userService.dm_user$.subscribe((dm_user) => {
+      this.dm_user = dm_user;
+    });
   }
 
 
@@ -76,7 +81,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
   toggleEditing() {
     this.editingMessage = !this.editingMessage;
   }
-  
+
   changedTextMessage(event: Event) {
     this.editedText = (event.target as HTMLTextAreaElement).value
   }
@@ -176,7 +181,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
 
     return { day, month, year };
   }
-  
+
   getFormattedTime(message: any) {
     const timeParts = message.timestamp.split(' ')[1].split(':');
     const hours = timeParts[0];
@@ -218,7 +223,23 @@ export class MainContentDirectmessageChatLowerPartComponent {
     }
   }
 
-  sendMessageToChannel() {
+  sendMessageToUser() {
+    const currentUserInfo = this.channelService.currentUserInfo$.value
 
+    if (this.input_message.nativeElement.value.trim() !== '') {
+      this.message.setCreator(currentUserInfo.name);
+      this.message.setAvatar(currentUserInfo.avatar);
+      this.message.setTimestampNow();
+      this.message.setAnwers();
+      /* debugger
+      if (this.uploadedFileLink) {
+        const messageWithLink = this.input_message.nativeElement.value.trim() + "\nDatei: " + this.uploadedFileLink;
+        this.message.setMessage(messageWithLink);
+      } else { */
+      this.message.setMessage(this.input_message.nativeElement.value.trim());
+      /*  }    */
+      this.userService.pushMessageToUser(this.message);
+      this.input_message.nativeElement.value = '';
+    }
   }
 }
