@@ -315,20 +315,20 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   sendMessageToChannel() {
+    debugger
     const currentUserInfo = this.channelService.currentUserInfo$.value
-
-    if (this.input_message.nativeElement.value.trim() !== '') {
+    if (this.uploadedFileLink) {
+      const messageWithLink = this.input_message.nativeElement.value.trim() + "\nDatei: " + this.uploadedFileLink;
+      this.message.setMessage(messageWithLink);
+      this.messagesService.pushMessageToChannel(this.message);
+      this.removeUploadedFile();
+    }
+    else if (this.input_message.nativeElement.value.trim() !== '') {
       this.message.setCreator(currentUserInfo.name);
       this.message.setAvatar(currentUserInfo.avatar);
       this.message.setTimestampNow();
       this.message.setAnwers();
-      /* debugger
-      if (this.uploadedFileLink) {
-        const messageWithLink = this.input_message.nativeElement.value.trim() + "\nDatei: " + this.uploadedFileLink;
-        this.message.setMessage(messageWithLink);
-      } else { */
       this.message.setMessage(this.input_message.nativeElement.value.trim());
-      /*  }    */
       this.messagesService.pushMessageToChannel(this.message);
       this.input_message.nativeElement.value = '';
     }
@@ -336,8 +336,7 @@ export class MainContentMainChatLowerPartComponent {
 
   ngOnDestroy() {
     this.unsubChannels.unsubscribe();
-  }
-  /* 
+  } 
     async handleFileInput(event: any) {
       const file = event.target.files[0];
       if (file) {
@@ -353,5 +352,4 @@ export class MainContentMainChatLowerPartComponent {
     removeUploadedFile() {
       this.uploadedFileLink = null;
     }
-   */
 }
