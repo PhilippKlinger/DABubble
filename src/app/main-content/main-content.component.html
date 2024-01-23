@@ -17,6 +17,9 @@
 </div>
 
 <div class="close-workspace" (click)="toggleWorkspace()">
-    <span>Workspace-Menü schließen</span>
-    <mat-icon>expand_less</mat-icon>
+    <span *ngIf="workspace_open">Workspace-Menü schließen</span>
+    <mat-icon *ngIf="workspace_open">expand_less</mat-icon>
+    
+    <span *ngIf="!workspace_open">Workspace-Menü öffnen</span>
+    <mat-icon *ngIf="!workspace_open">expand_more</mat-icon>
 </div>

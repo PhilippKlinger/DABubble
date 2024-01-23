@@ -354,6 +354,12 @@ $Light-purple: #ADB0D9;
     }
 }
 
+.emoji-window {
+    position: absolute;
+    margin-top: -430px;
+    margin-left: 84px;
+}
+
 // chat input related code below
 .chat-input {
     width: -webkit-fill-available;

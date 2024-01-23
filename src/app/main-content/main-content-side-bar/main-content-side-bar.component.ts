@@ -25,22 +25,25 @@ export class MainContentSideBarComponent {
     private channelsService: ChannelsService,
     private dataService: DataService,
     private snackBar: MatSnackBar) {
-      this.channelsService.currentUserInfo$.subscribe((currentUser) => {
-        this.currentUser = currentUser;
-      });
+    this.channelsService.currentUserInfo$.subscribe((currentUser) => {
+      this.currentUser = currentUser;
+    });
     this.unsubChannels = this.channelsService.channels$.subscribe(channels => {
       this.channels = channels;
     });
   }
-   
+
 
   openDM() {
     this.dataService.directmessage_open$.next(true);
+    this.dataService.thread_open$.next(false);
   }
 
   openChannel(channel: Channel): void {
     if (this.channelsService.isCurrentUserChannelMember(channel)) {
-      // this.dataService.directmessage_open$.next(false);
+      if (this.dataService.directmessage_open$) {
+        this.dataService.directmessage_open$.next(false);
+      }
       let counter = 0;
       const intervalId = setInterval(() => {
         this.channelsService.setSelectedChannel(channel);

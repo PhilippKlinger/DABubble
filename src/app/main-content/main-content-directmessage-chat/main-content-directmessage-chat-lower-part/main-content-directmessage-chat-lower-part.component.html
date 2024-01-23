@@ -1,5 +1,6 @@
 <div class="chat">
     <div class="chat-content">
+
         <div class="dm-chat-start">
             <div class="dm-chat-start-profile">
                 <div class="profile-picture">
@@ -16,19 +17,118 @@
             </div>
         </div>
 
+        <div class="emoji-window-messages-overlay" *ngIf="emoji_window_messages_open">
+            <div id="emoji-window-messages" class="emoji-window-messages">
+                <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addReaction($event)"></emoji-mart>
+            </div>
+        </div>
+
+        <div *ngFor="let message of chatMessages; let i = index" (click)="selectMessageForThread(i)">
+
+            <div class="chat-timestamp" *ngIf="returnPartingLineValue(i).boolean">
+                <div></div>
+                <span>{{ returnPartingLineValue(i).text }}</span>
+            </div>
+
+            <div class="user-message" *ngIf="message.creator == this.user.name">
+                <img class="user-message-avatar" src="{{ message.avatar }}">
+                <div class="flex-end">
+                    <div class="user-message-time-name">
+                        <span>{{ getFormattedTime(message) }}</span>
+                        <h3>{{ message.creator }}</h3>
+                    </div>
+
+                    <div *ngIf="(thread_subject?.id !== message.id || !editingMessage)" class="speech-bubble-user">
+                        {{ message.message }}
+                    </div>
+
+                    <div *ngIf="(thread_subject?.id == message.id && editingMessage)" class="speech-bubble-user-edit">
+                        <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="4"
+                            value="{{ textAreaContent }}"></textarea>
+                        <div>
+                            <button (click)="toggleEditing()" class="btn-cancel">Abbrechen</button>
+                            <button (click)="saveEditedMessage()" class="btn-save">Speichern</button>
+                        </div>
+                    </div>
+
+                    <div class="user-message-emojis">
+                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
+                            <div>{{ reactions.reaction }}</div>
+                            <span>{{ reactions.amount }}</span>
+                        </div>
+                        <mat-icon>add_reaction</mat-icon>
+                    </div>
+                </div>
+
+                <div class="user-message-hover-options">
+                    <div>✔</div>
+                    <div>🤚</div>
+                    <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
+                    <mat-icon>insert_comment</mat-icon>
+                    <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
+                    <span *ngIf="hoverOptionEditMessage_open">
+                        <h1 class="hover-options-edit-message" (click)="editMessage(message.message)">
+                            Nachricht bearbeiten
+                        </h1>
+                    </span>
+                </div>
+            </div>
+
+            <div class="anon-user-message" *ngIf="message.creator !== this.user.name">
+                <img class="user-message-avatar" src="{{ message.avatar }}">
+                <div>
+                    <div class="anon-user-message-time-name">
+                        <span>{{ getFormattedTime(message) }}</span>
+                        <h3>{{ message.creator }}</h3>
+                    </div>
+                    <div class="anon-speech-bubble-user">
+                        {{ message.message }}
+                    </div>
+                    <div class="anon-user-message-emojis">
+                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
+                            <div>{{ reactions.reaction }}</div>
+                            <span>{{ reactions.amount }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="anon-message-hover-options">
+                    <div>✔</div>
+                    <div>🤚</div>
+                    <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
+                    <mat-icon>insert_comment</mat-icon>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
 <div class="chat-input">
-    <textarea class="chat-input-design" name="" id="" cols="" rows=""
-        placeholder="Nachricht an #Entwicklerteam"></textarea>
+    <textarea (keyup.enter)="sendMessageToChannel()" #message class="chat-input-design"
+        placeholder="Nachricht an "></textarea>
+    <!-- Test for File upload -->
+    <!-- <div *ngIf="uploadedFileLink">
+        <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
+        <button (click)="removeUploadedFile()">Entfernen</button>
+    </div> -->
     <div class="chat-input-lower-position">
         <div class="chat-input-options">
-            <mat-icon>add</mat-icon>
+            <div>
+                <!-- Test for File upload -->
+                <!-- <input id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />  -->
+                <mat-icon (click)="this.commonService.triggerFileInput('fileInput-main-chat')">add</mat-icon>
+            </div>
+
             <div class="chat-input-line"></div>
-            <mat-icon>sentiment_satisfied</mat-icon>
+
+            <div class="emoji-window" [ngClass]="{'d-none': !emoji_window_open}">
+                <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addEmoji($event)"></emoji-mart>
+            </div>
+
+            <mat-icon (click)="toggleEmojiWindow()">sentiment_satisfied</mat-icon>
             <mat-icon>alternate_email</mat-icon>
         </div>
-        <mat-icon class="chat-input-send">send</mat-icon>
+        <mat-icon class="chat-input-send" (click)="sendMessageToChannel()">send</mat-icon>
     </div>
 </div>

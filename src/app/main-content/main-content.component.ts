@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, HostListener} from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { DataService } from '../shared-services/data.service';
 import { ChannelsService } from '../shared-services/channels.service';
 import { User } from '../models/user.class';
@@ -47,8 +47,7 @@ export class MainContentComponent implements OnInit {
 
   toggleWorkspace() {
     this.workspace_open = !this.workspace_open;
-    this.resetUserActivityTimer();
-    // this.directmessage_open = !this.directmessage_open;
+      this.resetUserActivityTimer();
   }
 
   updateThreadBoolean() {
@@ -56,21 +55,21 @@ export class MainContentComponent implements OnInit {
     this.resetUserActivityTimer();
   }
 
-   // Event-Handler für Benutzeraktivität
-   @HostListener('document:click', ['$event'])
-   @HostListener('document:keydown', ['$event'])
-   onUserActivity() {
-     this.resetUserActivityTimer(); // Zurücksetzen des Timers bei Aktivität
-   }
- 
-   private startUserActivityTimer(): void {
-     this.userActivityTimer = setTimeout(() => {
-       this.authService.logout(); // Führen Sie hier Ihre Logout-Funktion aus
-     }, this.userActivityTimeout);
-   }
- 
-   private resetUserActivityTimer(): void {
-     clearTimeout(this.userActivityTimer); // Timer zurücksetzen
-     this.startUserActivityTimer(); // Timer erneut starten
-   }
+  // Event-Handler für Benutzeraktivität
+  @HostListener('document:click', ['$event'])
+  @HostListener('document:keydown', ['$event'])
+  onUserActivity() {
+    this.resetUserActivityTimer(); // Zurücksetzen des Timers bei Aktivität
+  }
+
+  private startUserActivityTimer(): void {
+    this.userActivityTimer = setTimeout(() => {
+      this.authService.logout(); // Führen Sie hier Ihre Logout-Funktion aus
+    }, this.userActivityTimeout);
+  }
+
+  private resetUserActivityTimer(): void {
+    clearTimeout(this.userActivityTimer); // Timer zurücksetzen
+    this.startUserActivityTimer(); // Timer erneut starten
+  }
 }
