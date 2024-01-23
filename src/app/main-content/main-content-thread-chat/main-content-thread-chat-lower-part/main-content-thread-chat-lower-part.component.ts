@@ -89,6 +89,7 @@ export class MainContentThreadChatLowerPartComponent {
 
     if (this.input_answer.nativeElement.value.trim() !== '') {
       this.answer.setCreator(currentUserInfo.name);
+      this.answer.setCreatorId(currentUserInfo.id);
       this.answer.setTimestampNow();
       this.answer.setAvatar(currentUserInfo.avatar);
       this.answer.setMessage(this.input_answer.nativeElement.value.trim());

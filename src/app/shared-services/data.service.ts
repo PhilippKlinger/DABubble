@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Message } from '../models/message.class';
 import { ChannelsService } from './channels.service';
+import { User } from '../models/user.class';
 
 @Injectable({
   providedIn: 'root'

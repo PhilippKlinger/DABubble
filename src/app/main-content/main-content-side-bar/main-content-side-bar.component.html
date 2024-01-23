@@ -55,37 +55,15 @@
             <div [ngClass]="{'d-none': !directmessages_opened}">
                 <div class="side-bar-profile-list">
 
-                    <div class="side-bar-profile" (click)="openDM()">
+                    <div class="side-bar-profile" (click)="openDM(user)" *ngFor="let user of users; let i = index">
                         <div class="side-bar-profile-picture">
-                            <img src="../../../assets/avatars/avatar_1.svg">
-                            <div class="online"></div>
+                            <img src="{{ user.avatar }}">
+                            <div *ngIf="user.onlineStatus" class="online"></div>
+                            <div *ngIf="!user.onlineStatus" class="offline"></div>
                         </div>
-                        <span>Frederik Beck (Du)</span>
+                        <span>{{ user.name }}</span>
                     </div>
 
-                    <div class="side-bar-profile" (click)="openDM()">
-                        <div class="side-bar-profile-picture">
-                            <img src="../../../assets/avatars/avatar_2.svg">
-                            <div class="online"></div>
-                        </div>
-                        <span>Sofia Müller</span>
-                    </div>
-
-                    <div class="side-bar-profile" (click)="openDM()">
-                        <div class="side-bar-profile-picture">
-                            <img src="../../../assets/avatars/avatar_3.svg">
-                            <div class="online"></div>
-                        </div>
-                        <span>Noah Braun</span>
-                    </div>
-
-                    <div class="side-bar-profile" (click)="openDM()">
-                        <div class="side-bar-profile-picture">
-                            <img src="../../../assets/avatars/avatar_6.svg">
-                            <div class="online"></div>
-                        </div>
-                        <span>Elise Roth</span>
-                    </div>
                 </div>
             </div>
         </div>
