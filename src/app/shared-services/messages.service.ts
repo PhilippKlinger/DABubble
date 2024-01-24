@@ -95,7 +95,6 @@ export class MessagesService {
       onSnapshot(this.userService.getUsersDMConversationRef(dm_user, ((await this.userService.findConversation(dm_user, currentUserInfo)).docId)), (snapshot: any) => {
         this.directMessages = snapshot.docs.map((doc: any) => doc.data());
       });
-      console.log(this.directMessages);
     }
   }
 
@@ -277,7 +276,6 @@ export class MessagesService {
       this.message.setLatestAnswer(answer.timestamp);
       await updateDoc(this.channelsService.getUpdatedChannelsColRef(selectedChannel, thread_subject.id), this.message.toJSON());
     }
-    console.log(this.message.latest_answer);
   }
 
   async updateMessage(message: Message) {
