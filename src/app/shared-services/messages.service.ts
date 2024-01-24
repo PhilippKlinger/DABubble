@@ -91,13 +91,12 @@ export class MessagesService {
   async updateDirectMessages() {
     const dm_user = this.userService.dm_user$.value;
     const currentUserInfo = this.channelsService.currentUserInfo$.value;
-    if (dm_user) {
-
+    if (dm_user && currentUserInfo) {
       onSnapshot(this.userService.getUsersDMConversationRef(dm_user, ((await this.userService.findConversation(dm_user, currentUserInfo)).docId)), (snapshot: any) => {
         this.directMessages = snapshot.docs.map((doc: any) => doc.data());
       });
+      console.log(this.directMessages);
     }
-    console.log(this.directMessages);
   }
 
   refreshThreadSubject() {

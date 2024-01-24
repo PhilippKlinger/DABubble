@@ -55,7 +55,7 @@ export class UserService {
     message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm:ss', 'en-US');
     message.setCreatorId(currentUserInfo.id);
 
-    if (dm_user && ((await this.findConversation(dm_user, currentUserInfo)).available)) {
+    if (dm_user && currentUserInfo && ((await this.findConversation(dm_user, currentUserInfo)).available)) {
 
       let docRef = await addDoc(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), message.toJSON());
       message.setId(docRef.id);
@@ -66,7 +66,7 @@ export class UserService {
       await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
 
       console.log('unterhaltung bereits verfügbar, Nachricht wurde gesendet');
-    } else if (dm_user && (!(await this.findConversation(dm_user, currentUserInfo)).available)) {
+    } else if (dm_user && currentUserInfo && (!(await this.findConversation(dm_user, currentUserInfo)).available)) {
 
       this.dm_info.setChatPartner(currentUserInfo?.name!);
       this.dm_info.setChatPartnerId(currentUserInfo?.id!);

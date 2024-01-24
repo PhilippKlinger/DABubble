@@ -45,11 +45,19 @@ export class MainContentDirectmessageChatLowerPartComponent {
     });
   }
 
-  receiveDirectMessages() {
-    this.messagesService.updateDirectMessages();
-    // this.messagesService.getReactionsOfMessages();
-    this.messagesService.sortChatMessagesByTime();
-    this.chatMessages = this.messagesService.directMessages;
+  async receiveDirectMessages() {
+    const dm_user = this.userService.dm_user$.value;
+    const currentUserInfo = this.channelService.currentUserInfo$.value;
+
+    if ((await this.userService.findConversation(dm_user!, currentUserInfo)).available) {
+      this.messagesService.updateDirectMessages();
+      // this.messagesService.getReactionsOfMessages();
+      this.messagesService.sortChatMessagesByTime();
+      this.chatMessages = this.messagesService.directMessages;
+    } else {
+      this.chatMessages = [];
+      console.log('no conversation available');
+    }
   }
 
   editMessage(text: string) {
