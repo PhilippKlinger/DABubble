@@ -26,15 +26,18 @@ export class MainContentSearchbarComponent {
     private dialogService: OpenDialogService,
     private messagesService: MessagesService,) { }
 
-  onSearchChange(event: Event): void {
-    const inputElement = event.target as HTMLInputElement; // Casten des EventTargets als HTMLInputElement
-    this.searchQuery = inputElement.value;
-    this.channelsService.refreshMessagesInAccessibleChannels();
-    this.searchChannelsAndUsers();
-  }
+    onSearchChange(event: Event): void {
+      const inputElement = event.target as HTMLInputElement;
+      this.searchQuery = inputElement.value;
+      if (this.searchQuery) {
+        this.channelsService.refreshMessagesInAccessibleChannels();
+        this.searchChannelsAndUsers();
+      } else {
+        this.clearSearchResults();
+      }
+    }
 
-
-  private searchChannelsAndUsers() {
+  searchChannelsAndUsers() {
     if (!this.searchQuery) {
       this.foundChannels = [];
       this.foundUsers = [];
@@ -42,7 +45,6 @@ export class MainContentSearchbarComponent {
       return;
     }
 
-    // Durchsuchen der Channels
     this.channelsService.channels$.subscribe(channels => {
       this.foundChannels = channels.filter(channel =>
         channel.name.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
@@ -50,12 +52,10 @@ export class MainContentSearchbarComponent {
       );
     });
 
-    // Durchsuchen der User
     this.userService.users$.subscribe(users => {
       this.foundUsers = users.filter(user => user.name.toLowerCase().includes(this.searchQuery.toLowerCase()));
     });
 
-    // Durchsuchen der Nachrichten in den zugänglichen Channels
     this.channelsService.messagesInChannels$.subscribe(messages => {
       this.foundMessages = messages.filter(message =>
         message.message.toLowerCase().includes(this.searchQuery.toLowerCase())
@@ -63,9 +63,16 @@ export class MainContentSearchbarComponent {
     });
   }
 
+  clearSearchResults() {
+    this.foundChannels = [];
+    this.foundUsers = [];
+    this.foundMessages = [];
+  }
+
   showSelectedUser(user: User) {
     this.userService.setSelectedUser(user);
     this.dialogService.openDialog('showProfile');
+    this.clearSearchQuery();
   }
 
   openChannelOrMessage(item: Channel | Message): void {
@@ -77,6 +84,12 @@ export class MainContentSearchbarComponent {
         this.channelsService.setSelectedChannel(channel);
       }
     }
+    this.clearSearchQuery();
+  }
+
+  clearSearchQuery() {
+    this.searchQuery = '';
+    this.clearSearchResults();
   }
 
 }
