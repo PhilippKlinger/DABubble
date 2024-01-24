@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <div *ngFor="let message of chatMessages; let i = index" (click)="selectMessageForThread(i)">
+        <div *ngFor="let message of chatMessages; let i = index">
 
             <div class="chat-timestamp" *ngIf="returnPartingLineValue(i).boolean">
                 <div></div>

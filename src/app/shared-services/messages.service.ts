@@ -6,6 +6,7 @@ import { Firestore, addDoc, collection, doc, onSnapshot, updateDoc } from '@angu
 import { Reaction } from '../models/reaction.class';
 import { formatDate } from '@angular/common';
 import { Channel } from '../models/channel.class';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,10 @@ export class MessagesService {
 
   chatMessages: any = [];
   threadAnswers: any = [];
+  directMessages: any = [];
   answerReactions = [];
   messageReactions = [];
+  directMessageReactions = [];
   message = new Message();
 
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
@@ -23,7 +26,7 @@ export class MessagesService {
   public selectedMessageMainChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public selectedAnswerThreadChat$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
 
-  constructor(private firestore: Firestore, private channelsService: ChannelsService) { }
+  constructor(private firestore: Firestore, private channelsService: ChannelsService, private userService: UserService) { }
 
   updateThreadAnswersOfSelectedMessage() {
     const selectedChannel = this.channelsService.selectedChannel$.value;
@@ -85,6 +88,17 @@ export class MessagesService {
     });
   }
 
+  async updateDirectMessages() {
+    const dm_user = this.userService.dm_user$.value;
+    const currentUserInfo = this.channelsService.currentUserInfo$.value;
+    if (dm_user) {
+
+      onSnapshot(this.userService.getUsersDMConversationRef(dm_user, ((await this.userService.findConversation(dm_user, currentUserInfo)).docId)), (snapshot: any) => {
+        this.directMessages = snapshot.docs.map((doc: any) => doc.data());
+      });
+    }
+    console.log(this.directMessages);
+  }
 
   refreshThreadSubject() {
     const thread_subject = this.thread_subject$.value;
@@ -121,6 +135,14 @@ export class MessagesService {
     } else {
       return { exists: false, amount: -1, id: null };
     }
+  }
+
+  sortDirectMessagesByTime() {
+    this.directMessages.sort((a: any, b: any) => {
+      const timeA = this.parseDate(a.timestamp);
+      const timeB = this.parseDate(b.timestamp);
+      return timeA - timeB;
+    });
   }
 
   sortChatMessagesByTime() {

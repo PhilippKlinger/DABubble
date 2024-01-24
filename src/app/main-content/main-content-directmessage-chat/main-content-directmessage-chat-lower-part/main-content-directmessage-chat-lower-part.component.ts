@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { DMInfo } from 'src/app/models/DMInfo.class';
 import { Message } from 'src/app/models/message.class';
 import { Reaction } from 'src/app/models/reaction.class';
@@ -21,6 +21,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
   message = new Message();
   reaction = new Reaction();
   chatMessages: any = [];
+  directMessages: any = [];
   user: User = null!;
   dm_user: User | null = null!
   thread_subject: any = [];
@@ -30,13 +31,26 @@ export class MainContentDirectmessageChatLowerPartComponent {
   textAreaContent!: string;
   hoverOptionEditMessage_open: boolean = false;
 
-
   constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
     this.userService.dm_user$.subscribe((dm_user) => {
-      this.dm_user = dm_user;
+      if (dm_user) {
+        this.dm_user = dm_user;
+        this.receiveDirectMessages();
+      } else {
+        console.log('waiting for a direct message user')
+      }
+    });
+    this.channelService.currentUserInfo$.subscribe((user: User) => {
+      this.user = user;
     });
   }
 
+  receiveDirectMessages() {
+    this.messagesService.updateDirectMessages();
+    // this.messagesService.getReactionsOfMessages();
+    this.messagesService.sortChatMessagesByTime();
+    this.chatMessages = this.messagesService.directMessages;
+  }
 
   editMessage(text: string) {
     this.updateTextareaSize(text);
@@ -205,6 +219,22 @@ export class MainContentDirectmessageChatLowerPartComponent {
 
   toggleEmojiWindow() {
     this.emoji_window_open = !this.emoji_window_open;
+  }
+
+  @HostListener('document:click', ['$event'])
+  documentClickHandler(event: MouseEvent): void {
+    if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
+      this.emoji_window_messages_open = false;
+    }
+  }
+
+  private isClickInsideContainer(event: MouseEvent): boolean {
+    let containerElement = document.getElementById('emoji-window-messages');
+
+    if (containerElement) {
+      return containerElement.contains(event.target as Node);
+    }
+    return false;
   }
 
   addReaction($event: any) {
