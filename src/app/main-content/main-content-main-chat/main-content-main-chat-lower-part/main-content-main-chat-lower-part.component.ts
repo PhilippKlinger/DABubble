@@ -170,13 +170,13 @@ export class MainContentMainChatLowerPartComponent {
         } else if ((timestampNow.day - 1) == selectedChannelTimestamp.day) {
           return 'gestern'
         } else {
-          return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
+          return `am ${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
         }
       } else {
-        return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
+        return `am ${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
       }
     } else {
-      return `${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
+      return `am ${selectedChannelTimestamp.day}.${selectedChannelTimestamp.month}.${selectedChannelTimestamp.year}`
     }
   }
 
