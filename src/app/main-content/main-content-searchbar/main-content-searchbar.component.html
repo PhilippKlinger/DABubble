@@ -1,4 +1,19 @@
 <section>
-    <input type="text" placeholder="Code learning durchsuchen">
+    <input type="text" placeholder="Code learning durchsuchen" [(ngModel)]="searchQuery"
+        (input)="onSearchChange($event)" [matAutocomplete]="auto">
     <mat-icon fontIcon="search" class="search-icon"></mat-icon>
+
+    <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let channel of foundChannels" [value]="channel.name" (click)="openChannelOrMessage(channel)">
+            {{ channel.name }}
+        </mat-option>
+        <mat-divider></mat-divider>
+        <mat-option *ngFor="let user of foundUsers" [value]="user.name" (click)="showSelectedUser(user)">
+            <img [src]="user.avatar" class="user-avatar" alt="Avatar"> {{ user.name }}
+        </mat-option>
+        <mat-divider></mat-divider>
+        <mat-option *ngFor="let message of foundMessages" [value]="message.message" (click)="openChannelOrMessage(message)">
+            {{ message.message }}
+        </mat-option>
+    </mat-autocomplete>
 </section>

@@ -13,7 +13,7 @@ import { UserService } from './user.service';
 })
 export class MessagesService {
 
-  chatMessages: any = [];
+  chatMessages: Message[] = [];
   threadAnswers: any = [];
   directMessages: any = [];
   answerReactions = [];

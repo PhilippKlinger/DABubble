@@ -10,13 +10,15 @@ import { User } from '../models/user.class';
   providedIn: 'root'
 })
 export class ChannelsService {
- 
+
   private initialChannelSet = false;
   private readonly guestChannelId = 'rPEeeKbPjmAqXQdonOsg';
 
   public channels$: BehaviorSubject<Channel[]> = new BehaviorSubject<Channel[]>([]);
   public selectedChannel$: BehaviorSubject<Channel | null> = new BehaviorSubject<Channel | null>(null);
   public currentUserInfo$: BehaviorSubject<User> = new BehaviorSubject<User>(null!);
+  public messagesInChannels$: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
+  private messageChannelMap = new Map<string, Channel>();
 
   private unsubChannels;
 
@@ -31,6 +33,44 @@ export class ChannelsService {
   isCurrentUserChannelMember(channel: Channel): boolean {
     const currentUser = this.currentUserInfo$.value;
     return channel.members.some(member => member.id === currentUser.id);
+  }
+
+  // Methode, um Nachrichten für einen Channel zu laden und die Zuordnung zu aktualisieren
+  loadMessagesForChannel(channel: Channel) {
+    const messagesRef = this.getChannelsColRef(channel);
+    onSnapshot(messagesRef, (snapshot) => {
+      snapshot.docs.forEach((doc) => {
+        const message = doc.data() as Message;
+        this.messageChannelMap.set(message.id, channel);
+      });
+      // Aktualisieren Sie hier ggf. Ihre Nachrichten-Liste
+    });
+  }
+
+  // Methode zum Finden des Channels für eine Nachricht
+  getChannelForMessage(messageId: string): Channel | undefined {
+    return this.messageChannelMap.get(messageId);
+  }
+
+  async refreshMessagesInAccessibleChannels() {
+    let allMessages: Message[] = [];
+    const accessibleChannels = this.channels$.value.filter(channel => 
+      this.isCurrentUserChannelMember(channel)
+    );
+  
+    for (const channel of accessibleChannels) {
+      const messages = await this.getMessagesForChannel(channel);
+      messages.forEach(message => this.messageChannelMap.set(message.id, channel));
+      allMessages = [...allMessages, ...messages];
+    }
+  
+    this.messagesInChannels$.next(allMessages);
+  }
+
+  async getMessagesForChannel(channel: Channel): Promise<Message[]> {
+    const messagesRef = this.getChannelsColRef(channel);
+    const querySnapshot = await getDocs(messagesRef);
+    return querySnapshot.docs.map(doc => doc.data() as Message);
   }
 
   async createChannel(channel: Channel, colId: 'channels'): Promise<void> {
