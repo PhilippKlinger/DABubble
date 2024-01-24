@@ -279,7 +279,6 @@ export class MessagesService {
     return doc(this.firestore, `channels/${selectedChannel.id}/messages/${thread_subject.id}/answers/${selectedAnswerThreadChat.id}/reactions/${id}`);
   }
 
-
   getChannelsMessageColRef(selectedChannel: Channel, thread_subject: Message) {
     return collection(this.firestore, `channels/${selectedChannel.id}/messages/${thread_subject.id}/answers`);
   }
