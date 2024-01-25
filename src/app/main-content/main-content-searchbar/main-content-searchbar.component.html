@@ -7,12 +7,12 @@
         <mat-option *ngFor="let channel of foundChannels" [value]="channel.name" (click)="openChannelOrMessage(channel)">
             <div [innerHTML]="'# ' + highlightMatch(channel.name, searchQuery)"></div>
         </mat-option>
-        <mat-divider *ngIf="foundUsers.length > 0"></mat-divider>
+        <mat-divider *ngIf="foundUsers.length > 0 && foundChannels.length > 0"></mat-divider>
         <mat-option *ngFor="let user of foundUsers" [value]="user.name" (click)="showSelectedUser(user)">
             <img [src]="user.avatar" class="user-avatar" alt="Avatar"> 
             <div [innerHTML]="highlightMatch(user.name, searchQuery)"></div>
         </mat-option>
-        <mat-divider *ngIf="foundMessages.length > 0"></mat-divider>
+        <mat-divider *ngIf="foundMessages.length > 0 && foundUsers.length > 0"></mat-divider>
         <mat-option *ngFor="let message of foundMessages" [value]="message.message" (click)="openChannelOrMessage(message)">
             <div [innerHTML]=" '``' + highlightMatch(message.message, searchQuery) + '´´' + '  > ' + message.creator + ' am ' + message.timestamp"></div>
         </mat-option>
