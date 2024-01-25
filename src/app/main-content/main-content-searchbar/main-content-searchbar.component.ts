@@ -76,12 +76,27 @@ export class MainContentSearchbarComponent {
   }
 
   openChannelOrMessage(item: Channel | Message): void {
+   
     if (item instanceof Channel && this.channelsService.isCurrentUserChannelMember(item)) {
-      this.channelsService.setSelectedChannel(item);
-    } else if (item instanceof Message) {
+      let counter = 0;
+      const intervalId = setInterval(() => {
+        this.channelsService.setSelectedChannel(item);
+        counter++;
+        if (counter === 5) {
+          clearInterval(intervalId);
+        }
+      }, 100);
+    } else {
       const channel = this.channelsService.getChannelForMessage(item.id);
       if (channel && this.channelsService.isCurrentUserChannelMember(channel)) {
-        this.channelsService.setSelectedChannel(channel);
+        let counter = 0;
+        const intervalId = setInterval(() => {
+          this.channelsService.setSelectedChannel(channel);
+          counter++;
+          if (counter === 5) {
+            clearInterval(intervalId);
+          }
+        }, 100);
       }
     }
     this.clearSearchQuery();
@@ -91,5 +106,14 @@ export class MainContentSearchbarComponent {
     this.searchQuery = '';
     this.clearSearchResults();
   }
+
+  highlightMatch(text: string, searchQuery: string): string {
+    if (!searchQuery) {
+      return text;
+    }
+    const re = new RegExp(searchQuery, 'gi');
+    return text.replace(re, match => `<mark>${match}</mark>`);
+  }
+  
 
 }
