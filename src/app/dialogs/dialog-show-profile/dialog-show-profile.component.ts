@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
 import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
@@ -13,23 +13,27 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./dialog-show-profile.component.scss']
 })
 export class DialogShowProfileComponent {
-
+  private destroyed$ = new Subject<void>();
   channel: Channel | null = null;
-  selectedChannelSubscription: Subscription;
   user: User | null = null;
-  selectedUserSubscription: Subscription;
 
   constructor(
     private channelsService: ChannelsService,
-     private userService: UserService,
-      private dataService: DataService,
-      private dialogRef: MatDialogRef<DialogShowProfileComponent>){
-    this.selectedChannelSubscription = this.channelsService.selectedChannel$.subscribe((channel) => {
+    private userService: UserService,
+    private dataService: DataService,
+    private dialogRef: MatDialogRef<DialogShowProfileComponent>) {
+
+    this.channelsService.selectedChannel$.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(channel => {
       this.channel = channel;
     });
-    this.selectedUserSubscription = this.userService.selectedUserforProfileView$.subscribe((user) => {
+
+    this.userService.selectedUserforProfileView$.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(user => {
       this.user = user;
-    })
+    });
   }
 
   openDM() {
@@ -39,9 +43,9 @@ export class DialogShowProfileComponent {
     this.dialogRef.close();
   }
 
-  ngOnDestroy(): void {
-    this.selectedChannelSubscription.unsubscribe();
-    this.selectedChannelSubscription.unsubscribe();
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
 }
