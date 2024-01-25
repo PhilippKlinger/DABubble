@@ -86,6 +86,10 @@
                     <div class="anon-speech-bubble-user">
                         {{ message.message }}
                     </div>
+                    <div>
+                        {{ message.img }}
+                        <img src="{{ message.img }}" alt="Bild">
+                    </div>
                     <div class="anon-user-message-emojis">
                         <div class="anon-user-answer-container">
                             <h3 (click)="openThread()" *ngIf="message.answered_number != 0">{{ message.answered_number
@@ -112,12 +116,14 @@
 </div>
 
 <div class="chat-input">
-    <textarea (keyup.enter)="sendMessageToChannel()" #message class="chat-input-design"
+    <textarea *ngIf="!uploadedFileLink" (keyup.enter)="sendMessageToChannel()" #message class="chat-input-design"
         placeholder="Nachricht an # {{ selectedChannel?.name }}"></textarea>
     <!-- Test for File upload -->
-    <div *ngIf="uploadedFileLink">
-        <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
-        <button (click)="removeUploadedFile()">Entfernen</button>
+    <div *ngIf="uploadedFileLink" class="submit-buttons d-flex-standard">
+        <button class="btn-submit" mat-button type="submit">
+            <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
+        </button>
+        <button class="btn-guest" mat-button (click)="removeUploadedFile()">Entfernen</button>
     </div>
     <div class="chat-input-lower-position">
         <div class="chat-input-options">

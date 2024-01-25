@@ -18,6 +18,7 @@ import { MessagesService } from 'src/app/shared-services/messages.service';
 })
 export class MainContentMainChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
+  @ViewChild('img') img!: ElementRef;
   @ViewChild('chat_content') chat_content!: ElementRef;
   message = new Message();
   reaction = new Reaction();
@@ -315,24 +316,20 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   sendMessageToChannel() {
-    debugger
     const currentUserInfo = this.channelService.currentUserInfo$.value
+    this.message.setCreator(currentUserInfo.name);
+    this.message.setCreatorId(currentUserInfo.id);
+    this.message.setAvatar(currentUserInfo.avatar);
+    this.message.setTimestampNow();
+    this.message.setAnwers();
     if (this.uploadedFileLink) {
-      const messageWithLink = this.input_message.nativeElement.value.trim() + "\nDatei: " + this.uploadedFileLink;
-      this.message.setMessage(messageWithLink);
-      this.messagesService.pushMessageToChannel(this.message);
-      this.removeUploadedFile();
-    }
-    else if (this.input_message.nativeElement.value.trim() !== '') {
-      this.message.setCreator(currentUserInfo.name);
-      this.message.setCreatorId(currentUserInfo.id);
-      this.message.setAvatar(currentUserInfo.avatar);
-      this.message.setTimestampNow();
-      this.message.setAnwers();
+      this.message.setImg(this.uploadedFileLink);
+    } else if (this.input_message.nativeElement.value.trim() !== '') {
       this.message.setMessage(this.input_message.nativeElement.value.trim());
-      this.messagesService.pushMessageToChannel(this.message);
-      this.input_message.nativeElement.value = '';
-    }
+    }    
+    this.messagesService.pushMessageToChannel(this.message);
+    this.removeUploadedFile();
+    this.input_message.nativeElement.value = '';
   }
 
   ngOnDestroy() {

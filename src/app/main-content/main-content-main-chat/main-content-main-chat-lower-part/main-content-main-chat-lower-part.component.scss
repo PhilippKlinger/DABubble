@@ -1,4 +1,5 @@
 @import './../../../../styles.scss';
+@import './../../../../app/login/login.component.scss';
 
 $Purple-2: #797EF3;
 $Purple-1: #444DF2;
@@ -627,4 +628,16 @@ $Light-purple: #ADB0D9;
     &::-webkit-scrollbar {
         display: none
     }
+}
+
+.btn-submit {
+    a {
+        color: $White;
+        text-decoration: none;
+    }    
+}
+
+.submit-buttons {
+    @include dFlex($jc: flex-start);
+    margin: 20px;
 }

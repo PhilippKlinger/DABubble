@@ -10,6 +10,7 @@ export class Message {
     reactions?: object;
     answered_number: number;
     latest_answer: string | number;
+    img: string;
 
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
@@ -21,6 +22,7 @@ export class Message {
         this.reactions = obj ? obj.reactions : '';
         this.answered_number = obj ? obj.answered_number : '';
         this.latest_answer = obj ? obj.latest_answer : '';
+        this.img = obj ? obj.img : '';
     }
 
     setTimestampNow(): void {
@@ -55,6 +57,10 @@ export class Message {
         this.latest_answer = timestamp;
     }
 
+    setImg(img: string): void {
+        this.img = img;
+    }
+
     public toJSON() {
         return {
             id: this.id,
@@ -66,6 +72,7 @@ export class Message {
             reactions: this.reactions,
             answered_number: this.answered_number,
             latest_answer: this.latest_answer,
+            img: this.img,
         }
     }
 }
