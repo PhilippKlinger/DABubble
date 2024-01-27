@@ -40,8 +40,14 @@
                         <h3>{{ message.creator }}</h3>
                     </div>
 
-                    <div *ngIf="(thread_subject?.id !== message.id || !editingMessage)" class="speech-bubble-user">
+                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)" class="speech-bubble-user">
                         {{ message.message }}
+                    </div>
+
+                    <div *ngIf="message.img">                        
+                        <button mat-raised-button (click)="downloadImage(message.img)">
+                            <mat-icon>file_download</mat-icon> Download
+                        </button>
                     </div>
 
                     <div *ngIf="(thread_subject?.id == message.id && editingMessage)" class="speech-bubble-user-edit">
@@ -86,10 +92,6 @@
                     <div class="anon-speech-bubble-user">
                         {{ message.message }}
                     </div>
-                    <div>
-                        {{ message.img }}
-                        <img src="{{ message.img }}" alt="Bild">
-                    </div>
                     <div class="anon-user-message-emojis">
                         <div class="anon-user-answer-container">
                             <h3 (click)="openThread()" *ngIf="message.answered_number != 0">{{ message.answered_number
@@ -120,7 +122,7 @@
         placeholder="Nachricht an # {{ selectedChannel?.name }}"></textarea>
     <!-- Test for File upload -->
     <div *ngIf="uploadedFileLink" class="submit-buttons d-flex-standard">
-        <button class="btn-submit" mat-button type="submit">
+        <button class="btn-submit" mat-button>
             <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
         </button>
         <button class="btn-guest" mat-button (click)="removeUploadedFile()">Entfernen</button>

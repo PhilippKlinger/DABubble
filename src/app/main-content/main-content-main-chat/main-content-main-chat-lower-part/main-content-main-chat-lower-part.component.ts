@@ -335,19 +335,28 @@ export class MainContentMainChatLowerPartComponent {
   ngOnDestroy() {
     this.unsubChannels.unsubscribe();
   } 
-    async handleFileInput(event: any) {
-      const file = event.target.files[0];
-      if (file) {
-        try {
-          const uploadedUrl = await this.storageService.uploadFile(file);
-          this.uploadedFileLink = uploadedUrl;
-        } catch (error) {
-          console.error('Fehler beim Hochladen der Datei', error);
-        }
+
+  async handleFileInput(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const uploadedUrl = await this.storageService.uploadFile(file);
+        this.uploadedFileLink = uploadedUrl;
+      } catch (error) {
+        console.error('Fehler beim Hochladen der Datei', error);
       }
     }
-  
-    removeUploadedFile() {
-      this.uploadedFileLink = null;
-    }
+  }
+
+  removeUploadedFile() {
+    this.uploadedFileLink = null;
+  }
+
+  downloadImage(imageUrl: string) {
+    const link = document.createElement('a');
+    link.href = imageUrl; // Verwendet die URL des Bildes aus dem Parameter
+    link.download = 'DownloadedImage';
+    link.target = "_blank";
+    link.click();
+  }
 }

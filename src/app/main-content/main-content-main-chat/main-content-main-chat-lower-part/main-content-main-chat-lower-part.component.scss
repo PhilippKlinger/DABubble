@@ -1,5 +1,4 @@
 @import './../../../../styles.scss';
-@import './../../../../app/login/login.component.scss';
 
 $Purple-2: #797EF3;
 $Purple-1: #444DF2;
@@ -640,4 +639,36 @@ $Light-purple: #ADB0D9;
 .submit-buttons {
     @include dFlex($jc: flex-start);
     margin: 20px;
+    gap: 30px;
+    width: 100%;
+    button {
+        padding: 25px;   
+        border-radius: 25px; 
+        @include fonts($fs: 18px);
+        font-family: 'Nunito', sans-serif !important;
+    }
+    .btn-submit {
+        background-color: $Purple-1;
+        cursor: pointer;
+        color: $White;
+        &:hover {
+            background-color: $Purple-2;
+        }
+        &:disabled {
+            cursor: not-allowed !important;
+            background-color: $Purple-2;        
+            &:hover {
+              background-color: $Purple-2;
+              cursor: not-allowed !important;
+            }
+          }
+    }
+    .btn-guest {
+        color: $Purple-1;
+        border: 1px solid $Purple-1;
+        &:hover {
+            background-color: $Purple-1;
+            color: $White;
+        }
+    }
 }
