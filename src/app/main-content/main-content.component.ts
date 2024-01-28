@@ -15,6 +15,7 @@ export class MainContentComponent implements OnInit {
   workspace_open: boolean = true;
   thread_open!: boolean;
   directmessage_open: boolean = false;
+  new_message_open: boolean = false;
   private userActivityTimeout: number = 15 * 60 * 1000; // 15 Minuten in Millisekunden
   private userActivityTimer: any;
 
@@ -33,6 +34,10 @@ export class MainContentComponent implements OnInit {
       this.resetUserActivityTimer(); // Zurücksetzen des Timers bei Aktivität
     });
 
+    this.dataService.new_message_open$.subscribe((value: boolean) => {
+      this.new_message_open = value;
+    });
+
     this.setCurrentUser();
     this.startUserActivityTimer(); // Starten Sie den Timer beim Initialisieren der Komponente
   }
@@ -47,7 +52,7 @@ export class MainContentComponent implements OnInit {
 
   toggleWorkspace() {
     this.workspace_open = !this.workspace_open;
-      this.resetUserActivityTimer();
+    this.resetUserActivityTimer();
   }
 
   updateThreadBoolean() {

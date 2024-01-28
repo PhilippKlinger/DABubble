@@ -46,6 +46,12 @@ export class MainContentSideBarComponent {
     })
   }
 
+  openNewMessageInput() {
+    this.dataService.new_message_open$.next(true);
+    this.dataService.thread_open$.next(false);
+    this.dataService.directmessage_open$.next(false);
+  }
+
   sortChannels() {
     this.channels.sort((a: any, b: any) => {
       const timeA = this.parseDate(a.timestamp);
@@ -70,6 +76,7 @@ export class MainContentSideBarComponent {
   openDM(user: User) {
     this.dataService.directmessage_open$.next(true);
     this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
     this.messageService.dm_user$.next(user);
   }
 
@@ -82,6 +89,7 @@ export class MainContentSideBarComponent {
       const intervalId = setInterval(() => {
         this.channelsService.setSelectedChannel(channel);
         this.dataService.thread_open$.next(false);
+        this.dataService.new_message_open$.next(false);
         counter++;
 
         if (counter === 5) {

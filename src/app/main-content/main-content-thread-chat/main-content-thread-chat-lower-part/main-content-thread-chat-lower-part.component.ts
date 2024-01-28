@@ -84,7 +84,7 @@ export class MainContentThreadChatLowerPartComponent {
     this.emoji_window_open = !this.emoji_window_open;
   }
 
-  sendAnswerToThread() {
+  async sendAnswerToThread() {
     const currentUserInfo = this.channelService.currentUserInfo$.value
     const thread_subject = this.messagesService.thread_subject$.value
 
@@ -94,8 +94,8 @@ export class MainContentThreadChatLowerPartComponent {
       this.answer.setTimestampNow();
       this.answer.setAvatar(currentUserInfo.avatar);
       this.answer.setMessage(this.input_answer.nativeElement.value.trim());
-      this.messagesService.pushThreadAnswerToMessage(this.answer);
-      this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
+      await this.messagesService.pushThreadAnswerToMessage(this.answer);
+      await this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
       this.input_answer.nativeElement.value = '';
     }
   }

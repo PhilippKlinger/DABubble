@@ -63,6 +63,7 @@ import { OpenDialogService } from './shared-services/open-dialog.service';
 import { UserService } from './shared-services/user.service';
 import { CommonService } from './shared-services/common.service';
 import { StorageService } from './shared-services/storage.service';
+import { MainContentNewMessageComponent } from './main-content/main-content-new-message/main-content-new-message.component';
 
 
 @NgModule({
@@ -95,6 +96,7 @@ import { StorageService } from './shared-services/storage.service';
     EmailVerificationComponent,
     PrivacyPolicyComponent,
     ImprintComponent,
+    MainContentNewMessageComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,40 @@
+<section>
+    <nav>
+        <div class="channel-name">
+            Neue Nachricht
+        </div>
+
+        <input type="text" placeholder="An: #channel, oder @jemand oder E-Mail Adresse" class="input-new-message">
+    </nav>
+
+    <div class="lower-part-container">
+        <div class="chat-input">
+            <textarea #message class="chat-input-design" placeholder="Nachricht an"></textarea>
+            <!-- Test for File upload -->
+            <!-- <div *ngIf="uploadedFileLink">
+                <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
+                <button (click)="removeUploadedFile()">Entfernen</button>
+            </div> -->
+            <div class="chat-input-lower-position">
+                <div class="chat-input-options">
+                    <div>
+                        <!-- Test for File upload -->
+                        <!-- <input id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />  -->
+                        <mat-icon>add</mat-icon>
+                    </div>
+
+                    <div class="chat-input-line"></div>
+
+                    <div class="emoji-window" [ngClass]="{'d-none': !emoji_window_open}">
+                        <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addEmoji($event)"></emoji-mart>
+                    </div>
+
+                    <mat-icon (click)="toggleEmojiWindow()">sentiment_satisfied</mat-icon>
+                    <mat-icon>alternate_email</mat-icon>
+                </div>
+                <mat-icon class="chat-input-send">send</mat-icon>
+            </div>
+        </div>
+    </div>
+
+</section>

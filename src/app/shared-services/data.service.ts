@@ -10,7 +10,7 @@ import { User } from '../models/user.class';
 export class DataService {
   public thread_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public directmessage_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
+  public new_message_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor() {
 
   }

@@ -50,7 +50,7 @@ export class MessagesService {
           let reaction_amount = result.amount + 1;
           reaction.setAmount(reaction_amount);
           await updateDoc(this.getUpdatedUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId), result.id), reaction.toJSON());
-          await updateDoc(this.getUpdatedUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId),((await this.findReaction(currentUserInfo, dm_user, selectedDirectMessage, reaction.reaction)).docId)), reaction.toJSON());
+          await updateDoc(this.getUpdatedUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId), ((await this.findReaction(currentUserInfo, dm_user, selectedDirectMessage, reaction.reaction)).docId)), reaction.toJSON());
         } else {
           reaction.setAmount(1);
           let docRef = await addDoc(this.getUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId)), reaction.toJSON());
