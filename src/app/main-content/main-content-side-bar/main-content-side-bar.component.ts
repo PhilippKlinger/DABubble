@@ -37,11 +37,34 @@ export class MainContentSideBarComponent {
 
     this.unsubChannels = this.channelsService.channels$.subscribe(channels => {
       this.channels = channels;
+      this.sortChannels();
+      this.channelsService.selectedChannel$.next(channels[0]);
     });
 
     this.userService.users$.subscribe((users) => {
       this.users = users;
     })
+  }
+
+  sortChannels() {
+    this.channels.sort((a: any, b: any) => {
+      const timeA = this.parseDate(a.timestamp);
+      const timeB = this.parseDate(b.timestamp);
+      return timeB - timeA;
+    });
+  }
+
+  parseDate(timestamp: any) {
+    const dateParts = timestamp.split(' ')[0].split('-');
+    const timeParts = timestamp.split(' ')[1].split(':');
+
+    const year = parseInt(dateParts[2], 10);
+    const month = parseInt(dateParts[1], 10) - 1; // Monate in JavaScript sind 0-basiert
+    const day = parseInt(dateParts[0], 10);
+    const hours = parseInt(timeParts[0], 10);
+    const minutes = parseInt(timeParts[1], 10);
+
+    return new Date(year, month, day, hours, minutes).getTime();
   }
 
   openDM(user: User) {
