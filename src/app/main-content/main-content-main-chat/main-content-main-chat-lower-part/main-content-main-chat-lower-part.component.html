@@ -131,7 +131,7 @@
         <div class="chat-input-options">
             <div>
                 <!-- Test for File upload -->
-                <input id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />
+                <input #fileInput id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />
                 <mat-icon (click)="this.commonService.triggerFileInput('fileInput-main-chat')">add</mat-icon>
             </div>
 

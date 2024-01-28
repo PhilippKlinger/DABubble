@@ -20,6 +20,7 @@ export class MainContentMainChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('img') img!: ElementRef;
   @ViewChild('chat_content') chat_content!: ElementRef;
+  @ViewChild('fileInput') fileInput!: ElementRef;
   message = new Message();
   reaction = new Reaction();
   selectedChannel!: Channel | null;
@@ -316,20 +317,21 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   sendMessageToChannel() {
-    const currentUserInfo = this.channelService.currentUserInfo$.value
-    this.message.setCreator(currentUserInfo.name);
-    this.message.setCreatorId(currentUserInfo.id);
-    this.message.setAvatar(currentUserInfo.avatar);
+    const { name, id, avatar } = this.channelService.currentUserInfo$.value;       
+    this.message.setCreator(name);
+    this.message.setCreatorId(id);
+    this.message.setAvatar(avatar);
     this.message.setTimestampNow();
-    this.message.setAnwers();
+    this.message.setAnwers();      
     if (this.uploadedFileLink) {
       this.message.setImg(this.uploadedFileLink);
+      this.removeUploadedFile();
     } else if (this.input_message.nativeElement.value.trim() !== '') {
-      this.message.setMessage(this.input_message.nativeElement.value.trim());
-    }    
+      const inputMessage = this.input_message.nativeElement.value.trim(); 
+      this.message.setMessage(inputMessage);
+      this.input_message.nativeElement.value = '';
+    }          
     this.messagesService.pushMessageToChannel(this.message);
-    this.removeUploadedFile();
-    this.input_message.nativeElement.value = '';
   }
 
   ngOnDestroy() {
@@ -350,6 +352,9 @@ export class MainContentMainChatLowerPartComponent {
 
   removeUploadedFile() {
     this.uploadedFileLink = null;
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
   }
 
   downloadImage(imageUrl: string) {
