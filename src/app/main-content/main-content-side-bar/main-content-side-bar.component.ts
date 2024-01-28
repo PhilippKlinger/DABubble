@@ -7,6 +7,7 @@ import { DataService } from 'src/app/shared-services/data.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from 'src/app/shared-services/user.service';
+import { MessagesService } from 'src/app/shared-services/messages.service';
 @Component({
   selector: 'app-main-content-side-bar',
   templateUrl: './main-content-side-bar.component.html',
@@ -27,7 +28,8 @@ export class MainContentSideBarComponent {
     private channelsService: ChannelsService,
     private dataService: DataService,
     private snackBar: MatSnackBar,
-    private userService: UserService) {
+    private userService: UserService,
+    private messageService: MessagesService) {
 
     this.channelsService.currentUserInfo$.subscribe((currentUser) => {
       this.currentUser = currentUser;
@@ -39,18 +41,13 @@ export class MainContentSideBarComponent {
 
     this.userService.users$.subscribe((users) => {
       this.users = users;
-      this.receiveUsers();
     })
-  }
-
-  receiveUsers() {
-    console.log(this.users);
   }
 
   openDM(user: User) {
     this.dataService.directmessage_open$.next(true);
     this.dataService.thread_open$.next(false);
-    this.userService.dm_user$.next(user);
+    this.messageService.dm_user$.next(user);
   }
 
   openChannel(channel: Channel): void {

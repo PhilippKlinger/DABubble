@@ -12,87 +12,13 @@ import { DMInfo } from '../models/DMInfo.class';
 })
 
 export class UserService {
-  dm_info = new DMInfo();
-
   public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   public selectedUserforProfileView$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
-  public dm_user$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
   private unsubUsers;
 
-  constructor(private firestore: Firestore, private channelService: ChannelsService) {
+  constructor(private firestore: Firestore, private channelsService: ChannelsService) {
     this.unsubUsers = this.subUsersList();
-  }
-
-
-  async findConversation(dm_user: User, currentUserInfo: User): Promise<{ DMInfo: DMInfo | null, available: boolean, docId: string }> {
-    const querySnapshot = await getDocs(query(this.getUsersDMRef(dm_user), where('chatPartnerId', '==', currentUserInfo.id)));
-
-    let dm_info_result: DMInfo | null = null;
-    let available = false;
-    let docId: string = '';
-
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      dm_info_result = data as DMInfo;
-      available = true;
-      docId = doc.id
-    });
-
-    const result = {
-      'DMInfo': dm_info_result,
-      'available': available,
-      'docId': docId,
-    };
-
-    return result;
-  }
-
-  async pushMessageToUser(message: Message): Promise<void> {
-    const dm_user = this.dm_user$.value;
-    const currentUserInfo = this.channelService.currentUserInfo$.value
-
-    message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm:ss', 'en-US');
-    message.setCreatorId(currentUserInfo.id);
-
-    if (dm_user && currentUserInfo && ((await this.findConversation(dm_user, currentUserInfo)).available)) {
-
-      let docRef = await addDoc(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), message.toJSON());
-      message.setId(docRef.id);
-      await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON())
-
-      docRef = await addDoc(this.getUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId)), message.toJSON());
-      message.setId(docRef.id);
-      await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
-
-      console.log('unterhaltung bereits verfügbar, Nachricht wurde gesendet');
-    } else if (dm_user && currentUserInfo && (!(await this.findConversation(dm_user, currentUserInfo)).available)) {
-
-      this.dm_info.setChatPartner(currentUserInfo?.name!);
-      this.dm_info.setChatPartnerId(currentUserInfo?.id!);
-      let docRef = await addDoc(this.getUsersDMRef(dm_user), this.dm_info.toJSON());
-      this.dm_info.setDocId(docRef.id);
-      await updateDoc(this.getUpdatedUsersDMRef(dm_user, docRef.id), this.dm_info.toJSON());
-      docRef = await addDoc(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), message.toJSON());
-      message.setId(docRef.id);
-      await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON())
-
-
-      this.dm_info.setChatPartner(dm_user?.name!);
-      this.dm_info.setChatPartnerId(dm_user?.id!);
-      docRef = await addDoc(this.getUsersDMRef(currentUserInfo), this.dm_info.toJSON());
-      this.dm_info.setDocId(docRef.id);
-      await updateDoc(this.getUpdatedUsersDMRef(currentUserInfo, docRef.id), this.dm_info.toJSON());
-      docRef = await addDoc(this.getUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId)), message.toJSON());
-      message.setId(docRef.id);
-      await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
-
-      console.log('unterhaltung wurde erstellt, Nachricht wurde gesendet');
-    } else {
-      console.log('kein direct messages user verfügbar');
-    }
-
-    this.dm_user$.next(dm_user);
   }
 
   async createUser(user: User, colId: "users"): Promise<void> {
@@ -136,26 +62,6 @@ export class UserService {
 
   getUsersRef() {
     return collection(this.firestore, 'users');
-  }
-
-  getUsersDMRef(dm_user: User) {
-    return collection(this.firestore, `users/${dm_user.id}/directmessages`);
-  }
-
-  getUsersDMInfoRef(dm_user: User, id: string) {
-    return collection(this.firestore, `users/${dm_user.id}/directmessages/${id}`);
-  }
-
-  getUsersDMConversationRef(dm_user: User, userId: string) {
-    return collection(this.firestore, `users/${dm_user.id}/directmessages/${userId}/messages`);
-  }
-
-  getUpdatedUsersDMConversationRef(dm_user: User, userId: string, messageId: string) {
-    return doc(this.firestore, `users/${dm_user.id}/directmessages/${userId}/messages/${messageId}`);
-  }
-
-  getUpdatedUsersDMRef(dm_user: User, id: string) {
-    return doc(this.firestore, `users/${dm_user.id}/directmessages/${id}`);
   }
 
   getSingleDocRef(coldId: string, docID: string) {

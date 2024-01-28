@@ -32,7 +32,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
   hoverOptionEditMessage_open: boolean = false;
 
   constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
-    this.userService.dm_user$.subscribe((dm_user) => {
+    this.messagesService.dm_user$.subscribe((dm_user) => {
       if (dm_user) {
         this.dm_user = dm_user;
         this.receiveDirectMessages();
@@ -46,10 +46,10 @@ export class MainContentDirectmessageChatLowerPartComponent {
   }
 
   async receiveDirectMessages() {
-    const dm_user = this.userService.dm_user$.value;
+    const dm_user = this.messagesService.dm_user$.value;
     const currentUserInfo = this.channelService.currentUserInfo$.value;
 
-    if ((await this.userService.findConversation(dm_user!, currentUserInfo)).available) {
+    if ((await this.messagesService.findConversation(dm_user!, currentUserInfo)).available) {
       this.messagesService.updateDirectMessages();
       // this.messagesService.getReactionsOfMessages();
       this.messagesService.sortDirectMessagesByTime();
@@ -81,7 +81,10 @@ export class MainContentDirectmessageChatLowerPartComponent {
     setTimeout(() => {
       this.emoji_window_messages_open = !this.emoji_window_messages_open;
     }, 50);
-    this.messagesService.selectedMessageMainChat$.next(this.chatMessages[index]);
+  }
+
+  selectDirectMessage(index: number) {
+    this.messagesService.selectedDirectMessage$.next(this.chatMessages[index]);
   }
 
   async saveEditedMessage() {
@@ -250,7 +253,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
 
     this.reaction.setReaction($event.emoji.native);
     this.reaction.setCreator(currentUserInfo.name);
-    this.messagesService.addReactionToMessage(this.reaction);
+    this.messagesService.addReactionToDM(this.reaction);
     this.emoji_window_messages_open = false;
   }
 
@@ -277,7 +280,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
       } else { */
       this.message.setMessage(this.input_message.nativeElement.value.trim());
       /*  }    */
-      this.userService.pushMessageToUser(this.message);
+      this.messagesService.pushMessageToUser(this.message);
       this.input_message.nativeElement.value = '';
     }
   }

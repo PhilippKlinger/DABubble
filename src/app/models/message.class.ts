@@ -8,6 +8,7 @@ export class Message {
     avatar: string;
     timestamp: string | number;
     reactions?: object;
+    universalId?: string;
     answered_number: number;
     latest_answer: string | number;
     img: string;
@@ -20,9 +21,14 @@ export class Message {
         this.avatar = obj ? obj.avatar : '';
         this.timestamp = obj ? obj.timestamp : '';
         this.reactions = obj ? obj.reactions : '';
+        this.universalId = obj ? obj.universalId : '';
         this.answered_number = obj ? obj.answered_number : '';
         this.latest_answer = obj ? obj.latest_answer : '';
         this.img = obj ? obj.img : '';
+    }
+
+    setUniversalId(id: string): void {
+        this.universalId = id;
     }
 
     setTimestampNow(): void {
@@ -70,6 +76,7 @@ export class Message {
             avatar: this.avatar,
             timestamp: this.timestamp,
             reactions: this.reactions,
+            universalId: this.universalId,
             answered_number: this.answered_number,
             latest_answer: this.latest_answer,
             img: this.img,
