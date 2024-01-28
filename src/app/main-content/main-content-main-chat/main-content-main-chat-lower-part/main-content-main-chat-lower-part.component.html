@@ -45,7 +45,7 @@
                     </div>
 
                     <div *ngIf="message.img">                        
-                        <button mat-raised-button (click)="downloadImage(message.img)">
+                        <button mat-raised-button (click)="this.commonService.downloadImage(message.img)">
                             <mat-icon>file_download</mat-icon> Download
                         </button>
                     </div>

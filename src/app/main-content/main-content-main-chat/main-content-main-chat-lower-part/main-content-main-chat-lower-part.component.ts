@@ -355,13 +355,5 @@ export class MainContentMainChatLowerPartComponent {
     if (this.fileInput && this.fileInput.nativeElement) {
       this.fileInput.nativeElement.value = '';
     }
-  }
-
-  downloadImage(imageUrl: string) {
-    const link = document.createElement('a');
-    link.href = imageUrl; // Verwendet die URL des Bildes aus dem Parameter
-    link.download = 'DownloadedImage';
-    link.target = "_blank";
-    link.click();
-  }
+  } 
 }

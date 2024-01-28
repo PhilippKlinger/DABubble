@@ -4,6 +4,7 @@ import { Reaction } from 'src/app/models/reaction.class';
 import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { MessagesService } from 'src/app/shared-services/messages.service';
+import { CommonService } from 'src/app/shared-services/common.service';
 
 @Component({
   selector: 'app-main-content-thread-chat-lower-part',
@@ -22,7 +23,7 @@ export class MainContentThreadChatLowerPartComponent {
   emoji_window_messages_open: boolean = false;
   user: User = null!;
 
-  constructor(private channelService: ChannelsService, private messagesService: MessagesService) {
+  constructor(private channelService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService) {
     this.messagesService.thread_subject$.subscribe((value: Message) => {
       if (value) {
         this.thread_subject_time = this.getFormattedTime(value);

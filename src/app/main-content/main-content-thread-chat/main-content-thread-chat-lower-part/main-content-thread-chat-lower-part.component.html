@@ -26,8 +26,14 @@
                     <span>{{ thread_subject_time }}</span>
                     <h3>{{ thread_subject?.creator }}</h3>
                 </div>
-                <div class="speech-bubble-user">
+                <div *ngIf="thread_subject?.message" class="speech-bubble-user">
                     {{ thread_subject?.message }}
+                </div>
+
+                <div *ngIf="thread_subject?.img">                        
+                    <button mat-raised-button (click)="this.commonService.downloadImage(thread_subject?.img)">
+                        <mat-icon>file_download</mat-icon> Download
+                    </button>
                 </div>
                 <div class="user-message-emojis">
                     <div class="user-message-emojis-showcase" *ngFor="let reactions of thread_subject?.reactions">
