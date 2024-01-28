@@ -50,6 +50,17 @@ nav {
     }
 }
 
+.emoji-window-messages {
+    position: absolute;
+    z-index: 2;
+}
+
+.emoji-window {
+    position: absolute;
+    margin-top: -430px;
+    margin-left: 84px;
+}
+
 .input-new-message {
     border: solid 1px $Light-purple;
     background-color: white;
