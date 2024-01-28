@@ -51,7 +51,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
 
     if ((await this.messagesService.findConversation(dm_user!, currentUserInfo)).available) {
       this.messagesService.updateDirectMessages();
-      // this.messagesService.getReactionsOfMessages();
+      await this.messagesService.getReactionsOfDirectMessages();
       this.messagesService.sortDirectMessagesByTime();
       this.chatMessages = this.messagesService.directMessages;
     } else {
