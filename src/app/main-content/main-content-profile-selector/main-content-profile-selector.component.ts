@@ -27,6 +27,7 @@ export class MainContentProfileSelectorComponent {
 
   openDialog(componentKey: string): void {
     this.dialogService.openDialog(componentKey);
+    this.profilemenu_open = false;
   }
 
   logout() {

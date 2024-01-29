@@ -7,23 +7,35 @@
     </div>
     <div class="avatar">
         <img src="{{currentUser.avatar}}">
+        <button *ngIf="!openAvatarSelection" (click)="toggleAvatarSelection()" mat-button>Avatar ändern</button>
     </div>
-    <div class="name-input">
+
+    <div *ngIf="openAvatarSelection" class="avatar-selection">
+        <h3>Wähle deinen Avatar</h3>
+        <div  class="avatar-list">
+            <img *ngFor="let avatar of avatarPaths" (click)="changeAvatar(avatar)" [src]="avatar">
+        </div>
+        <input type="file" (change)="onFileSelected($event)">
+        <span *ngIf="errorUploadFile">Bitte wählen Sie eine gültige Datei</span>
+      </div>
+      
+    <div *ngIf="!openAvatarSelection" class="name-input">
         <div class="name">
             <img src="../../../assets/icons/account_circle.svg">
             <span>Vollständiger Name</span>
         </div>
         <input [(ngModel)]="newUserName" matInput placeholder="{{currentUser.name}}">
     </div>
-    <div class="name-input">
+    <div *ngIf="!openAvatarSelection" class="name-input">
         <div class="name">
             <img src="../../../assets/icons/mail.svg">
             <span>E-Mail-Adresse</span>
         </div>
-        <input [(ngModel)]="newUserEmail" matInput placeholder="{{currentUser.email}}">
+        <input matTooltip="Please contact an admin to change your email!" matTooltipPosition="above"  disabled matInput placeholder="{{currentUser.email}}">
     </div>
     <div class="buttons">
-        <button mat-raised-button mat-dialog-close>Abbrechen</button>
-        <button (click)="saveChanges()" mat-raised-button color="primary">Speichern</button>
+        <button *ngIf="!openAvatarSelection" mat-raised-button mat-dialog-close>Abbrechen</button>
+        <button *ngIf="!openAvatarSelection" [disabled]="newUserName === currentUser.name" (click)="saveChanges()" mat-raised-button color="primary">Speichern</button>
+        <button (click)="toggleAvatarSelection()" *ngIf="openAvatarSelection" mat-raised-button> Zurück </button>
     </div>
 </div>

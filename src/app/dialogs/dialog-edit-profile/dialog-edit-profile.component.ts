@@ -3,11 +3,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { UserService } from 'src/app/shared-services/user.service';
-import { Auth, updateEmail, updateProfile, verifyBeforeUpdateEmail } from '@angular/fire/auth';
-import { AuthService } from 'src/app/shared-services/authentication.service';
-import { CommonService } from 'src/app/shared-services/common.service';
-import { updateCurrentUser } from '@angular/fire/auth';
-
+import { Auth, updateProfile } from '@angular/fire/auth';
+import { Channel } from 'src/app/models/channel.class';
 
 @Component({
   selector: 'app-dialog-edit-profile',
@@ -17,26 +14,41 @@ import { updateCurrentUser } from '@angular/fire/auth';
 export class DialogEditProfileComponent {
 
   newUserName: string = '';
-  newUserEmail: string = '';
+  newUserAvatar: string = '';
   currentUser!: User;
   users: User[] = [];
+  selectedChannel!: Channel | null;
+
+  openAvatarSelection:boolean = false;
+  selectedAvatar!: string;
+  avatarFile: File | null = null;
+  errorUploadFile: boolean = false;
+  avatarPaths: string[] = [
+    'assets/avatars/avatar_1.svg',
+    'assets/avatars/avatar_2.svg',
+    'assets/avatars/avatar_3.svg',
+    'assets/avatars/avatar_4.svg',
+    'assets/avatars/avatar_5.svg',
+    'assets/avatars/avatar_6.svg',
+  ];
 
   constructor(
     private auth: Auth,
     private channelService: ChannelsService,
     private userService: UserService,
     private dialogRef: MatDialogRef<DialogEditProfileComponent>,
-    private authService: AuthService,
-    private commonService: CommonService
   ) {
     this.channelService.currentUserInfo$.subscribe((currentUser) => {
       this.currentUser = currentUser;
       this.newUserName = currentUser.name;
-      this.newUserEmail = currentUser.email;
+      this.newUserAvatar = currentUser.avatar;
     });
     this.userService.users$.subscribe((users) => {
       this.users = users;
     });
+    this.channelService.selectedChannel$.subscribe((selectedChannel) => {
+      this.selectedChannel = selectedChannel
+    })
   }
 
   async saveChanges(): Promise<void> {
@@ -50,52 +62,77 @@ export class DialogEditProfileComponent {
       const updatedUser = {
         ...user,
         displayName: this.newUserName,
-        email: this.newUserEmail
       };
       const userToUpdate = this.users.find(u => u.id === this.currentUser.id);
       if (!userToUpdate) {
         console.error('Aktueller Benutzer nicht in der Benutzerliste gefunden');
         return;
       }
-      
-    // Aktualisieren des Profilnamens
-    if (this.newUserName !== user.displayName) {
-      await updateProfile(user, {
-        displayName: this.newUserName
-      });
-    }
 
-    // Aktualisieren der E-Mail-Adresse
-    if (this.newUserEmail !== user.email) {
-      await verifyBeforeUpdateEmail(user, this.newUserEmail);
-      
-    }
-
-        // Update user info in Firestore
-        userToUpdate.name = this.newUserName;
-        userToUpdate.email = this.newUserEmail;
-        await this.userService.updateUser(userToUpdate);
-
-
-        // Update channel members
-        const channels = this.channelService.channels$.value;
-        channels.forEach(channel => {
-          const members = channel.members || [];
-          const index = members.findIndex(member => member.id === userToUpdate.id);
-
-          if (index !== -1) {
-            members[index] = userToUpdate.toJSON();
-            this.channelService.updateChannel(channel);
-          }
+      // Aktualisieren des Profilnamens
+      if (this.newUserName !== user.displayName) {
+        await updateProfile(user, {
+          displayName: this.newUserName
         });
+      }
 
-        this.dialogRef.close();
-        await this.authService.logout();
-      
+      // Update user info in Firestore
+      userToUpdate.name = this.newUserName;
+      await this.userService.updateUser(userToUpdate);
+
+      // Update user info in Session Storage
+      sessionStorage.setItem('user', JSON.stringify(userToUpdate));
+      this.channelService.currentUserInfo$.next(userToUpdate);
+
+
+      // Update channel members
+      const channels = this.channelService.channels$.value;
+      channels.forEach(channel => {
+        const members = channel.members || [];
+        const index = members.findIndex(member => member.id === userToUpdate.id);
+
+        if (index !== -1) {
+          members[index] = userToUpdate.toJSON();
+          this.channelService.updateChannel(channel);
+        }
+      });
+
+      await this.channelService.updateUserNameInAllMessages(user.uid, this.newUserName);
+     
+      this.channelService.refreshChannelsList();
+      this.dialogRef.close();
+
     } catch (error) {
       console.error('Error updating user info:', error);
     }
   }
+
+  toggleAvatarSelection() {
+    this.openAvatarSelection = !this.openAvatarSelection;
+  }
+
+
+  changeAvatar(avatar: string): void {
+    this.selectedAvatar = avatar;
+    this.avatarFile = null;
+    this.errorUploadFile = false;
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files) return;
+    const file = input.files[0];
+    const fileType = file.type;
+    const MAX_FILE_SIZE = 5242880;
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    this.errorUploadFile = !validTypes.includes(fileType) || file.size > MAX_FILE_SIZE;
+    if (!this.errorUploadFile) {
+      this.selectedAvatar = URL.createObjectURL(file);
+      this.avatarFile = file;
+    }
+  }
+
+
 }
 
 

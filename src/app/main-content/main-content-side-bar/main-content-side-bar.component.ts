@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
 import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { DataService } from 'src/app/shared-services/data.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from 'src/app/shared-services/user.service';
 import { MessagesService } from 'src/app/shared-services/messages.service';
 @Component({
@@ -20,28 +19,27 @@ export class MainContentSideBarComponent {
   directmessages_opened: boolean = true;
 
   channels: Channel[] = [];
-  unsubChannels!: Subscription;
   currentUser!: User;
   users: any[] = [];
+  private destroyed$ = new Subject<void>();
 
   constructor(private dialogService: OpenDialogService,
     private channelsService: ChannelsService,
     private dataService: DataService,
-    private snackBar: MatSnackBar,
     private userService: UserService,
     private messageService: MessagesService) {
 
-    this.channelsService.currentUserInfo$.subscribe((currentUser) => {
+    this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe((currentUser) => {
       this.currentUser = currentUser;
     });
 
-    this.unsubChannels = this.channelsService.channels$.subscribe(channels => {
+    this.channelsService.channels$.pipe(takeUntil(this.destroyed$)).subscribe(channels => { 
       this.channels = channels;
       this.sortChannels();
       this.channelsService.selectedChannel$.next(channels[0]);
     });
 
-    this.userService.users$.subscribe((users) => {
+    this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe((users) => {
       this.users = users;
     })
   }
@@ -97,25 +95,11 @@ export class MainContentSideBarComponent {
         }
       }, 100);
     } else {
-      this.showNotAMemberPopup();
+      
 
     }
 
   }
-
-  showNotAMemberPopup(): void {
-    let snackbarRef = this.snackBar.open('Sie sind kein Mitglied dieses Channels.', 'Schließen', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
-
-    // snackbarRef.afterDismissed().subscribe(() => {
-    //   this.dataService.directmessage_open$.next(true);
-    // });
-  }
-
-
 
   openDialog(componentKey: string): void {
     this.dialogService.setNeedToAddMoreMembers(false);
@@ -148,7 +132,8 @@ export class MainContentSideBarComponent {
   }
 
   ngOnDestroy() {
-    this.unsubChannels.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
 }

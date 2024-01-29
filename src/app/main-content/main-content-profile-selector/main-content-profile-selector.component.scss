@@ -95,6 +95,12 @@ section {
         padding: 14px 60px;
         cursor: pointer;
         border-radius: 100px;
+
+        &:hover {
+            background-color: $Bg-color;
+            color: $Purple-3;
+            font-weight: 700;
+        }
     }
 
     div {

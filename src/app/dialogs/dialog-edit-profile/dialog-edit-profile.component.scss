@@ -18,7 +18,7 @@ input {
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
-    line-height: 120%    
+    line-height: 120%
 }
 
 input:focus {
@@ -43,4 +43,38 @@ input:focus {
     display: flex;
     flex-direction: column;
     gap: 7px;
+}
+
+input[disabled] {
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+.avatar-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatar-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-content: center;
+    justify-content: center;
+    padding: 20px;
+
+    img {
+        width: 100px;
+        border-radius: 100%;
+        object-fit: cover;
+        opacity: 0.8;
+        transition: all ease-in-out 100ms;
+
+        &:hover {
+            cursor: pointer;
+            opacity: 1;
+            transform: scale(1.05);
+        }
+    }
 }

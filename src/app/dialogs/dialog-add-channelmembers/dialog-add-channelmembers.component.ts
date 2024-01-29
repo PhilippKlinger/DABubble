@@ -44,7 +44,6 @@ export class DialogAddChannelmembersComponent {
   }
 
   filterUsers() {
-   
     if (this.channel) {
       const channelMembers = this.channel.members || [];
       this.filteredUsers = this.users.filter(user => {
@@ -69,8 +68,6 @@ export class DialogAddChannelmembersComponent {
     }
   }
   
-
-
   selectUser(user: User) {
     this.selectedUsers.push(user);
     this.specificMemberInput = '';
@@ -111,7 +108,6 @@ export class DialogAddChannelmembersComponent {
       this.dialogService.setNeedToAddMoreMembers(false);
     }
   }
-  
   
   ngOnDestroy(): void {
     this.destroyed$.next();

@@ -5,8 +5,6 @@ import { UserService } from '../shared-services/user.service';
 import { StorageService } from '../shared-services/storage.service';
 import { CommonService } from '../shared-services/common.service';
 import { UserCredential } from 'firebase/auth';
-import { ChannelsService } from '../shared-services/channels.service';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -37,7 +35,7 @@ export class LoginComponent {
     private userService: UserService,
     private storageService: StorageService,
     public commonService: CommonService,
-    private channelsService: ChannelsService) { this.currentUserCredential = null; }
+    ) { this.currentUserCredential = null; }
 
   async login() {
     const userExists = await this.checkUserExists();
@@ -203,7 +201,6 @@ export class LoginComponent {
     }
   }
 
-
   changeInputPasswordToTxt(event: MouseEvent): void {
     this.commonService.changeInputPasswordToTxt(event);
   }
@@ -249,8 +246,6 @@ export class LoginComponent {
       this.avatarFile = file;
     }
   }
-
-
 
   routeTo(router_link: string, seconds: number) {
     this.commonService.routeTo(router_link, seconds);
