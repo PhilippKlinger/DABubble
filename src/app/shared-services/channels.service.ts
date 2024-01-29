@@ -70,7 +70,7 @@ export class ChannelsService {
     return querySnapshot.docs.map(doc => doc.data() as Message);
   }
 
-  async updateUserNameInAllMessages(userId: string, newName: string) {
+  async updateUserNameInAllMessages(userId: string, newName: string, newAvatar: string) {
     const channels = this.channels$.value;
     
     for (const channel of channels) {
@@ -80,14 +80,12 @@ export class ChannelsService {
       querySnapshot.forEach(async (doc) => {
         const message = doc.data() as Message;
         if (message.creatorId === userId) {
-          const updatedMessage = { ...message, creator: newName };
+          const updatedMessage = { ...message, creator: newName , avatar: newAvatar };
           await updateDoc(doc.ref, updatedMessage);
         }
       });
     }
 }
-
-  
 
   async createChannel(channel: Channel, colId: 'channels'): Promise<void> {
     const collectionRef = collection(this.firestore, colId);

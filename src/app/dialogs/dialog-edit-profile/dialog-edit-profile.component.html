@@ -6,7 +6,7 @@
         </button>
     </div>
     <div class="avatar">
-        <img src="{{currentUser.avatar}}">
+        <img src="{{selectedAvatar}}">
         <button *ngIf="!openAvatarSelection" (click)="toggleAvatarSelection()" mat-button>Avatar ändern</button>
     </div>
 
@@ -15,6 +15,7 @@
         <div  class="avatar-list">
             <img *ngFor="let avatar of avatarPaths" (click)="changeAvatar(avatar)" [src]="avatar">
         </div>
+       
         <input type="file" (change)="onFileSelected($event)">
         <span *ngIf="errorUploadFile">Bitte wählen Sie eine gültige Datei</span>
       </div>
@@ -35,7 +36,7 @@
     </div>
     <div class="buttons">
         <button *ngIf="!openAvatarSelection" mat-raised-button mat-dialog-close>Abbrechen</button>
-        <button *ngIf="!openAvatarSelection" [disabled]="newUserName === currentUser.name" (click)="saveChanges()" mat-raised-button color="primary">Speichern</button>
+        <button *ngIf="!openAvatarSelection" [disabled]="newUserName === currentUser.name && selectedAvatar === currentUser.avatar" (click)="saveChanges()" mat-raised-button color="primary">Speichern</button>
         <button (click)="toggleAvatarSelection()" *ngIf="openAvatarSelection" mat-raised-button> Zurück </button>
     </div>
 </div>

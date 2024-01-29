@@ -14,13 +14,12 @@ import { Channel } from 'src/app/models/channel.class';
 export class DialogEditProfileComponent {
 
   newUserName: string = '';
-  newUserAvatar: string = '';
+  selectedAvatar!: string;
   currentUser!: User;
   users: User[] = [];
   selectedChannel!: Channel | null;
 
   openAvatarSelection:boolean = false;
-  selectedAvatar!: string;
   avatarFile: File | null = null;
   errorUploadFile: boolean = false;
   avatarPaths: string[] = [
@@ -41,7 +40,7 @@ export class DialogEditProfileComponent {
     this.channelService.currentUserInfo$.subscribe((currentUser) => {
       this.currentUser = currentUser;
       this.newUserName = currentUser.name;
-      this.newUserAvatar = currentUser.avatar;
+      this.selectedAvatar = currentUser.avatar;
     });
     this.userService.users$.subscribe((users) => {
       this.users = users;
@@ -59,10 +58,6 @@ export class DialogEditProfileComponent {
         return;
       }
 
-      const updatedUser = {
-        ...user,
-        displayName: this.newUserName,
-      };
       const userToUpdate = this.users.find(u => u.id === this.currentUser.id);
       if (!userToUpdate) {
         console.error('Aktueller Benutzer nicht in der Benutzerliste gefunden');
@@ -78,6 +73,7 @@ export class DialogEditProfileComponent {
 
       // Update user info in Firestore
       userToUpdate.name = this.newUserName;
+      userToUpdate.avatar = this.selectedAvatar,
       await this.userService.updateUser(userToUpdate);
 
       // Update user info in Session Storage
@@ -97,7 +93,7 @@ export class DialogEditProfileComponent {
         }
       });
 
-      await this.channelService.updateUserNameInAllMessages(user.uid, this.newUserName);
+      await this.channelService.updateUserNameInAllMessages(user.uid, this.newUserName, this.selectedAvatar);
      
       this.channelService.refreshChannelsList();
       this.dialogRef.close();
@@ -110,7 +106,6 @@ export class DialogEditProfileComponent {
   toggleAvatarSelection() {
     this.openAvatarSelection = !this.openAvatarSelection;
   }
-
 
   changeAvatar(avatar: string): void {
     this.selectedAvatar = avatar;
