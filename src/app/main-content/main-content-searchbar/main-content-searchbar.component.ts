@@ -5,7 +5,6 @@ import { User } from 'src/app/models/user.class';
 import { UserService } from 'src/app/shared-services/user.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { Message } from 'src/app/models/message.class';
-import { MessagesService } from 'src/app/shared-services/messages.service';
 
 
 @Component({
@@ -23,8 +22,7 @@ export class MainContentSearchbarComponent {
   constructor(
     private channelsService: ChannelsService,
     private userService: UserService,
-    private dialogService: OpenDialogService,
-    private messagesService: MessagesService,) { }
+    private dialogService: OpenDialogService) { }
 
     onSearchChange(event: Event): void {
       const inputElement = event.target as HTMLInputElement;
