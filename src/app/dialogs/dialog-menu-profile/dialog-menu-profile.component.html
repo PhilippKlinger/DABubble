@@ -5,8 +5,9 @@
             <mat-icon>close</mat-icon>
           </button>
     </div>
-    <div class="avatar">
+    <div class="avatar">        
         <img src="{{currentUser.avatar}}">
+        <p (click)="openEditProfile()">Avatar bearbeiten</p>
     </div>
     <div class="username">
         <div class="username-head">
