@@ -19,8 +19,7 @@ import { MessagesService } from 'src/app/shared-services/messages.service';
 export class MainContentMainChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('img') img!: ElementRef;
-  @ViewChild('chat_content') chat_content!: ElementRef;
-  @ViewChild('fileInput') fileInput!: ElementRef;
+  @ViewChild('chat_content') chat_content!: ElementRef;  
   message = new Message();
   reaction = new Reaction();
   selectedChannel!: Channel | null;
@@ -37,6 +36,7 @@ export class MainContentMainChatLowerPartComponent {
   textAreaContent!: string;
   editedText!: string;
   uploadedFileLink: string | null = null;
+  fileInput: any;
 
   constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
@@ -339,21 +339,11 @@ export class MainContentMainChatLowerPartComponent {
   } 
 
   async handleFileInput(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      try {
-        const uploadedUrl = await this.storageService.uploadFile(file);
-        this.uploadedFileLink = uploadedUrl;
-      } catch (error) {
-        console.error('Fehler beim Hochladen der Datei', error);
-      }
-    }
+    this.uploadedFileLink = await this.commonService.handleFileInput(event);
   }
 
   removeUploadedFile() {
+    this.commonService.removeUploadedFile(this.fileInput);
     this.uploadedFileLink = null;
-    if (this.fileInput && this.fileInput.nativeElement) {
-      this.fileInput.nativeElement.value = '';
-    }
-  } 
+  }
 }

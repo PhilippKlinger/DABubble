@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, public storageService: StorageService) { }
 
   isPasswordMatching(password: string, confirmPassword: string): boolean {
     return password === confirmPassword;
@@ -65,5 +66,25 @@ export class CommonService {
     link.download = 'DownloadedImage';
     link.target = "_blank";
     link.click();
+  }
+
+  async handleFileInput(event: any): Promise<string | null> {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const uploadedUrl = await this.storageService.uploadFile(file);
+        return uploadedUrl;
+      } catch (error) {
+        console.error('Fehler beim Hochladen der Datei', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  removeUploadedFile(fileInput: any): void {
+    if (fileInput && fileInput.nativeElement) {
+      fileInput.nativeElement.value = '';
+    }
   }
 }

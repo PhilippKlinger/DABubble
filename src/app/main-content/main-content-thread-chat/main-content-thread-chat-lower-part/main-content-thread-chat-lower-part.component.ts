@@ -5,6 +5,7 @@ import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { MessagesService } from 'src/app/shared-services/messages.service';
 import { CommonService } from 'src/app/shared-services/common.service';
+import { StorageService } from 'src/app/shared-services/storage.service';
 
 @Component({
   selector: 'app-main-content-thread-chat-lower-part',
@@ -12,7 +13,7 @@ import { CommonService } from 'src/app/shared-services/common.service';
   styleUrls: ['./main-content-thread-chat-lower-part.component.scss']
 })
 export class MainContentThreadChatLowerPartComponent {
-  @ViewChild('answer') input_answer!: ElementRef;
+  @ViewChild('answer') input_answer!: ElementRef;  
   thread_subject: any = null;
   thread_subject_time: any;
   threadAnswers: any = [];
@@ -22,8 +23,11 @@ export class MainContentThreadChatLowerPartComponent {
   hoverOptionEditMessage_open: boolean = false;
   emoji_window_messages_open: boolean = false;
   user: User = null!;
+  uploadedFileLinkThread: string | null = null;
+  fileInput: any;
 
-  constructor(private channelService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService) {
+
+  constructor(private channelService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService) {
     this.messagesService.thread_subject$.subscribe((value: Message) => {
       if (value) {
         this.thread_subject_time = this.getFormattedTime(value);
@@ -112,5 +116,14 @@ export class MainContentThreadChatLowerPartComponent {
     const hours = timeParts[0];
     const minutes = timeParts[1];
     return `${hours}:${minutes}`;
+  }
+
+  async handleFileInputThread(event: any) {
+    this.uploadedFileLinkThread = await this.commonService.handleFileInput(event);
+  }
+
+  removeUploadedFileThread() {
+    this.commonService.removeUploadedFile(this.fileInput);
+    this.uploadedFileLinkThread = null;
   }
 }
