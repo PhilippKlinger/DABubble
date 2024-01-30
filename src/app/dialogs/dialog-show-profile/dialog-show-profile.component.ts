@@ -41,6 +41,7 @@ export class DialogShowProfileComponent {
   openDM() {
     this.dataService.directmessage_open$.next(true);
     this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
     this.messageService.dm_user$.next(this.user);
     this.dialogRef.close();
   }

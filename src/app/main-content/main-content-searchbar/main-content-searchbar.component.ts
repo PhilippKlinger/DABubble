@@ -5,7 +5,7 @@ import { User } from 'src/app/models/user.class';
 import { UserService } from 'src/app/shared-services/user.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { Message } from 'src/app/models/message.class';
-
+import { DataService } from 'src/app/shared-services/data.service';
 
 @Component({
   selector: 'app-main-content-searchbar',
@@ -22,7 +22,8 @@ export class MainContentSearchbarComponent {
   constructor(
     private channelsService: ChannelsService,
     private userService: UserService,
-    private dialogService: OpenDialogService) { }
+    private dialogService: OpenDialogService,
+    private dataService: DataService) { }
 
     onSearchChange(event: Event): void {
       const inputElement = event.target as HTMLInputElement;
@@ -79,17 +80,23 @@ export class MainContentSearchbarComponent {
       let counter = 0;
       const intervalId = setInterval(() => {
         this.channelsService.setSelectedChannel(item);
+        this.dataService.thread_open$.next(false);
+        this.dataService.new_message_open$.next(false);
+        this.dataService.directmessage_open$.next(false);
         counter++;
         if (counter === 5) {
           clearInterval(intervalId);
         }
       }, 100);
     } else {
-      const channel = this.channelsService.getChannelForMessage(item.id);
+      const channel = this.channelsService.getChannelToFindMessage(item.id);
       if (channel && this.channelsService.isCurrentUserChannelMember(channel)) {
         let counter = 0;
         const intervalId = setInterval(() => {
           this.channelsService.setSelectedChannel(channel);
+          this.dataService.thread_open$.next(false);
+          this.dataService.new_message_open$.next(false);
+          this.dataService.directmessage_open$.next(false);
           counter++;
           if (counter === 5) {
             clearInterval(intervalId);

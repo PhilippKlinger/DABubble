@@ -95,7 +95,7 @@ export class DialogEditProfileComponent {
 
       await this.channelService.updateUserNameInAllMessages(user.uid, this.newUserName, this.selectedAvatar);
      
-      this.channelService.refreshChannelsList();
+      this.channelService.refreshChannelsAfterEditingProfile();
       this.dialogRef.close();
 
     } catch (error) {

@@ -19,9 +19,7 @@ export class MainContentComponent implements OnInit {
   private userActivityTimeout: number = 15 * 60 * 1000; // 15 Minuten in Millisekunden
   private userActivityTimer: any;
 
-  constructor(private dataService: DataService, private channelService: ChannelsService, private authService: AuthService) { }
-
-  ngOnInit(): void {
+  constructor(private dataService: DataService, private channelService: ChannelsService, private authService: AuthService) {
     // Hier wird das thread_open boolean aus dem data.service.ts abonniert
     this.dataService.thread_open$.subscribe((value: boolean) => {
       // bei Veränderung des booleans wird folgende Funktion ausgelöst
@@ -37,8 +35,14 @@ export class MainContentComponent implements OnInit {
     this.dataService.new_message_open$.subscribe((value: boolean) => {
       this.new_message_open = value;
     });
+   }
+
+  ngOnInit(): void {
+    
 
     this.setCurrentUser();
+    this.channelService.subChannelsList();
+    this.channelService.findNextAvailableChannel();
     this.startUserActivityTimer(); // Starten Sie den Timer beim Initialisieren der Komponente
   }
 
