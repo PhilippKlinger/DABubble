@@ -33,10 +33,8 @@ export class MainContentSideBarComponent {
       this.currentUser = currentUser;
     });
 
-    this.channelsService.channels$.pipe(takeUntil(this.destroyed$)).subscribe(channels => { 
+    this.channelsService.channels$.pipe(takeUntil(this.destroyed$)).subscribe(channels => {
       this.channels = channels;
-      this.sortChannels();
-      this.channelsService.selectedChannel$.next(channels[0]);
     });
 
     this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe((users) => {
@@ -95,10 +93,7 @@ export class MainContentSideBarComponent {
         }
       }, 100);
     } else {
-      
-
     }
-
   }
 
   openDialog(componentKey: string): void {
@@ -124,11 +119,6 @@ export class MainContentSideBarComponent {
     } else {
       this.directmessage_icon = 'arrow_drop_down'
     }
-  }
-
-  editChannel(channel: Channel): void {
-    this.channelsService.setSelectedChannel(channel);
-    this.dialogService.openDialog('editChannel');
   }
 
   ngOnDestroy() {
