@@ -19,7 +19,8 @@ import { MessagesService } from 'src/app/shared-services/messages.service';
 export class MainContentMainChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('img') img!: ElementRef;
-  @ViewChild('chat_content') chat_content!: ElementRef;  
+  @ViewChild('chat_content') chat_content!: ElementRef;
+  @ViewChild('fileInput') fileInput!: ElementRef;  
   message = new Message();
   reaction = new Reaction();
   selectedChannel!: Channel | null;
@@ -36,7 +37,7 @@ export class MainContentMainChatLowerPartComponent {
   textAreaContent!: string;
   editedText!: string;
   uploadedFileLink: string | null = null;
-  fileInput: any;
+  
 
   constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
@@ -316,7 +317,7 @@ export class MainContentMainChatLowerPartComponent {
     this.dataService.setBooleanValue(true);
   }
 
-  sendMessageToChannel() {
+  async sendMessageToChannel() {
     const { name, id, avatar } = this.channelService.currentUserInfo$.value;       
     this.message.setCreator(name);
     this.message.setCreatorId(id);
@@ -331,7 +332,9 @@ export class MainContentMainChatLowerPartComponent {
       this.message.setMessage(inputMessage);
       this.input_message.nativeElement.value = '';
     }          
-    this.messagesService.pushMessageToChannel(this.message);
+    await this.messagesService.pushMessageToChannel(this.message);
+    this.message.setMessage('');
+    this.message.setImg('');
   }
 
   ngOnDestroy() {
@@ -343,7 +346,9 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   removeUploadedFile() {
-    this.commonService.removeUploadedFile(this.fileInput);
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
     this.uploadedFileLink = null;
   }
 }

@@ -13,7 +13,8 @@ import { StorageService } from 'src/app/shared-services/storage.service';
   styleUrls: ['./main-content-thread-chat-lower-part.component.scss']
 })
 export class MainContentThreadChatLowerPartComponent {
-  @ViewChild('answer') input_answer!: ElementRef;  
+  @ViewChild('answer') input_answer!: ElementRef; 
+  @ViewChild('fileInputThread') fileInput!: ElementRef
   thread_subject: any = null;
   thread_subject_time: any;
   threadAnswers: any = [];
@@ -24,7 +25,6 @@ export class MainContentThreadChatLowerPartComponent {
   emoji_window_messages_open: boolean = false;
   user: User = null!;
   uploadedFileLinkThread: string | null = null;
-  fileInput: any;
 
 
   constructor(private channelService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService) {
@@ -89,19 +89,24 @@ export class MainContentThreadChatLowerPartComponent {
   }
 
   async sendAnswerToThread() {
-    const currentUserInfo = this.channelService.currentUserInfo$.value
-    const thread_subject = this.messagesService.thread_subject$.value
-
-    if (this.input_answer.nativeElement.value.trim() !== '') {
-      this.answer.setCreator(currentUserInfo.name);
-      this.answer.setCreatorId(currentUserInfo.id);
-      this.answer.setTimestampNow();
-      this.answer.setAvatar(currentUserInfo.avatar);
-      this.answer.setMessage(this.input_answer.nativeElement.value.trim());
-      await this.messagesService.pushThreadAnswerToMessage(this.answer);
-      await this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
+    debugger
+    const { name, id, avatar } = this.channelService.currentUserInfo$.value;
+    const thread_subject = this.messagesService.thread_subject$.value;
+    this.answer.setCreator(name);
+    this.answer.setCreatorId(id);
+    this.answer.setTimestampNow();
+    this.answer.setAvatar(avatar);
+    if (this.uploadedFileLinkThread) {
+      this.answer.setImg(this.uploadedFileLinkThread);
+      this.removeUploadedFileThread();
+    } else if (this.input_answer.nativeElement.value.trim() !== '') {      
+      this.answer.setMessage(this.input_answer.nativeElement.value.trim());      
       this.input_answer.nativeElement.value = '';
     }
+    await this.messagesService.pushThreadAnswerToMessage(this.answer);
+    await this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
+    this.answer.setMessage('');
+    this.answer.setImg('');
   }
 
   receiveThreadAnswers() {
@@ -123,7 +128,9 @@ export class MainContentThreadChatLowerPartComponent {
   }
 
   removeUploadedFileThread() {
-    this.commonService.removeUploadedFile(this.fileInput);
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
     this.uploadedFileLinkThread = null;
   }
 }

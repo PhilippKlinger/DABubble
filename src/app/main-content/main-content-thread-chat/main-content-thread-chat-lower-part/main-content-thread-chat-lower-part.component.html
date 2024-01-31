@@ -63,8 +63,13 @@
                         <span>{{ getFormattedTime(answer) }}</span>
                         <h3>{{ answer.creator }}</h3>
                     </div>
-                    <div class="speech-bubble-user">
+                    <div *ngIf="answer.message" class="speech-bubble-user">
                         {{ answer.message }}
+                    </div>
+                    <div *ngIf="answer.img">                        
+                        <button mat-raised-button (click)="this.commonService.downloadImage(answer.img)">
+                            <mat-icon>file_download</mat-icon> Download
+                        </button>
                     </div>
                     <div class="user-message-emojis">
                         <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
@@ -113,7 +118,7 @@
 </div>
 
 <div class="chat-input">
-    <textarea (keyup.enter)="sendAnswerToThread()" #answer class="chat-input-design" name="" id="" cols="" rows=""
+    <textarea *ngIf="!uploadedFileLinkThread" (keyup.enter)="sendAnswerToThread()" #answer class="chat-input-design" name="" id="" cols="" rows=""
         placeholder="Antworten..."></textarea>
     <div *ngIf="uploadedFileLinkThread" class="submit-buttons d-flex-standard">
         <button class="btn-submit" mat-button>
@@ -125,7 +130,7 @@
         <div class="chat-input-options">
             <div>
                 <!-- Test for File upload -->
-                <input #fileInput id="fileInput-thread-chat" (change)="handleFileInputThread($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />
+                <input #fileInputThread id="fileInput-thread-chat" (change)="handleFileInputThread($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />
                 <mat-icon (click)="this.commonService.triggerFileInput('fileInput-thread-chat')">add</mat-icon>
             </div>
             <div class="chat-input-line"></div>

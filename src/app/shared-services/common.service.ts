@@ -82,9 +82,5 @@ export class CommonService {
     return null;
   }
 
-  removeUploadedFile(fileInput: any): void {
-    if (fileInput && fileInput.nativeElement) {
-      fileInput.nativeElement.value = '';
-    }
-  }
+ 
 }
