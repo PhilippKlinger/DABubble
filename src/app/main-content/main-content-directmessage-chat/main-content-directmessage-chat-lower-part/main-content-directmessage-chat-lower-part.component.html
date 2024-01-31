@@ -38,8 +38,14 @@
                         <h3>{{ message.creator }}</h3>
                     </div>
 
-                    <div *ngIf="(thread_subject?.id !== message.id || !editingMessage)" class="speech-bubble-user">
+                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)" class="speech-bubble-user">
                         {{ message.message }}
+                    </div>
+
+                    <div *ngIf="message.img">                        
+                        <button mat-raised-button (click)="this.commonService.downloadImage(message.img)">
+                            <mat-icon>file_download</mat-icon> Download
+                        </button>
                     </div>
 
                     <div *ngIf="(thread_subject?.id == message.id && editingMessage)" class="speech-bubble-user-edit">
@@ -99,19 +105,21 @@
 </div>
 
 <div class="chat-input">
-    <textarea (keyup.enter)="sendMessageToUser()" #message class="chat-input-design"
+    <textarea *ngIf="!uploadedFileLinkDirect" (keyup.enter)="sendMessageToUser()" #message class="chat-input-design"
         placeholder="Nachricht an {{ dm_user?.name }} "></textarea>
     <!-- Test for File upload -->
-    <!-- <div *ngIf="uploadedFileLink">
-        <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
-        <button (click)="removeUploadedFile()">Entfernen</button>
-    </div> -->
+    <div *ngIf="uploadedFileLinkDirect" class="submit-buttons d-flex-standard">
+        <button class="btn-submit" mat-button>
+            <a href="{{uploadedFileLinkDirect}}" target="_blank">Datei ansehen</a>
+        </button>
+        <button class="btn-guest" mat-button (click)="removeUploadedFileDirect()">Entfernen</button>
+    </div>
     <div class="chat-input-lower-position">
         <div class="chat-input-options">
             <div>
                 <!-- Test for File upload -->
-                <!-- <input id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />  -->
-                <mat-icon (click)="this.commonService.triggerFileInput('fileInput-main-chat')">add</mat-icon>
+                <input #fileInputDirect id="fileInput-direct" (change)="handleFileInputDirect($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />
+                <mat-icon (click)="this.commonService.triggerFileInput('fileInput-direct')">add</mat-icon>
             </div>
 
             <div class="chat-input-line"></div>

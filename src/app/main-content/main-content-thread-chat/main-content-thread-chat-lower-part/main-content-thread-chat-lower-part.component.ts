@@ -89,7 +89,6 @@ export class MainContentThreadChatLowerPartComponent {
   }
 
   async sendAnswerToThread() {
-    debugger
     const { name, id, avatar } = this.channelService.currentUserInfo$.value;
     const thread_subject = this.messagesService.thread_subject$.value;
     this.answer.setCreator(name);

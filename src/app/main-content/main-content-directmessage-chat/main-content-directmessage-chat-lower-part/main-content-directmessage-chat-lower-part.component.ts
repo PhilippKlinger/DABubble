@@ -16,6 +16,7 @@ import { UserService } from 'src/app/shared-services/user.service';
 })
 export class MainContentDirectmessageChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
+  @ViewChild('fileInputDirect') fileInput!: ElementRef
   emoji_window_open: boolean = false;
   emoji_window_messages_open: boolean = false;
   message = new Message();
@@ -30,6 +31,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
   textareaCols!: number;
   textAreaContent!: string;
   hoverOptionEditMessage_open: boolean = false;
+  uploadedFileLinkDirect: string | null = null;
 
   constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
     this.messagesService.dm_user$.subscribe((dm_user) => {
@@ -265,23 +267,32 @@ export class MainContentDirectmessageChatLowerPartComponent {
     }
   }
 
-  sendMessageToUser() {
-    const currentUserInfo = this.channelService.currentUserInfo$.value
-
-    if (this.input_message.nativeElement.value.trim() !== '') {
-      this.message.setCreator(currentUserInfo.name);
-      this.message.setAvatar(currentUserInfo.avatar);
-      this.message.setTimestampNow();
-      this.message.setAnwers();
-      /* debugger
-      if (this.uploadedFileLink) {
-        const messageWithLink = this.input_message.nativeElement.value.trim() + "\nDatei: " + this.uploadedFileLink;
-        this.message.setMessage(messageWithLink);
-      } else { */
-      this.message.setMessage(this.input_message.nativeElement.value.trim());
-      /*  }    */
-      this.messagesService.pushMessageToUser(this.message);
-      this.input_message.nativeElement.value = '';
+  async sendMessageToUser() {
+    const { name, avatar } = this.channelService.currentUserInfo$.value
+    this.message.setCreator(name);
+    this.message.setAvatar(avatar);
+    this.message.setTimestampNow();
+    this.message.setAnwers();
+    if (this.uploadedFileLinkDirect) {
+      this.message.setImg(this.uploadedFileLinkDirect);
+      this.removeUploadedFileDirect();
+    } else if (this.input_message.nativeElement.value.trim() !== '') {
+        this.message.setMessage(this.input_message.nativeElement.value.trim());
+        this.input_message.nativeElement.value = '';
     }
+    await this.messagesService.pushMessageToUser(this.message);
+    this.message.setMessage('');
+    this.message.setImg('');      
+  }
+
+  async handleFileInputDirect(event: any) {
+    this.uploadedFileLinkDirect = await this.commonService.handleFileInput(event);
+  }
+
+  removeUploadedFileDirect() {
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
+    this.uploadedFileLinkDirect = null;
   }
 }
