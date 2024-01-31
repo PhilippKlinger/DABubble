@@ -117,15 +117,19 @@ export class DialogEditProfileComponent {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
     const file = input.files[0];
-    const fileType = file.type;
-    const MAX_FILE_SIZE = 5242880;
+    const MAX_FILE_SIZE = 1572864; 
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    this.errorUploadFile = !validTypes.includes(fileType) || file.size > MAX_FILE_SIZE;
+    
+    this.errorUploadFile = !validTypes.includes(file.type) || file.size > MAX_FILE_SIZE;
+  
     if (!this.errorUploadFile) {
       this.selectedAvatar = URL.createObjectURL(file);
       this.avatarFile = file;
+    } else {
+      // Fügen Sie hier Ihre Fehlerbehandlung hinzu
     }
   }
+  
 
 
 }

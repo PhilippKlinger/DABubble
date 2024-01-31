@@ -50,6 +50,10 @@ input[disabled] {
     cursor: not-allowed;
 }
 
+.avatar {
+    gap: 10px;
+}
+
 .avatar-selection {
     display: flex;
     flex-direction: column;
@@ -77,4 +81,9 @@ input[disabled] {
             transform: scale(1.05);
         }
     }
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
 }

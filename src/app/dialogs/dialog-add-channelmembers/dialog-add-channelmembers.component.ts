@@ -23,6 +23,7 @@ export class DialogAddChannelmembersComponent {
   selectedUsers: User[] = [];
 
   needToAddMoreMembers: boolean = false;
+  areUsersAvailable: boolean = true;
   channel: Channel | null = null;
   users: User[] = [];
   currentUser!: User;
@@ -41,6 +42,11 @@ export class DialogAddChannelmembersComponent {
 
   onInput() {
     this.filterUsers();
+    this.updateUsersAvailability();
+  }
+
+  updateUsersAvailability() {
+    this.areUsersAvailable = this.filteredUsers.length > 0;
   }
 
   filterUsers() {
@@ -72,11 +78,13 @@ export class DialogAddChannelmembersComponent {
     this.selectedUsers.push(user);
     this.specificMemberInput = '';
     this.filterUsers();
+    this.updateUsersAvailability();
   }
 
   removeUser(user: User) {
     this.selectedUsers = this.selectedUsers.filter(u => u !== user);
     this.filterUsers();
+    this.updateUsersAvailability();
   }
 
   addChannelMembers() {  
@@ -104,6 +112,7 @@ export class DialogAddChannelmembersComponent {
   
       this.channelsService.setSelectedChannel(this.channel);
       this.channelsService.updateChannel(this.channel);
+      this.channelsService.selectedChannel$.next(this.channel);
       this.dialogRef.close();
       this.dialogService.setNeedToAddMoreMembers(false);
     }
