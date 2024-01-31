@@ -156,7 +156,7 @@ export class LoginComponent {
   async register() {
     this.loginErrorUser = false;
     if (this.avatarFile) {
-      await this.storageService.uploadFile(this.avatarFile);
+      this.selectedAvatar = await this.storageService.uploadFile(this.avatarFile);
     }
     try {
       const userCredential = await this.authService.register(this.user.email, this.user.password);
@@ -242,7 +242,6 @@ export class LoginComponent {
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     this.errorUploadFile = !validTypes.includes(fileType) || file.size > MAX_FILE_SIZE;
     if (!this.errorUploadFile) {
-      this.selectedAvatar = URL.createObjectURL(file);
       this.avatarFile = file;
     }
   }
