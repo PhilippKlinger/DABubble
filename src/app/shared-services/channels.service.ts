@@ -19,6 +19,7 @@ export class ChannelsService {
   private messageChannelMap = new Map<string, Channel>();
 
   private unsubChannels;
+  private isNewChannelCreated = false;
 
   constructor(private firestore: Firestore,
     private auth: Auth,
@@ -33,28 +34,32 @@ export class ChannelsService {
         return new Channel({ ...data, id: doc.id });
       });
 
-  
+
       channels = this.filterChannelsBasedOnUserType(channels);
       this.channels$.next(channels);
-      this.findNextAvailableChannel();
+      if (!this.isNewChannelCreated) {
+        this.findNextAvailableChannel();
+      }
     });
   }
 
- 
+
   findNextAvailableChannel(): void {
     const channels = this.channels$.getValue();
     const currentUser = this.currentUserInfo$.value;
-    const firstMemberChannel = channels.find(channel => 
+    if (currentUser) {
+      const firstMemberChannel = channels.find(channel =>
         channel.members.some(member => member.id === currentUser.id)
-    );
-
-    if (firstMemberChannel) {
+      );
+      if (firstMemberChannel) {
         this.setSelectedChannel(firstMemberChannel);
         this.closeNewMessageInput();
-    } else {
+      } else {
         this.openNewMessageInput();
+      }
     }
-}
+    this.isNewChannelCreated = false;
+  }
 
   async refreshMessagesInAccessibleChannels() {
     let allMessages: Message[] = [];
@@ -71,25 +76,25 @@ export class ChannelsService {
     this.messagesInChannels$.next(allMessages);
   }
 
- 
+
   async updateUserNameInAllMessages(userId: string, newName: string, newAvatar: string) {
     const channels = this.channels$.value;
-    
+
     for (const channel of channels) {
       const messagesRef = this.getChannelsColRef(channel);
       const querySnapshot = await getDocs(messagesRef);
-  
+
       querySnapshot.forEach(async (doc) => {
         const message = doc.data() as Message;
         if (message.creatorId === userId) {
-          const updatedMessage = { ...message, creator: newName , avatar: newAvatar };
+          const updatedMessage = { ...message, creator: newName, avatar: newAvatar };
           await updateDoc(doc.ref, updatedMessage);
         }
       });
     }
-}
+  }
 
-  
+
   filterChannelsBasedOnUserType(channels: Channel[]): Channel[] {
     const currentUser = this.auth.currentUser?.uid;
     if (!currentUser) {
@@ -107,11 +112,11 @@ export class ChannelsService {
     } else {
       this.closeNewMessageInput();
     }
-    
+
     return filteredChannels;
   }
 
-  
+
   async refreshChannelsAfterEditingProfile() {
     const querySnapshot = await getDocs(this.getChannelsRef());
     const selectedChannel = this.selectedChannel$.getValue();
@@ -119,12 +124,12 @@ export class ChannelsService {
       const data = doc.data() as Channel;
       return new Channel({ ...data, id: doc.id });
     });
-  
+
     const currentUser = this.currentUserInfo$.value;
-    channels = channels.filter(channel => 
+    channels = channels.filter(channel =>
       channel.members.some(member => member.id === currentUser.id)
     );
-   
+
     this.channels$.next(channels);
     this.selectedChannel$.next(selectedChannel);
   }
@@ -137,13 +142,14 @@ export class ChannelsService {
       const docRef = await addDoc(collectionRef, channel.toJSON());
       channel.id = docRef.id;
       this.updateChannel(channel);
+      this.isNewChannelCreated = true;
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
 
-  
+
   async updateChannel(channel: Channel | null) {
     if (channel && channel.id) {
       let docRef = this.getSingleDocRef('channels', channel.id);
@@ -200,7 +206,7 @@ export class ChannelsService {
   getChannelToFindMessage(messageId: string): Channel | undefined {
     return this.messageChannelMap.get(messageId);
   }
-  
+
 
   getChannelsRef() {
     return collection(this.firestore, 'channels');
