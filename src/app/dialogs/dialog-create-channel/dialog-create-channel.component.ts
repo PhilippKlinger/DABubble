@@ -46,10 +46,10 @@ export class DialogCreateChannelComponent {
       this.channel.setTimestampNow();
       this.channel.addCreatorToMembers(this.currentUser);
       this.channelsService.createChannel(this.channel, 'channels').then(() => {
-        this.channelsService.setSelectedChannel(this.channel);
         this.dataService.new_message_open$.next(false);
         this.dataService.thread_open$.next(false);
         this.dataService.directmessage_open$.next(false);
+        this.channelsService.setSelectedChannel(this.channel);
         this.dialogRef.close();
         this.dialogService.openDialog('addChannelmembers', true);
       }).catch(error => {

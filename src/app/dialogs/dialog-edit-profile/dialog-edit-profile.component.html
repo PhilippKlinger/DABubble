@@ -5,9 +5,9 @@
             <mat-icon>close</mat-icon>
         </button>
     </div>
-    <div class="avatar">
+    <div class="avatar buttons">
         <img src="{{selectedAvatar}}">
-        <button *ngIf="!openAvatarSelection" (click)="toggleAvatarSelection()" mat-button>Avatar ändern</button>
+        <button mat-raised-button *ngIf="!openAvatarSelection" (click)="toggleAvatarSelection()">Avatar ändern</button>
     </div>
 
     <div *ngIf="openAvatarSelection" class="avatar-selection">
@@ -15,9 +15,13 @@
         <div  class="avatar-list">
             <img *ngFor="let avatar of avatarPaths" (click)="changeAvatar(avatar)" [src]="avatar">
         </div>
-       
-        <input type="file" (change)="onFileSelected($event)">
-        <span *ngIf="errorUploadFile">Bitte wählen Sie eine gültige Datei</span>
+        <div class="file-upload buttons">
+            <button matTooltip="Dateigröße darf 1.5mb nicht überschreiten!" matTooltipPosition="above" mat-raised-button color="primary" (click)="fileInput.click()">Avatar hochladen</button>
+            <input #fileInput type="file" (change)="onFileSelected($event)" 
+                   accept="image/jpeg, image/jpg, image/png" 
+                   hidden>
+          </div>
+          <span class="error" *ngIf="errorUploadFile">Bitte wählen Sie eine gültige Datei!</span>
       </div>
       
     <div *ngIf="!openAvatarSelection" class="name-input">
@@ -32,7 +36,7 @@
             <img src="../../../assets/icons/mail.svg">
             <span>E-Mail-Adresse</span>
         </div>
-        <input matTooltip="Please contact an admin to change your email!" matTooltipPosition="above"  disabled matInput placeholder="{{currentUser.email}}">
+        <input matTooltip="Email Änderung bitte bei Admin anfragen!" matTooltipPosition="above"  disabled matInput placeholder="{{currentUser.email}}">
     </div>
     <div class="buttons">
         <button *ngIf="!openAvatarSelection" mat-raised-button mat-dialog-close>Abbrechen</button>
