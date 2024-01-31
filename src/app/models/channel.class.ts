@@ -10,7 +10,7 @@ export class Channel {
         this.id = obj ? obj.id : '';
         this.name = obj ? obj.name : '';
         this.description = obj ? obj.description : '';
-        this.members = obj ? obj.members : '';
+        this.members = obj ? obj.members : [];
         this.creator = obj ? obj.creator : '';
         this.timestamp = obj ? obj.timestamp : '';
     }
@@ -23,7 +23,6 @@ export class Channel {
         this.creator = creatorName;
     }
 
-    
     addCreatorToMembers(creator: any): void {
         this.members = [creator];
     }
