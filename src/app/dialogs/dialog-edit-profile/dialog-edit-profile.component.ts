@@ -5,7 +5,7 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { UserService } from 'src/app/shared-services/user.service';
 import { Auth, updateProfile } from '@angular/fire/auth';
 import { Channel } from 'src/app/models/channel.class';
-
+import { StorageService } from 'src/app/shared-services/storage.service';
 @Component({
   selector: 'app-dialog-edit-profile',
   templateUrl: './dialog-edit-profile.component.html',
@@ -36,6 +36,7 @@ export class DialogEditProfileComponent {
     private channelService: ChannelsService,
     private userService: UserService,
     private dialogRef: MatDialogRef<DialogEditProfileComponent>,
+    private storageService: StorageService
   ) {
     this.channelService.currentUserInfo$.subscribe((currentUser) => {
       this.currentUser = currentUser;
@@ -123,10 +124,11 @@ export class DialogEditProfileComponent {
     this.errorUploadFile = !validTypes.includes(file.type) || file.size > MAX_FILE_SIZE;
   
     if (!this.errorUploadFile) {
-      this.selectedAvatar = URL.createObjectURL(file);
-      this.avatarFile = file;
-    } else {
-      // Fügen Sie hier Ihre Fehlerbehandlung hinzu
+      this.storageService.uploadFile(file).then(url => {
+        this.selectedAvatar = url;
+      }).catch(error => {
+        console.error('Fehler beim Hochladen des Bildes', error);
+      });
     }
   }
   
