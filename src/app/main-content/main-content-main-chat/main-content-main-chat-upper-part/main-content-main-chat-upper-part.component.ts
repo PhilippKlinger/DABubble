@@ -38,6 +38,7 @@ export class MainContentMainChatUpperPartComponent {
       triggerElement = this.triggerElement1;
     } else if (triggerNumber === 2 && this.triggerElement2) {
       triggerElement = this.triggerElement2;
+      this.dialogService.setDialogTriggerElementRef(triggerElement);
     } else if (triggerNumber === 3 && this.triggerElement3) {
       triggerElement = this.triggerElement3;
     }

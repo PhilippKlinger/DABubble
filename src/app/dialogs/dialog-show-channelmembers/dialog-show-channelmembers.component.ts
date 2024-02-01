@@ -35,9 +35,12 @@ export class DialogShowChannelmembersComponent {
   }
 
   openDialog(componentKey: string): void {
+    const origin = this.dialogService.getDialogTriggerElementRef();
     this.dialogService.setNeedToAddMoreMembers(true);
     this.dialogRef.close();
-    this.dialogService.openDialog(componentKey);
+    if (origin) {
+      this.dialogService.openDialog(componentKey, false , origin);
+    }
   }
 
   ngOnDestroy() {

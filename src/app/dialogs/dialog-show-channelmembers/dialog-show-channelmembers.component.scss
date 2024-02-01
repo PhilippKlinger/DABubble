@@ -2,6 +2,11 @@
 
 $Bg-color: #ECEEFE;
 
+.added-user-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
 .selected-user {
     display: flex;
     flex-direction: row;
@@ -9,11 +14,6 @@ $Bg-color: #ECEEFE;
     justify-content: space-between;
     gap: 5px;
 }
-
-.dialog-content {
-    width: 450px !important;
-}
-
 
 .side-bar-profile-picture {
     position: relative;

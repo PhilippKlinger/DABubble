@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { User } from 'src/app/models/user.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
-import { UserService } from 'src/app/shared-services/user.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Auth } from '@angular/fire/auth';
 
