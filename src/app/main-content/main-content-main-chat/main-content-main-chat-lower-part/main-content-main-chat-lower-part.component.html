@@ -3,19 +3,20 @@
 
         <div *ngIf="selectedChannel" class="channel-created-message">
             <div class="channel-created-message-header">
-                <mat-icon>tag</mat-icon>
-                <h1>{{ selectedChannel.name }}</h1>
+
+                <h1><mat-icon>tag</mat-icon> {{ selectedChannel.name }}</h1>
             </div>
             <div>
                 <span>
-                    {{ checkChannelCreator() }} diesen Channel {{ checkChannelCreationTime() }} erstellt. Das ist der
-                    Anfang des Channels
+                    <div>{{ checkChannelCreator() }} diesen Channel {{ checkChannelCreationTime() }} erstellt.</div>
+                    <div>Das ist der Anfang des Channels
+                        <h2>
+                            <mat-icon class="tag">tag</mat-icon>
+                            <span>{{ selectedChannel.name }}</span>
+                            .
+                        </h2>
+                    </div>
                 </span>
-                <h2>
-                    <mat-icon class="tag">tag</mat-icon>
-                    {{ selectedChannel.name }}
-                    <span>.</span>
-                </h2>
             </div>
         </div>
 
@@ -40,11 +41,12 @@
                         <h3>{{ message.creator }}</h3>
                     </div>
 
-                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)" class="speech-bubble-user">
+                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)"
+                        class="speech-bubble-user">
                         {{ message.message }}
                     </div>
 
-                    <div *ngIf="message.img">                        
+                    <div *ngIf="message.img">
                         <button mat-raised-button (click)="this.commonService.downloadImage(message.img)">
                             <mat-icon>file_download</mat-icon> Download
                         </button>
@@ -64,15 +66,15 @@
                             <div>{{ reactions.reaction }}</div>
                             <span>{{ reactions.amount }}</span>
                         </div>
-                        <mat-icon>add_reaction</mat-icon>
+                        <mat-icon class="material-icons-outlined">add_reaction</mat-icon>
                     </div>
                 </div>
 
                 <div class="user-message-hover-options">
                     <div>✔</div>
                     <div>🤚</div>
-                    <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
-                    <mat-icon (click)="openThread()">insert_comment</mat-icon>
+                    <mat-icon (click)="toggleEmojiWindowForMessage(i)" class="material-icons-outlined">add_reaction</mat-icon>
+                    <mat-icon (click)="openThread()" class="material-icons-outlined">insert_comment</mat-icon>
                     <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                     <span *ngIf="hoverOptionEditMessage_open">
                         <h1 class="hover-options-edit-message" (click)="editMessage(message.message)">
@@ -109,8 +111,8 @@
                 <div class="anon-message-hover-options">
                     <div>✔</div>
                     <div>🤚</div>
-                    <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
-                    <mat-icon (click)="openThread();">insert_comment</mat-icon>
+                    <mat-icon (click)="toggleEmojiWindowForMessage(i)" class="material-icons-outlined">add_reaction</mat-icon>
+                    <mat-icon (click)="openThread();" class="material-icons-outlined">insert_comment</mat-icon>
                 </div>
             </div>
         </div>

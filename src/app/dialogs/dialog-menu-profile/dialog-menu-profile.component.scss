@@ -14,4 +14,9 @@
         font-weight: 600;
         line-height: normal;
     }
+
+    span {
+        font-size: clamp(24px, 4vw ,32px) !important;
+    }
 }
+

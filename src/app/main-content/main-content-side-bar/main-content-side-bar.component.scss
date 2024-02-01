@@ -139,12 +139,103 @@ section {
     }
 }
 
+.side-bar-profile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: scroll;
+    height: auto;
+    max-height: 36vh;
+
+    @media (min-height: 400px) {
+        max-height: 10vh;
+    }
+
+    @media (min-height: 800px) {
+        max-height: 22.5vh;
+    }
+
+    @media (min-height: 900px) {
+        max-height: 26vh;
+    }
+
+    @media (min-height: 1000px) {
+        max-height: 27.5vh;
+    }
+
+    @media (min-height: 1100px) {
+        max-height: 29vh;
+    }
+
+    @media (min-height: 1200px) {
+        max-height: 31vh;
+    }
+
+    @media (min-height: 1300px) {
+        max-height: 32vh;
+    }
+
+    @media (min-height: 1400px) {
+        hemax-heightimax-heightght: 33.5vh;
+    }
+
+    @media (min-height: 1500px) {
+        max-height: 35vh;
+    }
+
+    @media (min-height: 1600px) {
+        max-height: 36vh;
+    }
+
+}
+
 .side-bar-channels-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
     overflow-y: scroll;
-    height: 25vh;
+    height: auto;
+    max-height: 36vh;
+
+    @media (min-height: 400px) {
+        max-height: 10vh;
+    }
+
+    @media (min-height: 800px) {
+        max-height: 22.5vh;
+    }
+
+    @media (min-height: 900px) {
+        max-height: 26vh;
+    }
+
+    @media (min-height: 1000px) {
+        max-height: 27.5vh;
+    }
+
+    @media (min-height: 1100px) {
+        max-height: 29vh;
+    }
+
+    @media (min-height: 1200px) {
+        max-height: 31vh;
+    }
+
+    @media (min-height: 1300px) {
+        max-height: 32vh;
+    }
+
+    @media (min-height: 1400px) {
+        max-height: 33.5vh;
+    }
+
+    @media (min-height: 1500px) {
+        max-height: 35vh;
+    }
+
+    @media (min-height: 1600px) {
+        max-height: 36vh;
+    }
 
     div {
         display: flex;
@@ -183,20 +274,13 @@ section {
     font-size: 18px;
     font-weight: 400;
     margin-left: 40px;
+    margin-top: 20px;
 
     &:hover {
         mat-icon {
             scale: 1.1;
         }
     }
-}
-
-.side-bar-profile-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    overflow-y: scroll;
-    height: 25vh;
 }
 
 .side-bar-profile {
@@ -258,6 +342,6 @@ section {
 
 li {
     list-style-type: none;
-    padding: 0; 
-    margin: 0; 
-  }
+    padding: 0;
+    margin: 0;
+}

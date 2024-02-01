@@ -7,7 +7,9 @@
             </div>
             <span>Code learning</span>
         </div>
-        <mat-icon class="side-bar-edit" (click)="openNewMessageInput()">edit_square</mat-icon>
+        <div class="side-bar-edit">
+            <img (click)="openNewMessageInput()" src="../../../assets/img/edit_square.png">
+        </div>
     </header>
 
     <main>
@@ -16,7 +18,7 @@
                 <div class="side-bar-hover" (click)="toggleChannels()">
                     <mat-icon>{{ channel_icon }}</mat-icon>
                     <span>
-                        <mat-icon>workspaces</mat-icon>
+                        <mat-icon class="material-icons-outlined">workspaces</mat-icon>
                         <span>Channels</span>
                     </span>
                 </div>
@@ -33,10 +35,11 @@
                             <span>{{ channel.name }}</span>
                         </div>
                     </li>
-                    <div class="side-bar-channel-add side-bar-hover" (click)="openDialog('createChannel')">
-                        <mat-icon>add_circle</mat-icon>
-                        <span>Channel hinzufügen</span>
-                    </div>
+                </div>
+
+                <div class="side-bar-channel-add side-bar-hover" (click)="openDialog('createChannel')">
+                    <mat-icon>add_circle_outline</mat-icon>
+                    <span>Channel hinzufügen</span>
                 </div>
             </div>
         </div>
@@ -46,7 +49,7 @@
                 <div class="side-bar-hover" (click)="toggleDM()">
                     <mat-icon>{{ directmessage_icon }}</mat-icon>
                     <span>
-                        <mat-icon>account_circle</mat-icon>
+                        <mat-icon class="material-icons-outlined">account_circle</mat-icon>
                         <span>Direktnachrichten</span>
                     </span>
                 </div>
