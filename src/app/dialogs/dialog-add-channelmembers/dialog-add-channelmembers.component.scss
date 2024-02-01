@@ -65,3 +65,8 @@ $Bg-color: #ECEEFE;
 .button {
     justify-content: flex-end !important;
 }
+
+.added-user-list {
+    max-height: 200px;
+    overflow-y: auto;
+}

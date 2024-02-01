@@ -71,6 +71,33 @@ body {
   }
 }
 
+.dialog-create-channel-repsonsive {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    width: min(872px, 100%) !important;  
+  }
+}
+
+@media (max-width: 500px ) {
+  .cdk-overlay-pane {
+    max-width: 100% !important;
+  }
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 0 !important;
+  }
+
+  .cdk-global-overlay-wrapper {
+    justify-content: unset !important;
+    align-items: unset !important;
+  }
+
+  .mat-mdc-radio-group {
+    gap: 10px;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+
 h1,
 h2,
 h3,
@@ -175,3 +202,7 @@ mark {
 
 
 }
+
+
+
+  

@@ -38,6 +38,10 @@ export class OpenDialogService {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = disableClose;
 
+      if (componentKey === 'createChannel') {
+        dialogConfig.panelClass = 'dialog-create-channel-repsonsive';
+      }
+
       if (componentKey === 'editChannel' && origin) {
         dialogConfig.panelClass = 'dialog-edit-channel-no-radius';
         const rect = origin.nativeElement.getBoundingClientRect();

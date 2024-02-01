@@ -40,8 +40,15 @@ export class DialogCreateChannelComponent {
     });
   }
 
+  activateCreateChannel(): boolean {
+    return !this.isChannelNameTaken && this.channel.name.trim() !== '';
+
+  }
+
+
   createChannel(): void {
-    if (!this.isChannelNameTaken) {
+    if (this.activateCreateChannel()) {
+
       this.channel.setCreator(this.currentUser.name);
       this.channel.setTimestampNow();
       this.channel.addCreatorToMembers(this.currentUser);

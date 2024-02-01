@@ -1,5 +1,5 @@
 .dialog-content {
-    width: 872px !important;
+    width: min(872px, 100%) !important;
     gap: 30px !important;
 }
 

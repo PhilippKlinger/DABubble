@@ -21,7 +21,7 @@
         <input [(ngModel)]="channel.description" matInput placeholder="Dein Text hier">
     </div>
     <div class="button">
-        <button mat-raised-button color="primary" (click)="createChannel()" [disabled]="isChannelNameTaken">
+        <button mat-raised-button color="primary" (click)="createChannel()" [disabled]="!activateCreateChannel()">
             {{ isChannelNameTaken ? 'Channel-Name vergeben' : 'Erstellen' }}
           </button>
     </div>
