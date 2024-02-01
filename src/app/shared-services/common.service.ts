@@ -82,5 +82,13 @@ export class CommonService {
     return null;
   }
 
+  checkFileSize(input: any) {
+    const file = input.files[0];
+    const fileType = file.type;
+    const MAX_FILE_SIZE = 5242880;
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    return validTypes.includes(fileType) && file.size < MAX_FILE_SIZE;
+  }
+
  
 }

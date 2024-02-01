@@ -25,6 +25,7 @@ export class MainContentThreadChatLowerPartComponent {
   emoji_window_messages_open: boolean = false;
   user: User = null!;
   uploadedFileLinkThread: string | null = null;
+  errorUploadFileThread: boolean = false;
 
 
   constructor(private channelService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService) {
@@ -123,7 +124,11 @@ export class MainContentThreadChatLowerPartComponent {
   }
 
   async handleFileInputThread(event: any) {
-    this.uploadedFileLinkThread = await this.commonService.handleFileInput(event);
+    const input = event.target as HTMLInputElement;
+    this.errorUploadFileThread = !this.commonService.checkFileSize(input);
+    if (!this.errorUploadFileThread) {
+      this.uploadedFileLinkThread = await this.commonService.handleFileInput(event);
+    }    
   }
 
   removeUploadedFileThread() {

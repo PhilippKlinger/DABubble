@@ -32,6 +32,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
   textAreaContent!: string;
   hoverOptionEditMessage_open: boolean = false;
   uploadedFileLinkDirect: string | null = null;
+  errorUploadFileDirect: boolean = false;
 
   constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
     this.messagesService.dm_user$.subscribe((dm_user) => {
@@ -286,7 +287,11 @@ export class MainContentDirectmessageChatLowerPartComponent {
   }
 
   async handleFileInputDirect(event: any) {
-    this.uploadedFileLinkDirect = await this.commonService.handleFileInput(event);
+    const input = event.target as HTMLInputElement;
+    this.errorUploadFileDirect = !this.commonService.checkFileSize(input);
+    if (!this.errorUploadFileDirect) {
+      this.uploadedFileLinkDirect = await this.commonService.handleFileInput(event);
+    }       
   }
 
   removeUploadedFileDirect() {

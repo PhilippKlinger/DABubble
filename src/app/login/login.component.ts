@@ -236,12 +236,10 @@ export class LoginComponent {
     if (!input.files) {
       return;
     }
-    const file = input.files[0];
-    const fileType = file.type;
-    const MAX_FILE_SIZE = 5242880;
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    this.errorUploadFile = !validTypes.includes(fileType) || file.size > MAX_FILE_SIZE;
+    this.errorUploadFile = !this.commonService.checkFileSize(input);
     if (!this.errorUploadFile) {
+      const file = input.files[0];
+      this.selectedAvatar = URL.createObjectURL(file);
       this.avatarFile = file;
     }
   }

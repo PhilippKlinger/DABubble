@@ -37,6 +37,7 @@ export class MainContentMainChatLowerPartComponent {
   textAreaContent!: string;
   editedText!: string;
   uploadedFileLink: string | null = null;
+  errorUploadFile: boolean = false;
   
 
   constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
@@ -342,7 +343,11 @@ export class MainContentMainChatLowerPartComponent {
   } 
 
   async handleFileInput(event: any) {
-    this.uploadedFileLink = await this.commonService.handleFileInput(event);
+    const input = event.target as HTMLInputElement;
+    this.errorUploadFile = !this.commonService.checkFileSize(input);
+    if (!this.errorUploadFile) {
+      this.uploadedFileLink = await this.commonService.handleFileInput(event);
+    }    
   }
 
   removeUploadedFile() {

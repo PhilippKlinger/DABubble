@@ -105,7 +105,7 @@
 </div>
 
 <div class="chat-input">
-    <textarea *ngIf="!uploadedFileLinkDirect" (keyup.enter)="sendMessageToUser()" #message class="chat-input-design"
+    <textarea *ngIf="!uploadedFileLinkDirect && !errorUploadFileDirect" (keyup.enter)="sendMessageToUser()" #message class="chat-input-design"
         placeholder="Nachricht an {{ dm_user?.name }} "></textarea>
     <!-- Test for File upload -->
     <div *ngIf="uploadedFileLinkDirect" class="submit-buttons d-flex-standard">
@@ -114,11 +114,14 @@
         </button>
         <button class="btn-guest" mat-button (click)="removeUploadedFileDirect()">Entfernen</button>
     </div>
+    <div *ngIf="errorUploadFileDirect">
+        <p class="error-txt">Bitte wählen Sie eine Datei unter 5 MB und im jpg/jpeg/pdf/png-Format.</p>
+    </div>
     <div class="chat-input-lower-position">
         <div class="chat-input-options">
             <div>
                 <!-- Test for File upload -->
-                <input #fileInputDirect id="fileInput-direct" (change)="handleFileInputDirect($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />
+                <input #fileInputDirect id="fileInput-direct" (change)="handleFileInputDirect($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png,.pdf" />
                 <mat-icon (click)="this.commonService.triggerFileInput('fileInput-direct')">add</mat-icon>
             </div>
 

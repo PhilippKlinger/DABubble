@@ -114,7 +114,7 @@
           <img (click)="changeToSignupAndUncheck()" class="arrow-back cursor-pointer" src="assets/icons/arrow_back.svg" alt="">
           <h1>Wähle deinen Avatar</h1>
           <img class="selectedAvatar" [src]="selectedAvatar" alt="">
-          <span [class.show]="errorUploadFile" class="error-txt">Bitte wählen Sie eine Datei unter 5 MB und im jpg/jpeg/png-Format.</span>             
+          <span [class.show]="errorUploadFile" class="error-txt">Bitte wählen Sie eine Datei unter 5 MB und im jpg/jpeg/pdf/png-Format.</span>             
           <h2 class="mt-32">{{ user.name }}</h2>
           <p>Aus der Liste wählen</p>
           <div class="avatar-img-container">
@@ -123,7 +123,7 @@
           <div class="d-flex-standard mt-32 own-img-container">
             <p>eigenes Bild verwenden</p>
             <div class="submit-buttons btn-end">  
-              <input id="fileInput" class="d-none" type="file" (change)="onFileSelected($event)" accept=".jpg,.jpeg,.png" />            
+              <input id="fileInput" class="d-none" type="file" (change)="onFileSelected($event)" accept=".jpg,.jpeg,.png,.pdf" />            
               <button class="btn-guest" mat-button (click)="this.commonService.triggerFileInput('fileInput')">
                   Datei hochladen
               </button>

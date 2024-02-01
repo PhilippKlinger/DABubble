@@ -104,6 +104,10 @@ textarea {
   display: none !important;
 }
 
+.error-txt {
+  color: $Rosa-error;
+}
+
 
 @mixin dFlex($jc: center, $ai: center, $g: 0px, $fd: row) {
   display: flex;
