@@ -1,5 +1,5 @@
 <section>
-    <input type="text" placeholder="Code learning durchsuchen" [(ngModel)]="searchQuery"
+    <input type="text" [placeholder]="placeholder" [(ngModel)]="searchQuery"
         (input)="onSearchChange($event)" [matAutocomplete]="auto">
     <mat-icon fontIcon="search" class="search-icon"></mat-icon>
 

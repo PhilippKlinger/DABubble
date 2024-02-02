@@ -52,9 +52,9 @@
 
 
     <div class="button">
-        <button *ngIf="!needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!selectedOption"
-            (click)="addChannelMembers()">Hinzufügen</button>
-        <button *ngIf="needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!areUsersAvailable"
+        <button *ngIf="!needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!selectedOption || (selectedOption === 'specificMembers' && selectedUsers.length == 0)"
+            (click)="addChannelMembers()">{{ selectedOption === 'noMembers' ? 'Weiter' : 'Hinzufügen' }}</button>
+        <button *ngIf="needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!addLastUser || selectedUsers.length == 0"
             (click)="addChannelMembers()">Hinzufügen</button>
     </div>
 </div>

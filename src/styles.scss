@@ -71,6 +71,12 @@ body {
   }
 }
 
+.dialog-show-channelmembers-responsive {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    width: 415px !important;  
+  }
+}
+
 .dialog-add-channelmembers-no-radius {
   .mat-mdc-dialog-container .mdc-dialog__surface {
     border-top-right-radius: 0 !important;
@@ -86,13 +92,7 @@ body {
 
 .dialog-show-profile-responsive {
   .mat-mdc-dialog-container .mdc-dialog__surface {
-    width: 500px;
-  }
-}
-
-.dialog-show-channelmembers-responsive {
-  .mat-mdc-dialog-container .mdc-dialog__surface {
-    width: 415px !important;  
+    width: 500px !important;
   }
 }
 
@@ -111,13 +111,21 @@ body {
   }
 }
 
+// show channelmembers unter 650px muss gleiche breite wie vorher haben und dann unter 500px auf ganzen bildschirm
 
-@media (max-width: 500px ) {
+
+@media (max-width: 651px ) {
   .cdk-overlay-pane {
     max-width: 100% !important;
+    width: 100% !important;
   }
   .mat-mdc-dialog-container .mdc-dialog__surface {
     border-radius: 0 !important;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
   }
 
   .cdk-global-overlay-wrapper {

@@ -1,16 +1,16 @@
 <section>
     <main (click)="toggleProfilemenu()">
-        <span>{{ this.currentUserInfo.name }}</span>
+        <span class="mobile-dnone">{{ this.currentUserInfo.name }}</span>
         <div class="profile-selector-avatar">
             <img src="{{this.currentUserInfo.avatar}}">
-            <div *ngIf="this.currentUserInfo.onlineStatus" class="online"></div>
-            <div *ngIf="!this.currentUserInfo.onlineStatus" class="offline"></div>
+            <div *ngIf="this.currentUserInfo.onlineStatus" class="online mobile-dnone"></div>
+            <div *ngIf="!this.currentUserInfo.onlineStatus" class="offline mobile-dnone"></div>
         </div>
 
-        <mat-icon>keyboard_arrow_down</mat-icon>
+        <mat-icon class="mobile-dnone">keyboard_arrow_down</mat-icon>
         <div class="profile-selector-window" [ngClass]="{'d-none': !profilemenu_open}" (click)="toggleProfilemenu()">
-            <span (click)="openDialog('menuProfile')">Profil</span>
-            <div (click)="logout()">Log out</div>
+            <span class="center-10gap" (click)="openDialog('menuProfile')"><mat-icon *ngIf="mobile" class="material-icons-outlined">account_circle</mat-icon>Profil</span>
+            <div class="center-10gap" (click)="logout()"><mat-icon *ngIf="mobile" class="material-icons-outlined">logout</mat-icon>Log out</div>
         </div>
     </main>
     <div class="overlay" [ngClass]="{'d-none': !profilemenu_open}" (click)="toggleProfilemenu()"></div>

@@ -15,7 +15,6 @@ import { Subject, takeUntil } from 'rxjs';
     '../dialog-edit-profile/dialog-edit-profile.component.scss']
 })
 export class DialogAddChannelmembersComponent {
-  selection = ['Alle Mitglieder von OfficeTeam hinzufügen', 'Bestimmte Leute hinzufügen'];
   selectedOption: 'allMembers' | 'specificMembers' | 'noMembers' | null = null;
   specificMemberInput: string = '';
 
@@ -23,6 +22,7 @@ export class DialogAddChannelmembersComponent {
   selectedUsers: User[] = [];
 
   needToAddMoreMembers: boolean = false;
+  addLastUser:boolean = false;
   areUsersAvailable: boolean = true;
   channel: Channel | null = null;
   users: User[] = [];
@@ -57,7 +57,10 @@ export class DialogAddChannelmembersComponent {
     const selectedUserCount = this.selectedUsers.length;
   
     // Verfügbarkeit basiert auf dem Vergleich der Anzahlen
-    this.areUsersAvailable = (currentMemberCount + selectedUserCount) < totalUserCount;
+    this.areUsersAvailable = ((currentMemberCount + selectedUserCount) < totalUserCount);
+
+    this.addLastUser = (currentMemberCount < totalUserCount);
+
   }
   
   
