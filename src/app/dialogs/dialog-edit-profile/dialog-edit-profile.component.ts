@@ -119,7 +119,7 @@ export class DialogEditProfileComponent {
     if (!input.files) return;
     const file = input.files[0];
     const MAX_FILE_SIZE = 1572864; 
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];   //commonService
     
     this.errorUploadFile = !validTypes.includes(file.type) || file.size > MAX_FILE_SIZE;
   

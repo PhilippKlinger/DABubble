@@ -6,6 +6,7 @@ import { Message } from '../models/message.class';
 import { formatDate } from '@angular/common';
 import { ChannelsService } from './channels.service';
 import { DMInfo } from '../models/DMInfo.class';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +15,14 @@ import { DMInfo } from '../models/DMInfo.class';
 export class UserService {
   public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   public selectedUserforProfileView$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  public loggedInUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+
 
   private unsubUsers;
 
-  constructor(private firestore: Firestore, private channelsService: ChannelsService) {
+  constructor(private firestore: Firestore, private auth:Auth, private channelsService: ChannelsService) {
     this.unsubUsers = this.subUsersList();
+    this.monitorAuthState();
   }
 
   async createUser(user: User, colId: "users"): Promise<void> {
@@ -102,5 +106,26 @@ export class UserService {
       console.error('Fehler beim Abrufen der Benutzerinformationen:', error);
       throw error;
     }
+  }
+
+
+  monitorAuthState() {
+    onAuthStateChanged(this.auth, (firebaseUser) => {
+      if (firebaseUser) {
+        // Benutzer ist eingeloggt
+        this.getUserInfos(firebaseUser.uid).then((userInfo) => {
+          if (userInfo) {
+            const user = new User(userInfo);
+            this.loggedInUser$.next(user);
+          } else {
+            // Fallback oder Gastbenutzer-Logik hier
+            console.log('Keine Benutzerdaten gefunden');
+          }
+        }).catch((error) => console.error(error));
+      } else {
+        // Benutzer ist abgemeldet oder es gibt keinen Benutzer
+        this.loggedInUser$.next(null);
+      }
+    });
   }
 }
