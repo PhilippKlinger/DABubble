@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../shared-services/authentication.service';
 import { User } from '../models/user.class';
 import { UserService } from '../shared-services/user.service';
@@ -10,14 +10,14 @@ import { UserCredential } from 'firebase/auth';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   user: User = new User();
   isCheckboxChecked: boolean = false;
   selectedAvatar = 'assets/avatars/avatar_0.svg';
   selectedAvatarIndex: number = -1;
   avatarFile: File | null = null;
   errorUploadFile: boolean = false;
-
+  hideAfterAnimation: boolean =false;
   avatarPaths = [
     'assets/avatars/avatar_1.svg',
     'assets/avatars/avatar_2.svg',
@@ -36,6 +36,13 @@ export class LoginComponent {
     private storageService: StorageService,
     public commonService: CommonService,
     ) { this.currentUserCredential = null; }
+
+  
+  ngOnInit() {
+    setTimeout(() => {
+      this.hideAfterAnimation = true;
+    }, 4000);
+  }
 
   async login() {
     const userExists = await this.checkUserExists();
