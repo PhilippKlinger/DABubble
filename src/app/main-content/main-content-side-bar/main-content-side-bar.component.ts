@@ -17,11 +17,16 @@ export class MainContentSideBarComponent {
   channels_opened: boolean = true;
   directmessage_icon: string = 'arrow_drop_down';
   directmessages_opened: boolean = true;
+
   mobile: boolean = false;
+  guestIsLoggedIn: boolean = false;
+  guestId: string = 'kMsZHupMksQU5xS5goyZboGicFy2';
+
 
   channels: Channel[] = [];
   currentUser!: User;
   users: any[] = [];
+  loggedInUser!: User | null;
   private destroyed$ = new Subject<void>();
 
   constructor(private dialogService: OpenDialogService,
@@ -45,6 +50,14 @@ export class MainContentSideBarComponent {
     this.dataService.mobile$.subscribe((value: boolean) => {
       this.mobile = value;
     });
+
+    this.userService.loggedInUser$.pipe(takeUntil(this.destroyed$)).subscribe((loggedInUser) => {
+      this.loggedInUser = loggedInUser;
+    });
+  }
+
+  checkGuestLogIn(): boolean {
+    return this.loggedInUser?.id !== this.guestId;
 
   }
 

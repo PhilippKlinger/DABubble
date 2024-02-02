@@ -22,10 +22,9 @@
         </mat-radio-group>
     </div>
 
-    <div [matTooltipDisabled]="areUsersAvailable" matTooltip="Es sind bereits alle Mitglieder hinzugefügt!"
-        matTooltipPosition="above" class="name-input"
+    <div class="name-input"
         *ngIf="selectedOption === 'specificMembers' || needToAddMoreMembers">
-        <input [(ngModel)]="specificMemberInput" matInput placeholder="Name eingeben" [matAutocomplete]="auto"
+        <input [(ngModel)]="specificMemberInput" matInput placeholder="{{areUsersAvailable ? 'Name eingeben' : 'Es sind bereits alle Mitglieder hinzugefügt!'}}"  [matAutocomplete]="auto"
             (input)="onInput()"  [disabled]="!areUsersAvailable" />
         <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let user of filteredUsers" [value]="user" (click)="selectUser(user)">
@@ -55,7 +54,7 @@
     <div class="button">
         <button *ngIf="!needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!selectedOption"
             (click)="addChannelMembers()">Hinzufügen</button>
-        <button *ngIf="needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!selectedUsers.length"
+        <button *ngIf="needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!areUsersAvailable"
             (click)="addChannelMembers()">Hinzufügen</button>
     </div>
 </div>
