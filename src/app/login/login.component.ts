@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit{
     }
   }
 
-  async setUserOnline(userCredential: any) {
+  async setUserOnline(userCredential: UserCredential) {
     let userId = userCredential.user.uid;
     await this.userService.setUserOnlineStatus(userId, true);
     let userInfo = await this.userService.getUserInfos(userId);
@@ -101,9 +101,9 @@ export class LoginComponent implements OnInit{
   async loginGoogle() {
     try {
       let result = await this.authService.loginWithGoogle();
-      let googleUser = result.user;
-      if (googleUser.email && googleUser.displayName) {
-        this.checkGooleUserExistsAndCreate(googleUser);
+      let {email, displayName, uid} = result.user;
+      if (email && displayName) {
+        this.checkGooleUserExistsAndCreate(email, displayName, uid);
         await this.setUserOnline(result);
         this.commonService.showPopup('login');
         this.commonService.routeTo('main-content', 2000);
@@ -115,20 +115,20 @@ export class LoginComponent implements OnInit{
     }
   }
 
-  async checkGooleUserExistsAndCreate(googleUser: any) {
-    let userExists = await this.userService.userExistsByEmail(googleUser.email);
+  async checkGooleUserExistsAndCreate(email: string, displayName: string, uid: string) {
+    let userExists = await this.userService.userExistsByEmail(email);
     if (!userExists) {
-      this.createNewGoogleUser(googleUser);
+      this.createNewGoogleUser(email, displayName, uid);
     }
   }
 
-  async createNewGoogleUser(googleUser: any) {
+  async createNewGoogleUser(email: string, displayName: string, uid: string) {
     let newUser: User = new User({
-      email: googleUser.email,
-      name: googleUser.displayName,
+      email: email,
+      name: displayName,
       avatar: 'assets/avatars/google.svg',
       onlineStatus: true,
-      id: googleUser.uid
+      id: uid
     });
     await this.userService.createUser(newUser, 'users');
   }
@@ -174,7 +174,7 @@ export class LoginComponent implements OnInit{
     }
   }
 
-  createNormalUser(userCredential: any) {
+  createNormalUser(userCredential: UserCredential) {
     this.user.id = userCredential.user.uid;
     this.user.onlineStatus = false;
     this.user.avatar = this.selectedAvatar;

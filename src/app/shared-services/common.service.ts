@@ -68,9 +68,10 @@ export class CommonService {
     link.click();
   }
 
-  async handleFileInput(event: any): Promise<string | null> {
-    const file = event.target.files[0];
-    if (file) {
+  async handleFileInput(event: Event): Promise<string | null> {
+    const fileInput = event.target as HTMLInputElement | null;
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
       try {
         const uploadedUrl = await this.storageService.uploadFile(file);
         return uploadedUrl;
@@ -81,13 +82,18 @@ export class CommonService {
     }
     return null;
   }
+  
 
-  checkFileSize(input: any) {
-    const file = input.files[0];
-    const fileType = file.type;
-    const MAX_FILE_SIZE = 5242880;
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
-    return validTypes.includes(fileType) && file.size < MAX_FILE_SIZE;
+  checkFileSize(input: HTMLInputElement) {
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const fileType = file.type;
+      const MAX_FILE_SIZE = 5242880;
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+      return validTypes.includes(fileType) && file.size < MAX_FILE_SIZE;
+    } else {
+      return false;
+    }
   }
 
  
