@@ -1,5 +1,5 @@
 <section>
-    <header>
+    <header *ngIf="!mobile">
         <div>
             <div class="side-bar-img">
                 <img src="../../../assets/img/code-learning-bg.png">
@@ -11,6 +11,8 @@
             <img (click)="openNewMessageInput()" src="../../../assets/img/edit_square.png">
         </div>
     </header>
+
+    <app-main-content-searchbar *ngIf="mobile"></app-main-content-searchbar>
 
     <main>
         <div class="side-bar-channels">

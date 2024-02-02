@@ -14,6 +14,7 @@ import { DataService } from 'src/app/shared-services/data.service';
 })
 export class MainContentSearchbarComponent {
 
+  placeholder: string = 'Code learning durchsuchen'
   searchQuery: string = '';
   foundChannels: Channel[] = [];
   foundUsers: User[] = [];
@@ -23,18 +24,26 @@ export class MainContentSearchbarComponent {
     private channelsService: ChannelsService,
     private userService: UserService,
     private dialogService: OpenDialogService,
-    private dataService: DataService) { }
-
-    onSearchChange(event: Event): void {
-      const inputElement = event.target as HTMLInputElement;
-      this.searchQuery = inputElement.value;
-      if (this.searchQuery) {
-        this.channelsService.refreshMessagesInAccessibleChannels();
-        this.searchChannelsAndUsers();
+    private dataService: DataService) {
+    dataService.mobile$.subscribe((value: boolean) => {
+      if (value) {
+        this.placeholder = 'Gehe zu...'
       } else {
-        this.clearSearchResults();
+        this.placeholder = 'Code learning durchsuchen'
       }
+    })
+  }
+
+  onSearchChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchQuery = inputElement.value;
+    if (this.searchQuery) {
+      this.channelsService.refreshMessagesInAccessibleChannels();
+      this.searchChannelsAndUsers();
+    } else {
+      this.clearSearchResults();
     }
+  }
 
   searchChannelsAndUsers() {
     if (!this.searchQuery) {
@@ -75,7 +84,7 @@ export class MainContentSearchbarComponent {
   }
 
   openChannelOrMessage(item: Channel | Message): void {
-   
+
     if (item instanceof Channel && this.channelsService.isCurrentUserChannelMember(item)) {
       let counter = 0;
       const intervalId = setInterval(() => {
@@ -119,6 +128,6 @@ export class MainContentSearchbarComponent {
     const re = new RegExp(searchQuery, 'gi');
     return text.replace(re, match => `<mark>${match}</mark>`);
   }
-  
+
 
 }

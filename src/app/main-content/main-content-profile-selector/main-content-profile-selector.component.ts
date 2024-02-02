@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from 'src/app/shared-services/user.service';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { User } from 'src/app/models/user.class';
+import { DataService } from 'src/app/shared-services/data.service';
 
 @Component({
   selector: 'app-main-content-profile-selector',
@@ -14,10 +15,15 @@ import { User } from 'src/app/models/user.class';
 export class MainContentProfileSelectorComponent {
   profilemenu_open: boolean = false;
   currentUserInfo!: User;
+  mobile: boolean = false;
 
-  constructor(private dialogService: OpenDialogService, private authService: AuthService, private router: Router, private userService: UserService, private channelService: ChannelsService) {
+  constructor(private dataService: DataService, private dialogService: OpenDialogService, private authService: AuthService, private router: Router, private userService: UserService, private channelService: ChannelsService) {
     this.channelService.currentUserInfo$.subscribe(user => {
       this.currentUserInfo = user;
+    });
+
+    this.dataService.mobile$.subscribe((value: boolean) => {
+      this.mobile = value;
     });
   }
 
