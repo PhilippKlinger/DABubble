@@ -13,9 +13,14 @@ import { AuthService } from '../shared-services/authentication.service';
 export class MainContentComponent implements OnInit {
   @ViewChild('grid') grid: any;
   workspace_open: boolean = true;
+  workspace_header_open: boolean = false;
   thread_open!: boolean;
   directmessage_open: boolean = false;
   new_message_open: boolean = false;
+  mobile: boolean = false;
+  mainchat_mobile_open: boolean = false;
+  threadchat_mobile_open: boolean = false;
+  btnMobile: boolean = false;
   private userActivityTimeout: number = 15 * 60 * 1000; // 15 Minuten in Millisekunden
   private userActivityTimer: any;
 
@@ -35,15 +40,48 @@ export class MainContentComponent implements OnInit {
     this.dataService.new_message_open$.subscribe((value: boolean) => {
       this.new_message_open = value;
     });
-   }
+
+    this.dataService.mobile$.subscribe((value: boolean) => {
+      this.mobile = value;
+      if (value) {
+        this.btnMobile = true
+      }
+    });
+
+    this.dataService.workspace_header_open$.subscribe((value: boolean) => {
+      this.workspace_header_open = value;
+      if (!value) {
+        this.workspace_open = true;
+        this.btnMobile = true;
+      } else {
+        this.workspace_open = false;
+        this.btnMobile = false;
+      }
+    });
+
+    this.dataService.mainchat_mobile_open$.subscribe((value: boolean) => {
+      this.mainchat_mobile_open = value;
+    });
+
+    this.dataService.threadchat_mobile_open$.subscribe((value: boolean) => {
+      this.threadchat_mobile_open = value;
+    });
+  }
 
   ngOnInit(): void {
-    
-
     this.setCurrentUser();
     this.channelService.subChannelsList();
-    this.channelService.findNextAvailableChannel();
+    if (!this.mobile) {
+      this.channelService.findNextAvailableChannel();
+    }
     this.startUserActivityTimer(); // Starten Sie den Timer beim Initialisieren der Komponente
+  }
+
+  openNewMessageInputMobile() {
+    this.dataService.new_message_open$.next(true);
+    this.dataService.thread_open$.next(false);
+    this.dataService.directmessage_open$.next(false);
+    this.dataService.workspace_header_open$.next(true);
   }
 
   setCurrentUser() {
@@ -60,7 +98,7 @@ export class MainContentComponent implements OnInit {
   }
 
   updateThreadBoolean() {
-    this.thread_open = this.dataService.getBooleanValue();
+    this.thread_open = this.dataService.thread_open$.value;
     this.resetUserActivityTimer();
   }
 

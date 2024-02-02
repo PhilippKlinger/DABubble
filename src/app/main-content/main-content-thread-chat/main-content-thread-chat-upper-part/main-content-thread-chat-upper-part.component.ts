@@ -12,16 +12,22 @@ import { DataService } from 'src/app/shared-services/data.service';
 export class MainContentThreadChatUpperPartComponent {
   selectedChannel!: Channel | null;
   unsubChannels!: Subscription;
+  mobile: boolean = false;
 
   constructor(private dataService: DataService, private ChannelsService: ChannelsService) {
     this.unsubChannels = this.ChannelsService.selectedChannel$.subscribe(selectedChannel => {
       this.selectedChannel = selectedChannel;
-      // console.log(this.selectedChannel)
     });
+
+    this.dataService.mobile$.subscribe((value) => {
+      this.mobile = value;
+    })
   }
 
   closeThreadChat() {
-    //boolean wert wird in der data.service.ts geändert und bei veränderung wird eine funktion in main-content ausgelöst
-    this.dataService.setBooleanValue(false);
+    this.dataService.thread_open$.next(false);
+    if (this.mobile) {
+      this.dataService.threadchat_mobile_open$.next(false);
+    }
   }
 }

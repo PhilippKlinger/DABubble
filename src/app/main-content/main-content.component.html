@@ -1,28 +1,38 @@
 <div [ngClass]="{
-    'grid': workspace_open,
+    'grid': workspace_open && !mobile,
+    'grid-mobile': mobile && !new_message_open && !thread_open && !directmessage_open && !mainchat_mobile_open,
     'grid-no-workspace': !workspace_open,
-    'grid-no-thread-chat': !thread_open,
-    'grid-only-main-chat': (!workspace_open && !thread_open),
-    'grid-directmessage-chat-and-workspace': directmessage_open,
-    'grid-only-directmessage-chat': (directmessage_open&&!workspace_open),
-    'grid-new-message-and-workspace': new_message_open,
-    'grid-only-new-message': (new_message_open&&!workspace_open),
+    'grid-no-thread-chat': !thread_open && !mobile,
+    'grid-only-thread-chat-mobile': mobile && thread_open && mainchat_mobile_open,
+    'grid-only-main-chat': !workspace_open && !thread_open && !mobile,
+    'grid-only-main-chat-mobile': mobile && mainchat_mobile_open && !workspace_open && !thread_open,
+    'grid-directmessage-chat-and-workspace': directmessage_open && !mobile,
+    'grid-only-directmessage-chat': directmessage_open && !workspace_open,
+    'grid-only-directmessage-chat-mobile': mobile && directmessage_open,
+    'grid-new-message-and-workspace': new_message_open && !mobile,
+    'grid-only-new-message': new_message_open && !workspace_open && !mobile,
+    'grid-only-new-message-mobile': mobile && new_message_open,
     }" class="grid-no-workspace" #grid>
-    <app-main-content-logo class="header1"></app-main-content-logo>
-    <app-main-content-searchbar class="header2"></app-main-content-searchbar>
+    <app-main-content-logo class="header1" [ngClass]="{'d-none': mobile && workspace_header_open}"></app-main-content-logo>
+    <app-main-content-searchbar class="header2" [ngClass]="{'d-none': mobile}"></app-main-content-searchbar>
     <app-main-content-profile-selector class="header3"></app-main-content-profile-selector>
+    <app-main-content-workspace-header class="header4" [ngClass]="{'d-none': !mobile || !workspace_header_open}"></app-main-content-workspace-header>
 
-    <app-main-content-side-bar class="main1" [ngClass]="{'d-none': !workspace_open}"></app-main-content-side-bar>
+    <app-main-content-side-bar class="main1" [ngClass]="{'d-none': !workspace_open || workspace_header_open}"></app-main-content-side-bar>
     <app-main-content-directmessage-chat class="main4" [ngClass]="{'d-none': !directmessage_open}"></app-main-content-directmessage-chat>
     <app-main-content-new-message class="main5" [ngClass]="{'d-none': !new_message_open}" ></app-main-content-new-message>
-    <app-main-content-main-chat class="main2" [ngClass]="{'d-none': directmessage_open || new_message_open}"></app-main-content-main-chat>
+    <app-main-content-main-chat class="main2" [ngClass]="{'d-none': directmessage_open || new_message_open || (!mainchat_mobile_open && mobile) || (threadchat_mobile_open)}"></app-main-content-main-chat>
     <app-main-content-thread-chat class="main3" [ngClass]="{'d-none': !thread_open || directmessage_open}"></app-main-content-thread-chat>
 </div>
 
-<div class="close-workspace" (click)="toggleWorkspace()">
+<div class="close-workspace" (click)="toggleWorkspace()" *ngIf="!mobile">
     <span *ngIf="workspace_open">Workspace-Menü schließen</span>
     <mat-icon *ngIf="workspace_open">expand_less</mat-icon>
     
     <span *ngIf="!workspace_open">Workspace-Menü öffnen</span>
     <mat-icon *ngIf="!workspace_open">expand_more</mat-icon>
+</div>
+
+<div class="btn-mobile-new-message" (click)="openNewMessageInputMobile()" *ngIf="mobile && btnMobile">
+    <img src="../../assets/img/edit_square_white.png">
 </div>

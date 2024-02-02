@@ -38,6 +38,7 @@ export class DialogAddChannelmembersComponent {
     this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe(users => { this.users = users; });
     this.dialogService.needToAddMoreMembers$.pipe(takeUntil(this.destroyed$)).subscribe(state => { this.needToAddMoreMembers = state; });
     this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe(user => { this.currentUser = user; });
+    this.updateUsersAvailability();
   }
 
   onInput() {
@@ -46,8 +47,20 @@ export class DialogAddChannelmembersComponent {
   }
 
   updateUsersAvailability() {
-    this.areUsersAvailable = this.filteredUsers.length > 0;
+    // Anzahl der bereits im Channel befindlichen Mitglieder
+    const currentMemberCount = this.channel ? this.channel.members.length : 0;
+  
+    // Anzahl der gesamten Benutzer, ausgenommen Gastbenutzer
+    const totalUserCount = this.users.filter(user => user.email !== this.guestEmail).length;
+  
+    // Anzahl der bereits ausgewählten, aber noch nicht hinzugefügten Benutzer
+    const selectedUserCount = this.selectedUsers.length;
+  
+    // Verfügbarkeit basiert auf dem Vergleich der Anzahlen
+    this.areUsersAvailable = (currentMemberCount + selectedUserCount) < totalUserCount;
   }
+  
+  
 
   filterUsers() {
     if (this.channel) {

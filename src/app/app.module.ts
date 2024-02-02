@@ -63,6 +63,7 @@ import { UserService } from './shared-services/user.service';
 import { CommonService } from './shared-services/common.service';
 import { StorageService } from './shared-services/storage.service';
 import { MainContentNewMessageComponent } from './main-content/main-content-new-message/main-content-new-message.component';
+import { MainContentWorkspaceHeaderComponent } from './main-content/main-content-workspace-header/main-content-workspace-header.component';
 
 
 @NgModule({
@@ -96,6 +97,7 @@ import { MainContentNewMessageComponent } from './main-content/main-content-new-
     PrivacyPolicyComponent,
     ImprintComponent,
     MainContentNewMessageComponent,
+    MainContentWorkspaceHeaderComponent,
   ],
   imports: [
     BrowserModule,

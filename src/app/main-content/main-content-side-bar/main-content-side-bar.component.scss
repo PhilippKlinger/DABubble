@@ -8,6 +8,11 @@ section {
     height: 100%;
     width: 100%;
 
+
+    @media (max-width: 1000px) {
+        border-radius: 0px;
+    }
+
     main {
         display: flex;
         flex-direction: column;
