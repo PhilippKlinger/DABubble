@@ -40,19 +40,19 @@ export class OpenDialogService {
   }
   
   openDialog(componentKey: string, disableClose: boolean = false, origin?: ElementRef): void {
+    
     const selectedComponent = this.dialogComponents[componentKey];
     if (selectedComponent) {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = disableClose;
 
-      if (window.innerWidth >= 650 ) {
-        if (componentKey === 'editChannel' && origin) {
+        if (componentKey === 'editChannel' && origin && window.innerWidth >= 650) {
           dialogConfig.panelClass = 'dialog-edit-channel-no-radius';
           const rect = origin.nativeElement.getBoundingClientRect();
           dialogConfig.position = { top: `${rect.bottom}px`, left: `${rect.left}px` };
         }
 
-        if (componentKey === 'showChannelmembers' && origin) {
+        if (componentKey === 'showChannelmembers' && origin && window.innerWidth >= 650) {
           dialogConfig.panelClass = 'dialog-show-channelmembers-no-radius';
           const rect = origin.nativeElement.getBoundingClientRect();
           const dialogWidth = 415; // Feste Breite des Dialogs
@@ -61,7 +61,7 @@ export class OpenDialogService {
           dialogConfig.position = { top: `${rect.bottom}px`, left: `${leftPosition}px` };
         }
   
-        if (componentKey === 'addChannelmembers' && origin) {
+        if (componentKey === 'addChannelmembers' && origin && window.innerWidth >= 650) {
           dialogConfig.panelClass = 'dialog-add-channelmembers-no-radius';
           const rect = origin.nativeElement.getBoundingClientRect();
           const dialogWidth = 514; // Feste Breite des Dialogs
@@ -69,25 +69,23 @@ export class OpenDialogService {
           const leftPosition = rect.right - dialogWidth;
           dialogConfig.position = { top: `${rect.bottom}px`, left: `${leftPosition}px` };
         }
-      } else {
-        if (componentKey === 'showChannelmembers') {
-          dialogConfig.panelClass = 'dialog-show-channelmembers-repsonsive';
-        }
-      }
 
-      if (componentKey === 'createChannel') {
-        dialogConfig.panelClass = 'dialog-create-channel-repsonsive';
-      }
-
+        
       
+      
+       
+        if (componentKey === 'createChannel') {
+          dialogConfig.panelClass = 'dialog-create-channel-repsonsive';
+        }
 
-      if (componentKey === 'addChannelmembers' && disableClose === true ) {
-        dialogConfig.panelClass = 'dialog-add-channelmembers-responsive';
-      }
-
-      if (componentKey === ('showProfile' || 'menuProfile')) {
-        dialogConfig.panelClass = 'dialog-show-profile-responsive';
-      }
+        if (componentKey === 'addChannelmembers' && disableClose === true ) {
+          dialogConfig.panelClass = 'dialog-add-channelmembers-responsive';
+        }
+  
+        if (componentKey === ('showProfile' || 'menuProfile')) {
+          dialogConfig.panelClass = 'dialog-show-profile-responsive';
+        }
+    
 
       this.dialog.open(selectedComponent, dialogConfig);
     } else {
