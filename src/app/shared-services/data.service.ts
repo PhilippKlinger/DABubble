@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Message } from '../models/message.class';
 import { ChannelsService } from './channels.service';
@@ -11,15 +11,31 @@ export class DataService {
   public thread_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public directmessage_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public new_message_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public mobile$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public workspace_header_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public mainchat_mobile_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public threadchat_mobile_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   constructor() {
-
+    this.checkScreenSize();
+    this.checkScreenResize();
   }
 
-  getBooleanValue(): boolean {
-    return this.thread_open$.value;
+  checkScreenSize() {
+    const bildBreite = window.innerWidth;
+    if (bildBreite <= 1000) {
+      this.mobile$.next(true);
+    }
   }
 
-  setBooleanValue(newValue: boolean) {
-    this.thread_open$.next(newValue);
+  checkScreenResize() {
+    window.addEventListener('resize', () => {
+      const bildBreite = window.innerWidth;
+      if (bildBreite <= 1000) {
+        this.mobile$.next(true);
+      } else {
+        this.mobile$.next(false);
+      }
+    });
   }
 }

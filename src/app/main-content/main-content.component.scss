@@ -1,14 +1,3 @@
-$Bg-color: #ECEEFE;
-$Light-purple: #ADB0D9;
-$Text-gray: #686868;
-$Purple-1: #444DF2;
-$Purple-2: #797EF3;
-$Purple-3: #535AF1;
-$online-green: #92C83E;
-$Rosa-error: #ED1E79;
-$Background-Login: #545BEC;
-$White: #FFFFFF;
-
 @import './../../styles.scss';
 
 .grid {
@@ -23,6 +12,19 @@ $White: #FFFFFF;
     grid-template-areas:
         "header1 header2 header3"
         "main1 main2 main3";
+}
+
+.grid-mobile {
+    display: grid;
+    height: 100vh;
+    width: 100vw;
+    grid-template-columns: 1fr 1fr; //values for column-width/ 3 values = 3 columns
+    grid-template-rows: 70px; //values for row-width/ 1 value = first row's value
+    gap: 15px;
+    background-color: $Bg-color;
+    grid-template-areas:
+        "header1 header3"
+        "main1 main1";
 }
 
 .grid-no-workspace {
@@ -67,6 +69,34 @@ $White: #FFFFFF;
         "main2 main2 main2";
 }
 
+.grid-only-thread-chat-mobile {
+    display: grid;
+    height: 100vh;
+    width: 100vw;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 70px;
+    gap: 0px;
+    padding: 0px;
+    background-color: $Bg-color;
+    grid-template-areas:
+        "header4 header3"
+        "main3 main3";
+}
+
+.grid-only-main-chat-mobile {
+    display: grid;
+    height: 100vh;
+    width: 100vw;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 70px;
+    gap: 0px;
+    padding: 0px;
+    background-color: $Bg-color;
+    grid-template-areas:
+        "header4 header3"
+        "main2 main2";
+}
+
 .grid-directmessage-chat-and-workspace {
     display: grid;
     height: calc(100vh - 30px);
@@ -95,6 +125,20 @@ $White: #FFFFFF;
         "main4 main4 main4";
 }
 
+.grid-only-directmessage-chat-mobile {
+    display: grid;
+    height: 100vh;
+    width: 100vw;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 70px;
+    gap: 0px;
+    padding: 0px;
+    background-color: $Bg-color;
+    grid-template-areas:
+        "header4 header3"
+        "main4 main4";
+}
+
 .grid-new-message-and-workspace {
     display: grid;
     height: calc(100vh - 30px);
@@ -107,6 +151,20 @@ $White: #FFFFFF;
     grid-template-areas:
         "header1 header2 header3"
         "main1 main5 main5";
+}
+
+.grid-only-new-message-mobile {
+    display: grid;
+    height: 100vh;
+    width: 100vw;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 70px;
+    gap: 0px;
+    padding: 0px;
+    background-color: $Bg-color;
+    grid-template-areas:
+        "header4 header3"
+        "main5 main5";
 }
 
 .grid-only-new-message {
@@ -135,6 +193,10 @@ $White: #FFFFFF;
     grid-area: header3;
 }
 
+.header4 {
+    grid-area: header4;
+}
+
 .main1 {
     grid-area: main1;
 }
@@ -153,6 +215,25 @@ $White: #FFFFFF;
 
 .main5 {
     grid-area: main5;
+}
+
+.btn-mobile-new-message {
+    height: 60px;
+    width: 60px;
+    background-color: $Purple-1;
+    border-radius: 100px;
+    box-shadow: 0px 6px 10px 0px #00000033;
+    position: absolute;
+    bottom: 60px;
+    right: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        width: 22px;
+        height: 22px;
+    }
 }
 
 .close-workspace {

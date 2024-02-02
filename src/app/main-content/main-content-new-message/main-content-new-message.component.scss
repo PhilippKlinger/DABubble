@@ -8,6 +8,9 @@ section {
     display: flex;
     flex-direction: column;
 
+    @media (max-width: 1000px) {
+        border-radius: 0px;
+    }
 }
 
 .lower-part-container {
@@ -32,6 +35,11 @@ nav {
     flex-direction: column;
     gap: 20px;
     padding: 32px 45px 20px 45px;
+
+    @media (max-width: 1000px) {
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+    }
 }
 
 .channel-name {

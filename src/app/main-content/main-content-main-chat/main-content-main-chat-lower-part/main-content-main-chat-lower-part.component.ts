@@ -20,7 +20,7 @@ export class MainContentMainChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('img') img!: ElementRef;
   @ViewChild('chat_content') chat_content!: ElementRef;
-  @ViewChild('fileInput') fileInput!: ElementRef;  
+  @ViewChild('fileInput') fileInput!: ElementRef;
   message = new Message();
   reaction = new Reaction();
   selectedChannel!: Channel | null;
@@ -38,7 +38,7 @@ export class MainContentMainChatLowerPartComponent {
   editedText!: string;
   uploadedFileLink: string | null = null;
   errorUploadFile: boolean = false;
-  
+  mobile: boolean = false;
 
   constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
@@ -61,10 +61,13 @@ export class MainContentMainChatLowerPartComponent {
       }
     });
 
-
     this.channelService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
+
+    this.dataService.mobile$.subscribe((value: boolean) => {
+      this.mobile = value;
+    })
   }
 
   extractWeekdayAndMonth(date?: string): { weekday: string, month: string } {
@@ -313,26 +316,27 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   openThread() {
-    //setzt den thread_open boolean auf true.
-    // Bei veränderung wird in Main-content.ts eine funktion ausgelöst da main content die function abonniert hat
-    this.dataService.setBooleanValue(true);
+    this.dataService.thread_open$.next(true);
+    if (this.mobile) {
+      this.dataService.threadchat_mobile_open$.next(true);
+    }
   }
 
   async sendMessageToChannel() {
-    const { name, id, avatar } = this.channelService.currentUserInfo$.value;       
+    const { name, id, avatar } = this.channelService.currentUserInfo$.value;
     this.message.setCreator(name);
     this.message.setCreatorId(id);
     this.message.setAvatar(avatar);
     this.message.setTimestampNow();
-    this.message.setAnwers();      
+    this.message.setAnwers();
     if (this.uploadedFileLink) {
       this.message.setImg(this.uploadedFileLink);
       this.removeUploadedFile();
     } else if (this.input_message.nativeElement.value.trim() !== '') {
-      const inputMessage = this.input_message.nativeElement.value.trim(); 
+      const inputMessage = this.input_message.nativeElement.value.trim();
       this.message.setMessage(inputMessage);
       this.input_message.nativeElement.value = '';
-    }          
+    }
     await this.messagesService.pushMessageToChannel(this.message);
     this.message.setMessage('');
     this.message.setImg('');
@@ -340,14 +344,14 @@ export class MainContentMainChatLowerPartComponent {
 
   ngOnDestroy() {
     this.unsubChannels.unsubscribe();
-  } 
+  }
 
   async handleFileInput(event: any) {
     const input = event.target as HTMLInputElement;
     this.errorUploadFile = !this.commonService.checkFileSize(input);
     if (!this.errorUploadFile) {
       this.uploadedFileLink = await this.commonService.handleFileInput(event);
-    }    
+    }
   }
 
   removeUploadedFile() {
