@@ -15,6 +15,7 @@ export class DataService {
   public workspace_header_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public mainchat_mobile_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public threadchat_mobile_open$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public update_sidebar$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor() {
     this.checkScreenSize();

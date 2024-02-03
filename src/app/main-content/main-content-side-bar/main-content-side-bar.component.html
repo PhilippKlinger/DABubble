@@ -60,7 +60,7 @@
             <div [ngClass]="{'d-none': !directmessages_opened}">
                 <div class="side-bar-profile-list">
 
-                    <div class="side-bar-profile" (click)="openDM(user)" *ngFor="let user of users; let i = index">
+                    <div class="side-bar-profile" (click)="openDM(user)" *ngFor="let user of usersWithConversation; let i = index">
                         <div class="side-bar-profile-picture">
                             <img src="{{ user.avatar }}">
                             <div *ngIf="user.onlineStatus" class="online"></div>

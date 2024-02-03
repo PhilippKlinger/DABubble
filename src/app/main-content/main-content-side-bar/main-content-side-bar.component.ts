@@ -7,6 +7,7 @@ import { DataService } from 'src/app/shared-services/data.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { UserService } from 'src/app/shared-services/user.service';
 import { MessagesService } from 'src/app/shared-services/messages.service';
+import { user } from '@angular/fire/auth';
 @Component({
   selector: 'app-main-content-side-bar',
   templateUrl: './main-content-side-bar.component.html',
@@ -26,6 +27,7 @@ export class MainContentSideBarComponent {
   channels: Channel[] = [];
   currentUser!: User;
   users: any[] = [];
+  usersWithConversation: any[] = [];
   loggedInUser!: User | null;
   private destroyed$ = new Subject<void>();
 
@@ -33,7 +35,7 @@ export class MainContentSideBarComponent {
     private channelsService: ChannelsService,
     private dataService: DataService,
     private userService: UserService,
-    private messageService: MessagesService) {
+    private messagesService: MessagesService) {
 
     this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe((currentUser) => {
       this.currentUser = currentUser;
@@ -45,6 +47,7 @@ export class MainContentSideBarComponent {
 
     this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe((users) => {
       this.users = users;
+      this.checkConversations();
     })
 
     this.dataService.mobile$.subscribe((value: boolean) => {
@@ -54,6 +57,26 @@ export class MainContentSideBarComponent {
     this.userService.loggedInUser$.pipe(takeUntil(this.destroyed$)).subscribe((loggedInUser) => {
       this.loggedInUser = loggedInUser;
     });
+
+    this.dataService.update_sidebar$.subscribe((value: boolean) => {
+      if (value) {
+        this.checkConversations();
+      }
+    })
+  }
+
+  async checkConversations() {
+    const currentUserInfo = this.channelsService.currentUserInfo$.value;
+    let users = this.users;
+    this.usersWithConversation = [];
+    
+    for (let i = 0; i < users.length; i++) {
+      let user = users[i];
+      const dm_user = user;
+      if ((await this.messagesService.findConversation(dm_user, currentUserInfo)).available) {
+        this.usersWithConversation.push(user)
+      }
+    }
   }
 
   checkGuestLogIn(): boolean {
@@ -93,13 +116,13 @@ export class MainContentSideBarComponent {
       this.dataService.directmessage_open$.next(true);
       this.dataService.thread_open$.next(false);
       this.dataService.new_message_open$.next(false);
-      this.messageService.dm_user$.next(user);
+      this.messagesService.dm_user$.next(user);
       this.dataService.workspace_header_open$.next(true);
     } else {
       this.dataService.directmessage_open$.next(true);
       this.dataService.thread_open$.next(false);
       this.dataService.new_message_open$.next(false);
-      this.messageService.dm_user$.next(user);
+      this.messagesService.dm_user$.next(user);
     }
   }
 

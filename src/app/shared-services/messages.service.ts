@@ -9,6 +9,7 @@ import { Channel } from '../models/channel.class';
 import { UserService } from './user.service';
 import { User } from '../models/user.class';
 import { DMInfo } from '../models/DMInfo.class';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class MessagesService {
   public selectedDirectMessage$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public dm_user$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
-  constructor(private firestore: Firestore, private channelsService: ChannelsService, private userService: UserService) {
+  constructor(private dataService: DataService, private firestore: Firestore, private channelsService: ChannelsService, private userService: UserService) {
 
   }
 
@@ -176,7 +177,7 @@ export class MessagesService {
       message.setId(docRef.id);
       message.setUniversalId(universalId);
       await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
-
+      this.dataService.update_sidebar$.next(true);
       console.log('unterhaltung wurde erstellt, Nachricht wurde gesendet');
     } else {
       console.log('kein direct messages user verfügbar');
