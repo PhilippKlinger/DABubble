@@ -33,7 +33,7 @@
                 <span>{{ returnPartingLineValue(i).text }}</span>
             </div>
 
-            <div class="user-message" *ngIf="message.creator == this.user.name" (dblclick)="openThread()">
+            <div class="user-message" *ngIf="message.creator == this.user.name">
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div class="flex-end">
                     <div class="user-message-time-name">
@@ -85,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="anon-user-message" *ngIf="message.creator !== this.user.name" (dblclick)="openThread()">
+            <div class="anon-user-message" *ngIf="message.creator !== this.user.name">
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div>
                     <div class="anon-user-message-time-name">

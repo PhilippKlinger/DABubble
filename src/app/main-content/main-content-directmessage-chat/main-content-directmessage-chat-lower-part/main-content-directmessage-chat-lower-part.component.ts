@@ -17,6 +17,7 @@ import { UserService } from 'src/app/shared-services/user.service';
 export class MainContentDirectmessageChatLowerPartComponent {
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('fileInputDirect') fileInput!: ElementRef
+  @ViewChild('chat_content') chat_content!: ElementRef;
   emoji_window_open: boolean = false;
   emoji_window_messages_open: boolean = false;
   message = new Message();
@@ -39,6 +40,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
       if (dm_user) {
         this.dm_user = dm_user;
         this.receiveDirectMessages();
+        this.updateScroll();
       } else {
         console.log('waiting for a direct message user')
       }
@@ -46,6 +48,11 @@ export class MainContentDirectmessageChatLowerPartComponent {
     this.channelService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
+  }
+
+  updateScroll() {
+    let chat = this.chat_content.nativeElement
+    chat.scrollTop = chat.scrollHeight;
   }
 
   async receiveDirectMessages() {
@@ -278,12 +285,12 @@ export class MainContentDirectmessageChatLowerPartComponent {
       this.message.setImg(this.uploadedFileLinkDirect);
       this.removeUploadedFileDirect();
     } else if (this.input_message.nativeElement.value.trim() !== '') {
-        this.message.setMessage(this.input_message.nativeElement.value.trim());
-        this.input_message.nativeElement.value = '';
+      this.message.setMessage(this.input_message.nativeElement.value.trim());
+      this.input_message.nativeElement.value = '';
     }
     await this.messagesService.pushMessageToUser(this.message);
     this.message.setMessage('');
-    this.message.setImg('');      
+    this.message.setImg('');
   }
 
   async handleFileInputDirect(event: any) {
@@ -291,7 +298,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
     this.errorUploadFileDirect = !this.commonService.checkFileSize(input);
     if (!this.errorUploadFileDirect) {
       this.uploadedFileLinkDirect = await this.commonService.handleFileInput(event);
-    }       
+    }
   }
 
   removeUploadedFileDirect() {

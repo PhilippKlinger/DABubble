@@ -1,5 +1,5 @@
 <div class="chat">
-    <div class="chat-content">
+    <div #chat_content class="chat-content">
         <div class="thread-anon-user-message" *ngIf="thread_subject?.creator !== this.user.name">
             <img class="user-message-avatar" src="{{ thread_subject?.avatar }}">
             <div>

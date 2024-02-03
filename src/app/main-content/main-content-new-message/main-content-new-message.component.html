@@ -4,9 +4,8 @@
             Neue Nachricht
         </div>
 
-        <input [(ngModel)]="searchQuery" (input)="onSearchChange($event)" type="text"
-            [placeholder]="placeholder" class="input-new-message"
-            [matAutocomplete]="auto">
+        <input [(ngModel)]="searchQuery" (input)="onSearchChange($event)" type="text" [placeholder]="placeholder"
+            class="input-new-message" [matAutocomplete]="auto">
 
         <mat-autocomplete #auto="matAutocomplete" [class]="'searchbar-custom-panel'">
             <mat-option *ngFor="let channel of foundChannels" [value]="channel.name" (click)="openChannel(channel)">
@@ -25,18 +24,18 @@
     </nav>
 
     <div class="lower-part-container">
-        <div class="chat-input">
+        <!-- <div class="chat-input">
             <textarea #message class="chat-input-design" placeholder="Starte eine neue Nachricht"></textarea>
-            <!-- Test for File upload -->
-            <!-- <div *ngIf="uploadedFileLink">
+            Test for File upload
+            <div *ngIf="uploadedFileLink">
                 <a href="{{uploadedFileLink}}" target="_blank">Datei ansehen</a>
                 <button (click)="removeUploadedFile()">Entfernen</button>
-            </div> -->
+            </div>
             <div class="chat-input-lower-position">
                 <div class="chat-input-options">
                     <div>
-                        <!-- Test for File upload -->
-                        <!-- <input id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" />  -->
+                        Test for File upload
+                        <input id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png" /> 
                         <mat-icon>add</mat-icon>
                     </div>
 
@@ -51,7 +50,7 @@
                 </div>
                 <mat-icon class="chat-input-send">send</mat-icon>
             </div>
-        </div>
+        </div> -->
     </div>
 
 </section>

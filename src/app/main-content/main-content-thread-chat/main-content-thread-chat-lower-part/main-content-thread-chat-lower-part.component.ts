@@ -13,8 +13,9 @@ import { StorageService } from 'src/app/shared-services/storage.service';
   styleUrls: ['./main-content-thread-chat-lower-part.component.scss']
 })
 export class MainContentThreadChatLowerPartComponent {
-  @ViewChild('answer') input_answer!: ElementRef; 
+  @ViewChild('answer') input_answer!: ElementRef;
   @ViewChild('fileInputThread') fileInput!: ElementRef
+  @ViewChild('chat_content') chat_content!: ElementRef;
   thread_subject: any = null;
   thread_subject_time: any;
   threadAnswers: any = [];
@@ -40,6 +41,11 @@ export class MainContentThreadChatLowerPartComponent {
     this.channelService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
+  }
+
+  updateScroll() {
+    let chat = this.chat_content.nativeElement
+    chat.scrollTop = chat.scrollHeight;
   }
 
   @HostListener('document:click', ['$event'])
@@ -96,15 +102,18 @@ export class MainContentThreadChatLowerPartComponent {
     this.answer.setCreatorId(id);
     this.answer.setTimestampNow();
     this.answer.setAvatar(avatar);
-    if (this.uploadedFileLinkThread) {
-      this.answer.setImg(this.uploadedFileLinkThread);
-      this.removeUploadedFileThread();
-    } else if (this.input_answer.nativeElement.value.trim() !== '') {      
-      this.answer.setMessage(this.input_answer.nativeElement.value.trim());      
-      this.input_answer.nativeElement.value = '';
+    if (this.uploadedFileLinkThread || this.input_answer.nativeElement.value.trim() !== '') {
+      if (this.uploadedFileLinkThread) {
+        this.answer.setImg(this.uploadedFileLinkThread);
+        this.removeUploadedFileThread();
+      } else if (this.input_answer.nativeElement.value.trim() !== '') {
+        this.answer.setMessage(this.input_answer.nativeElement.value.trim());
+        this.input_answer.nativeElement.value = '';
+      }
+      await this.messagesService.pushThreadAnswerToMessage(this.answer);
+      await this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
+      this.updateScroll();
     }
-    await this.messagesService.pushThreadAnswerToMessage(this.answer);
-    await this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
     this.answer.setMessage('');
     this.answer.setImg('');
   }
@@ -128,7 +137,7 @@ export class MainContentThreadChatLowerPartComponent {
     this.errorUploadFileThread = !this.commonService.checkFileSize(input);
     if (!this.errorUploadFileThread) {
       this.uploadedFileLinkThread = await this.commonService.handleFileInput(event);
-    }    
+    }
   }
 
   removeUploadedFileThread() {

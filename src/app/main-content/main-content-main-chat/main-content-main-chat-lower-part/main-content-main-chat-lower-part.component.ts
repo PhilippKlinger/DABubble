@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/shared-services/data.service';
 import { Message } from './../../../models/message.class'
 import { ChannelsService } from 'src/app/shared-services/channels.service';
@@ -68,6 +68,12 @@ export class MainContentMainChatLowerPartComponent {
     this.dataService.mobile$.subscribe((value: boolean) => {
       this.mobile = value;
     })
+  }
+
+  updateScroll() {
+    setTimeout(() => {
+      this.chat_content.nativeElement.scrollTop = this.chat_content.nativeElement.scrollHeight;
+    }, 0);
   }
 
   extractWeekdayAndMonth(date?: string): { weekday: string, month: string } {
@@ -299,6 +305,9 @@ export class MainContentMainChatLowerPartComponent {
     this.messagesService.getReactionsOfMessages();
     this.messagesService.sortChatMessagesByTime();
     this.chatMessages = this.messagesService.chatMessages;
+    if (!this.dataService.thread_open$.value) {
+      this.updateScroll();
+    }
   }
 
   getFormattedTimeForLatestAnswer(latest_answer: any) {
@@ -329,15 +338,18 @@ export class MainContentMainChatLowerPartComponent {
     this.message.setAvatar(avatar);
     this.message.setTimestampNow();
     this.message.setAnwers();
-    if (this.uploadedFileLink) {
-      this.message.setImg(this.uploadedFileLink);
-      this.removeUploadedFile();
-    } else if (this.input_message.nativeElement.value.trim() !== '') {
-      const inputMessage = this.input_message.nativeElement.value.trim();
-      this.message.setMessage(inputMessage);
-      this.input_message.nativeElement.value = '';
+    if (this.uploadedFileLink || this.input_message.nativeElement.value.trim() !== '') {
+      if (this.uploadedFileLink) {
+        this.message.setImg(this.uploadedFileLink);
+        this.removeUploadedFile();
+      } else if (this.input_message.nativeElement.value.trim() !== '') {
+        const inputMessage = this.input_message.nativeElement.value.trim();
+        this.message.setMessage(inputMessage);
+        this.input_message.nativeElement.value = '';
+      }
+      await this.messagesService.pushMessageToChannel(this.message);
+      this.updateScroll();
     }
-    await this.messagesService.pushMessageToChannel(this.message);
     this.message.setMessage('');
     this.message.setImg('');
   }
