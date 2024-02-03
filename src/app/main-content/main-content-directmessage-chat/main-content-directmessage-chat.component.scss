@@ -8,6 +8,10 @@ section {
     display: flex;
     flex-direction: column;
 
+    @media (max-width: 1000px) {
+        border-radius: 0;
+    }
+
 }
 
 .lower-part-container {

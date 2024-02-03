@@ -15,6 +15,7 @@ export class MainContentNewMessageComponent {
   emoji_window_open: boolean = false;
   @ViewChild('message') input_message!: ElementRef;
 
+  placeholder: string = 'An: #channel, oder @jemand oder E-Mail Adresse';
   searchQuery: string = '';
   foundChannels: Channel[] = [];
   foundUsers: User[] = [];
@@ -25,7 +26,15 @@ export class MainContentNewMessageComponent {
     private userService: UserService,
     private dataService: DataService,
     private messagesService: MessagesService
-  ) { }
+  ) {
+    dataService.mobile$.subscribe((value: boolean) => {
+      if (value) {
+        this.placeholder = 'An: #channel, oder @jemand';
+      } else {
+        this.placeholder = 'An: #channel, oder @jemand oder E-Mail Adresse';
+      }
+    })
+  }
 
   onSearchChange(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
@@ -42,14 +51,14 @@ export class MainContentNewMessageComponent {
     this.foundChannels = [];
     this.foundUsers = [];
     this.foundEmails = [];
-  
+
     if (!this.searchQuery) {
       return;
     }
-  
+
     const firstChar = this.searchQuery.charAt(0);
     const searchQueryLower = this.searchQuery.toLowerCase().slice(1); // Entfernen des ersten Zeichens für die Suche
- 
+
     if (firstChar === '#') {
       this.channelsService.channels$.subscribe(channels => {
         this.foundChannels = channels.filter(channel =>
@@ -70,7 +79,7 @@ export class MainContentNewMessageComponent {
       });
     }
   }
-  
+
   clearSearchResults() {
     this.foundChannels = [];
     this.foundUsers = [];

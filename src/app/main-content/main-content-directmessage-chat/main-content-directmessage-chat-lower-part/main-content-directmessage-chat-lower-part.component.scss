@@ -520,6 +520,10 @@
     gap: 24px;
     cursor: pointer;
 
+    @media (max-width: 1000px) {
+        gap: 10px;
+    }
+
     span {
         font-size: 24px;
         font-weight: 700;
@@ -532,6 +536,10 @@
     align-items: center;
     gap: 4px;
     cursor: default;
+
+    @media (max-width:1000px) {
+        display: block;
+    }
 
     span {
         color: $Text-gray;
@@ -572,7 +580,7 @@
     a {
         color: $White;
         text-decoration: none;
-    }    
+    }
 }
 
 .submit-buttons {
@@ -580,31 +588,38 @@
     margin: 20px;
     gap: 30px;
     width: 100%;
+
     button {
-        padding: 25px;   
-        border-radius: 25px; 
+        padding: 25px;
+        border-radius: 25px;
         @include fonts($fs: 18px);
         font-family: 'Nunito', sans-serif !important;
     }
+
     .btn-submit {
         background-color: $Purple-1;
         cursor: pointer;
         color: $White;
+
         &:hover {
             background-color: $Purple-2;
         }
+
         &:disabled {
             cursor: not-allowed !important;
-            background-color: $Purple-2;        
+            background-color: $Purple-2;
+
             &:hover {
-              background-color: $Purple-2;
-              cursor: not-allowed !important;
+                background-color: $Purple-2;
+                cursor: not-allowed !important;
             }
-          }
+        }
     }
+
     .btn-guest {
         color: $Purple-1;
         border: 1px solid $Purple-1;
+
         &:hover {
             background-color: $Purple-1;
             color: $White;

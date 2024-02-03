@@ -11,6 +11,11 @@ nav {
     align-items: center;
     z-index: 1;
     position: relative;
+
+    @media (max-width: 1000px) {
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+    }
 }
 
 .channel-name {

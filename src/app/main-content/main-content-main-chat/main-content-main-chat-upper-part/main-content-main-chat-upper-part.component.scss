@@ -58,6 +58,10 @@ nav {
     gap: 10px;
     margin-right: 20px;
     width: max-content;
+
+    @media(max-width:1000px) {
+        margin-right: 40px;
+    }
 }
 
 .add-person-btn {

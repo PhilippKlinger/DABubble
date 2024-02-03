@@ -49,6 +49,11 @@ section {
         height: 70px;
         width: 70px;
         border-radius: 100%;
+
+        @media (max-width:1000px) {
+            height: 60px;
+            width: 60px;
+        }
     }
 
     div {

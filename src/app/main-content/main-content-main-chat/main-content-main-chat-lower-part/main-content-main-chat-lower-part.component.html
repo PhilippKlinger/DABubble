@@ -1,4 +1,4 @@
-<div class="chat">
+<div class="chat" [ngClass]="{'chat-mobile': mobile}">
     <div #chat_content class="chat-content">
 
         <div *ngIf="selectedChannel" class="channel-created-message">
@@ -73,7 +73,8 @@
                 <div class="user-message-hover-options">
                     <div>✔</div>
                     <div>🤚</div>
-                    <mat-icon (click)="toggleEmojiWindowForMessage(i)" class="material-icons-outlined">add_reaction</mat-icon>
+                    <mat-icon (click)="toggleEmojiWindowForMessage(i)"
+                        class="material-icons-outlined">add_reaction</mat-icon>
                     <mat-icon (click)="openThread()" class="material-icons-outlined">insert_comment</mat-icon>
                     <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                     <span *ngIf="hoverOptionEditMessage_open">
@@ -111,7 +112,8 @@
                 <div class="anon-message-hover-options">
                     <div>✔</div>
                     <div>🤚</div>
-                    <mat-icon (click)="toggleEmojiWindowForMessage(i)" class="material-icons-outlined">add_reaction</mat-icon>
+                    <mat-icon (click)="toggleEmojiWindowForMessage(i)"
+                        class="material-icons-outlined">add_reaction</mat-icon>
                     <mat-icon (click)="openThread();" class="material-icons-outlined">insert_comment</mat-icon>
                 </div>
             </div>
@@ -120,8 +122,8 @@
 </div>
 
 <div class="chat-input">
-    <textarea *ngIf="!uploadedFileLink && !errorUploadFile" (keyup.enter)="sendMessageToChannel()" #message class="chat-input-design"
-        placeholder="Nachricht an # {{ selectedChannel?.name }}"></textarea>
+    <textarea *ngIf="!uploadedFileLink && !errorUploadFile" (keyup.enter)="sendMessageToChannel()" #message
+        class="chat-input-design" placeholder="Nachricht an # {{ selectedChannel?.name }}"></textarea>
     <!-- Test for File upload -->
     <div *ngIf="uploadedFileLink" class="submit-buttons d-flex-standard">
         <button class="btn-submit" mat-button>
@@ -136,7 +138,8 @@
         <div class="chat-input-options">
             <div>
                 <!-- Test for File upload -->
-                <input #fileInput id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png,.pdf" />
+                <input #fileInput id="fileInput-main-chat" (change)="handleFileInput($event)" class="d-none" type="file"
+                    accept=".jpg,.jpeg,.png,.pdf" />
                 <mat-icon (click)="this.commonService.triggerFileInput('fileInput-main-chat')">add</mat-icon>
             </div>
 
