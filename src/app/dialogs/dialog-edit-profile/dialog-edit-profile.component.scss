@@ -87,3 +87,9 @@ input[disabled] {
     color: red;
     margin-top: 10px;
 }
+
+@media (max-width: 650px) {
+    .avatar-list {
+        max-width: 85%;
+    }
+}

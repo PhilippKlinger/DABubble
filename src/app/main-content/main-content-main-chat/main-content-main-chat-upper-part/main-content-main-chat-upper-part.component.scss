@@ -125,3 +125,9 @@ nav {
 .rotate-icon {
     transform: scaleX(-1);
 }
+
+@media (max-width:650px) {
+    .avatar-count {
+        display: none;
+    }
+}

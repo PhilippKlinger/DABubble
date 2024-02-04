@@ -83,6 +83,11 @@ body {
     width: 514px !important;  
   }
 }
+.dialog-show-profile-mobile {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    width: 100% !important;  
+  }
+}
 
 .dialog-create-channel-repsonsive {
   .mat-mdc-dialog-container .mdc-dialog__surface {
@@ -121,6 +126,26 @@ body {
   }
 }
 
+.dialog-add-channelmembers-mobile-2 {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+   height: fit-content;
+   position: absolute;
+   bottom: 0;
+   border-top-left-radius: 30px !important;
+   border-top-right-radius: 30px !important;
+  }
+
+  .mat-mdc-radio-group{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mdc-label {
+    font-size: 18px;
+    margin-left: 15px;
+  }
+}
 
 
 

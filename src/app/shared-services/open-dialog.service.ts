@@ -77,17 +77,24 @@ export class OpenDialogService {
         if (componentKey === 'addChannelmembers' && isMobileView) {
           dialogConfig.panelClass = 'dialog-add-channelmembers-mobile';
         }
-             
+        
+        if (componentKey === ('showProfile' || 'menuProfile') && isMobileView) {
+          dialogConfig.panelClass = 'dialog-show-profile-mobile';
+        }
        
         if (componentKey === 'createChannel') {
           dialogConfig.panelClass = 'dialog-create-channel-repsonsive';
         }
 
-        if (componentKey === 'addChannelmembers' && disableClose === true ) {
+        if (componentKey === 'addChannelmembers' && disableClose === true && !isMobileView) {
           dialogConfig.panelClass = 'dialog-add-channelmembers-responsive';
         }
+
+        if (componentKey === 'addChannelmembers' && disableClose === true && isMobileView) {
+          dialogConfig.panelClass = 'dialog-add-channelmembers-mobile-2';
+        }
   
-        if (componentKey === ('showProfile' || 'menuProfile')) {
+        if (componentKey === ('showProfile' || 'menuProfile') && !isMobileView) {
           dialogConfig.panelClass = 'dialog-show-profile-responsive';
         }
     

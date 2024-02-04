@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -16,7 +16,11 @@ import { DataService } from 'src/app/shared-services/data.service';
 
 
 export class DialogCreateChannelComponent {
-
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkMobileView();
+  }
+  isMobileView: boolean = false;
   channel = new Channel();
   currentUser!: User;
   isChannelNameTaken: boolean = false;
@@ -28,6 +32,7 @@ export class DialogCreateChannelComponent {
     this.channelsService.currentUserInfo$.subscribe((currentUser) => {
       this.currentUser = currentUser;
     });
+    this.checkMobileView();
   }
 
   onInput() {
@@ -45,6 +50,9 @@ export class DialogCreateChannelComponent {
 
   }
 
+  checkMobileView(): void {
+    this.isMobileView = window.innerWidth <= 650;
+  }
 
   createChannel(): void {
     if (this.activateCreateChannel()) {
@@ -58,7 +66,7 @@ export class DialogCreateChannelComponent {
         this.dataService.directmessage_open$.next(false);
         this.channelsService.setSelectedChannel(this.channel);
         this.dialogRef.close();
-        this.dialogService.openDialog('addChannelmembers', true);
+        this.dialogService.openDialog('addChannelmembers', true, this.isMobileView);
       }).catch(error => {
         console.error('Fehler beim Erstellen des Kanals:', error);
       });

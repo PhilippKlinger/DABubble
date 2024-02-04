@@ -39,7 +39,7 @@ export class MainContentMainChatUpperPartComponent {
   openDialog(componentKey: string, triggerNumber?: number): void {
     this.dialogService.setNeedToAddMoreMembers(true);
     let triggerElement: ElementRef | null = null;
-
+  
     if (triggerNumber === 1 && this.triggerElement1) {
       triggerElement = this.triggerElement1;
     } else if (triggerNumber === 2 && this.triggerElement2) {
