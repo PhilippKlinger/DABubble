@@ -64,6 +64,7 @@ import { CommonService } from './shared-services/common.service';
 import { StorageService } from './shared-services/storage.service';
 import { MainContentNewMessageComponent } from './main-content/main-content-new-message/main-content-new-message.component';
 import { MainContentWorkspaceHeaderComponent } from './main-content/main-content-workspace-header/main-content-workspace-header.component';
+import { DialogShowWelcomeMessageComponent } from './dialogs/dialog-show-welcome-message/dialog-show-welcome-message.component';
 
 
 @NgModule({
@@ -98,6 +99,7 @@ import { MainContentWorkspaceHeaderComponent } from './main-content/main-content
     ImprintComponent,
     MainContentNewMessageComponent,
     MainContentWorkspaceHeaderComponent,
+    DialogShowWelcomeMessageComponent,
   ],
   imports: [
     BrowserModule,

@@ -3,6 +3,7 @@ import { DataService } from '../shared-services/data.service';
 import { ChannelsService } from '../shared-services/channels.service';
 import { User } from '../models/user.class';
 import { AuthService } from '../shared-services/authentication.service';
+import { OpenDialogService } from '../shared-services/open-dialog.service';
 
 @Component({
   selector: 'app-main-content',
@@ -24,7 +25,10 @@ export class MainContentComponent implements OnInit {
   private userActivityTimeout: number = 15 * 60 * 1000; // 15 Minuten in Millisekunden
   private userActivityTimer: any;
 
-  constructor(private dataService: DataService, private channelService: ChannelsService, private authService: AuthService) {
+  constructor(private dataService: DataService,
+    private channelService: ChannelsService,
+    private authService: AuthService,
+    private dialogService: OpenDialogService) {
     // Hier wird das thread_open boolean aus dem data.service.ts abonniert
     this.dataService.thread_open$.subscribe((value: boolean) => {
       // bei Veränderung des booleans wird folgende Funktion ausgelöst
@@ -69,6 +73,9 @@ export class MainContentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+   
+  // this.dialogService.openDialog('showWelcomeMessage');
+
     this.setCurrentUser();
     this.channelService.subChannelsList();
     if (!this.mobile) {

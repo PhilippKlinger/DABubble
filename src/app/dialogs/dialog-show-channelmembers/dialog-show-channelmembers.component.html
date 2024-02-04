@@ -1,8 +1,8 @@
-<div class="dialog-content">
+<div class="dialog-content mobile">
     <header>
         <div class="dialog-head">
             <span>Mitglieder</span>
-            <button mat-icon-button mat-dialog-close>
+            <button class="close-button" mat-icon-button mat-dialog-close>
                 <mat-icon>close</mat-icon>
             </button>
         </div>
@@ -20,7 +20,12 @@
         </div>
     </div>
 
-    <div class="add-person-btn" (click)="openDialog('addChannelmembers')"> 
+    <div *ngIf="!isMobileView" class="add-person-btn" (click)="openDialog('addChannelmembers')"> 
+        <mat-icon class="rotate-icon custom-icon">person_add</mat-icon>
+        <span>Mitglieder hinzufügen</span>
+    </div>
+
+    <div *ngIf="isMobileView" class="add-person-btn" (click)="openDialogMobile('addChannelmembers')"> 
         <mat-icon class="rotate-icon custom-icon">person_add</mat-icon>
         <span>Mitglieder hinzufügen</span>
     </div>

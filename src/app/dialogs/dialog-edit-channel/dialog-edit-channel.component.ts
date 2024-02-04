@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { User } from 'src/app/models/user.class';
@@ -18,13 +18,21 @@ import { DataService } from 'src/app/shared-services/data.service';
     '../dialog-create-channel/dialog-create-channel.component.scss']
 })
 export class DialogEditChannelComponent {
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkMobileView();
+  }
+
   isEditingName: boolean = false;
   isEditingDescription: boolean = false;
   channel: Channel | null = null;
   newChannelName: string = '';
   newChannelDescription: string = '';
   currentUser!: User;
+  isMobileView: boolean = false;
   private destroyed$ = new Subject<void>();
+
+
 
   constructor(private channelsService: ChannelsService,
      private dialogRef: MatDialogRef<DialogEditChannelComponent>,
@@ -42,6 +50,7 @@ export class DialogEditChannelComponent {
     ).subscribe(user => {
       this.currentUser = user;
     });
+    this.checkMobileView();
   }
 
   toggleEditing(field: 'name' | 'description'): void {
@@ -100,6 +109,10 @@ export class DialogEditChannelComponent {
     this.dataService.new_message_open$.next(true);
     this.dataService.thread_open$.next(false);
     this.dataService.directmessage_open$.next(false);
+  }
+
+  checkMobileView(): void {
+    this.isMobileView = window.innerWidth <= 650;
   }
 
   ngOnDestroy(): void {

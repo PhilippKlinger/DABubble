@@ -9,6 +9,7 @@ import { DialogMenuProfileComponent } from '../dialogs/dialog-menu-profile/dialo
 import { DialogAddChannelmembersComponent } from '../dialogs/dialog-add-channelmembers/dialog-add-channelmembers.component';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { DialogShowChannelmembersComponent } from '../dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component';
+import { DialogShowWelcomeMessageComponent } from '../dialogs/dialog-show-welcome-message/dialog-show-welcome-message.component';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,8 @@ export class OpenDialogService {
     'createChannel': DialogCreateChannelComponent,
     'editChannel': DialogEditChannelComponent,
     'addChannelmembers': DialogAddChannelmembersComponent,
-    'showChannelmembers': DialogShowChannelmembersComponent
+    'showChannelmembers': DialogShowChannelmembersComponent,
+    'showWelcomeMessage': DialogShowWelcomeMessageComponent,
   };
 
   
@@ -39,20 +41,22 @@ export class OpenDialogService {
     return this._dialogTriggerElementRef;
   }
   
-  openDialog(componentKey: string, disableClose: boolean = false, origin?: ElementRef): void {
-    
+  openDialog(componentKey: string, disableClose: boolean = false, mobileView: boolean = false, origin?: ElementRef): void {
+
     const selectedComponent = this.dialogComponents[componentKey];
     if (selectedComponent) {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = disableClose;
+      const isMobileView = mobileView;
+      
 
-        if (componentKey === 'editChannel' && origin && window.innerWidth >= 650) {
+        if (componentKey === 'editChannel' && origin && !isMobileView) {
           dialogConfig.panelClass = 'dialog-edit-channel-no-radius';
           const rect = origin.nativeElement.getBoundingClientRect();
           dialogConfig.position = { top: `${rect.bottom}px`, left: `${rect.left}px` };
         }
 
-        if (componentKey === 'showChannelmembers' && origin && window.innerWidth >= 650) {
+        if (componentKey === 'showChannelmembers' && origin && !isMobileView) {
           dialogConfig.panelClass = 'dialog-show-channelmembers-no-radius';
           const rect = origin.nativeElement.getBoundingClientRect();
           const dialogWidth = 415; // Feste Breite des Dialogs
@@ -61,7 +65,7 @@ export class OpenDialogService {
           dialogConfig.position = { top: `${rect.bottom}px`, left: `${leftPosition}px` };
         }
   
-        if (componentKey === 'addChannelmembers' && origin && window.innerWidth >= 650) {
+        if (componentKey === 'addChannelmembers' && origin && !isMobileView) {
           dialogConfig.panelClass = 'dialog-add-channelmembers-no-radius';
           const rect = origin.nativeElement.getBoundingClientRect();
           const dialogWidth = 514; // Feste Breite des Dialogs
@@ -70,9 +74,10 @@ export class OpenDialogService {
           dialogConfig.position = { top: `${rect.bottom}px`, left: `${leftPosition}px` };
         }
 
-        
-      
-      
+        if (componentKey === 'addChannelmembers' && isMobileView) {
+          dialogConfig.panelClass = 'dialog-add-channelmembers-mobile';
+        }
+             
        
         if (componentKey === 'createChannel') {
           dialogConfig.panelClass = 'dialog-create-channel-repsonsive';

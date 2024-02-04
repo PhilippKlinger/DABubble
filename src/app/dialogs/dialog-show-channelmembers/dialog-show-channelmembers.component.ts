@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
@@ -13,22 +13,28 @@ import { take } from 'rxjs/operators';
   selector: 'app-dialog-show-channelmembers',
   templateUrl: './dialog-show-channelmembers.component.html',
   styleUrls: ['./dialog-show-channelmembers.component.scss',
-  '../dialog-show-profile/dialog-show-profile.component.scss',
-  '../dialog-edit-profile/dialog-edit-profile.component.scss']
+    '../dialog-show-profile/dialog-show-profile.component.scss',
+    '../dialog-edit-profile/dialog-edit-profile.component.scss']
 })
 export class DialogShowChannelmembersComponent {
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkMobileView();
+  }
+  isMobileView: boolean = false;
   private destroyed$ = new Subject<void>();
   channel: Channel | null = null;
 
-  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService, private userService: UserService, private dialogRef: MatDialogRef<DialogShowChannelmembersComponent>){
+  constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService, private userService: UserService, private dialogRef: MatDialogRef<DialogShowChannelmembersComponent>) {
     this.channelsService.selectedChannel$.pipe(
       takeUntil(this.destroyed$)
     ).subscribe(channel => {
       this.channel = channel;
     });
+    this.checkMobileView();
   }
 
-  showSelectedUser(user: User){
+  showSelectedUser(user: User) {
     this.userService.setSelectedUser(user);
     this.dialogService.openDialog('showProfile');
     this.dialogRef.close();
@@ -39,8 +45,17 @@ export class DialogShowChannelmembersComponent {
     this.dialogService.setNeedToAddMoreMembers(true);
     this.dialogRef.close();
     if (origin) {
-      this.dialogService.openDialog(componentKey, false , origin);
+      this.dialogService.openDialog(componentKey, false, this.isMobileView, origin);
     }
+  }
+
+  openDialogMobile(componentKey: string): void {
+    this.dialogService.setNeedToAddMoreMembers(true);
+    this.dialogService.openDialog(componentKey, false, this.isMobileView);
+  }
+
+  checkMobileView(): void {
+    this.isMobileView = window.innerWidth <= 650;
   }
 
   ngOnDestroy() {

@@ -1,6 +1,12 @@
+<div *ngIf="isMobileView" class="dialog-head dialog-head-mobile">
+    <span># {{channel?.name}}</span>
+    <button mat-icon-button mat-dialog-close>
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
 <div class="dialog-content">
-    <div class="dialog-head">
-        <span>{{channel?.name}}</span>
+    <div *ngIf="!isMobileView" class="dialog-head">
+        <span># {{channel?.name}}</span>
         <button mat-icon-button mat-dialog-close>
             <mat-icon>close</mat-icon>
         </button>
@@ -8,21 +14,39 @@
     <div class="name-input" [ngClass]="{'show-border': !isEditingName}">
         <div class="name">
             <span>Channel-Name</span>
-            <p class="button" *ngIf="!isEditingName" (click)="toggleEditing('name')">Bearbeiten</p>
-            <p class="button" *ngIf="isEditingName" (click)="saveChanges('name')">Speichern</p>
+            <p class="button" *ngIf="!isEditingName" (click)="toggleEditing('name')">
+                <mat-icon *ngIf="isMobileView">edit_outlined</mat-icon>
+                <span *ngIf="!isMobileView">Bearbeiten</span>
+            </p>
+            <p class="button" *ngIf="isEditingName" (click)="saveChanges('name')">
+                <mat-icon *ngIf="isMobileView">check_circle_outlined</mat-icon>
+                <span *ngIf="!isMobileView">Speichern</span>
+            </p>
         </div>
-        <span *ngIf="!isEditingName">{{newChannelName}}</span>
-        <input [(ngModel)]="newChannelName" *ngIf="isEditingName" matInput placeholder={{channel?.name}}>
+        <div>
+            <span class *ngIf="!isEditingName">{{newChannelName}}</span>
+            <input [(ngModel)]="newChannelName" *ngIf="isEditingName" matInput placeholder={{channel?.name}}>
+        </div>
+        
     </div>
     <div class="dialog-bottom" [ngClass]="{'show-border': !isEditingDescription}">
         <div class="name-input">
             <div class="name">
                 <span>Beschreibung</span>
-                <p class="button" *ngIf="!isEditingDescription" (click)="toggleEditing('description')">Bearbeiten</p>
-                <p class="button" *ngIf="isEditingDescription" (click)="saveChanges('description')">Speichern</p>
+                <p class="button" *ngIf="!isEditingDescription" (click)="toggleEditing('description')">
+                    <mat-icon *ngIf="isMobileView">edit_outlined</mat-icon>
+                    <span *ngIf="!isMobileView">Bearbeiten</span>
+                </p>
+                <p class="button" *ngIf="isEditingDescription" (click)="saveChanges('description')">
+                    <mat-icon *ngIf="isMobileView">check_circle_outlined</mat-icon>
+                    <span *ngIf="!isMobileView">Speichern</span>
+                </p>
             </div>
-            <span *ngIf="!isEditingDescription">{{newChannelDescription}}</span>
-            <input [(ngModel)]="newChannelDescription" *ngIf="isEditingDescription" matInput placeholder="Dein Text hier">
+            <div>
+                <span *ngIf="!isEditingDescription">{{newChannelDescription}}</span>
+                <input [(ngModel)]="newChannelDescription" *ngIf="isEditingDescription" matInput placeholder="Dein Text hier">
+            </div>
+           
         </div>
 
         <div class="divider">
@@ -33,6 +57,10 @@
             <p>{{channel?.creator}}</p>
         </div>
     </div>
+
+<div *ngIf="isMobileView" class="mobile-view show-border">
+    <app-dialog-show-channelmembers></app-dialog-show-channelmembers>
+</div>
 
     <div class="button">
         <button mat-raised-button color="primary" (click)="leaveChannel()">Channel verlassen</button>

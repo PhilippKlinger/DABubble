@@ -111,10 +111,20 @@ body {
   }
 }
 
-// show channelmembers unter 650px muss gleiche breite wie vorher haben und dann unter 500px auf ganzen bildschirm
+.dialog-add-channelmembers-mobile {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+   height: fit-content;
+   position: absolute;
+   bottom: 0;
+   border-top-left-radius: 30px !important;
+   border-top-right-radius: 30px !important;
+  }
+}
 
 
-@media (max-width: 651px ) {
+
+
+@media (max-width: 650px ) {
   .cdk-overlay-pane {
     max-width: 100% !important;
     width: 100% !important;
@@ -125,7 +135,7 @@ body {
     align-items: center;
     flex-direction: column;
     height: 100%;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .cdk-global-overlay-wrapper {

@@ -76,7 +76,7 @@ $Bg-color: #ECEEFE;
     transition: 0.1s ease-in;
     margin-left: 29px;
     gap: 15px;
- 
+
 
     span {
         font-size: 18px;
@@ -92,5 +92,31 @@ $Bg-color: #ECEEFE;
 
 
 .dialog-content {
-    width: 415px !important;  
+    width: 415px !important;
+}
+
+@media (max-width: 650px) {
+    .mobile {
+        width: 100% !important;
+        padding: 20px !important;
+    }
+
+    .close-button {
+        display: none;
+    }
+
+    .side-bar-profile {
+        margin-left: 0;
+        padding: 0;
+    }
+
+    .add-person-btn {
+        margin-left: 0;
+    }
+
+    .added-user-list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
 }

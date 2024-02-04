@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
@@ -10,10 +10,15 @@ import { User } from 'src/app/models/user.class';
   styleUrls: ['./main-content-main-chat-upper-part.component.scss']
 })
 export class MainContentMainChatUpperPartComponent {
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkMobileView();
+  }
   @ViewChild('triggerElement1', { static: true }) triggerElement1!: ElementRef;
   @ViewChild('triggerElement2', { static: true }) triggerElement2!: ElementRef;
   @ViewChild('triggerElement3', { static: true }) triggerElement3!: ElementRef;
 
+  isMobileView: boolean = false;
   selectedChannel!: Channel | null;
   unsubChannels!: Subscription;
   members: User[] = [];
@@ -28,6 +33,7 @@ export class MainContentMainChatUpperPartComponent {
         console.log('no selected channel avaialble');
       }
     });
+    this.checkMobileView();
   }
 
   openDialog(componentKey: string, triggerNumber?: number): void {
@@ -43,10 +49,14 @@ export class MainContentMainChatUpperPartComponent {
       triggerElement = this.triggerElement3;
     }
     if (triggerElement) {
-      this.dialogService.openDialog(componentKey, false, triggerElement);
+      this.dialogService.openDialog(componentKey, false, this.isMobileView, triggerElement);
     } else {
       this.dialogService.openDialog(componentKey);
     }
+  }
+
+  checkMobileView(): void {
+    this.isMobileView = window.innerWidth <= 650;
   }
 
 
