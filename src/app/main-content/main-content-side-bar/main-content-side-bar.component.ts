@@ -20,15 +20,13 @@ export class MainContentSideBarComponent {
   directmessages_opened: boolean = true;
 
   mobile: boolean = false;
-  guestIsLoggedIn: boolean = false;
-  guestId: string = 'kMsZHupMksQU5xS5goyZboGicFy2';
-
+  
 
   channels: Channel[] = [];
   currentUser!: User;
   users: any[] = [];
   usersWithConversation: any[] = [];
-  loggedInUser!: User | null;
+ 
   private destroyed$ = new Subject<void>();
 
   constructor(private dialogService: OpenDialogService,
@@ -54,10 +52,6 @@ export class MainContentSideBarComponent {
       this.mobile = value;
     });
 
-    this.userService.loggedInUser$.pipe(takeUntil(this.destroyed$)).subscribe((loggedInUser) => {
-      this.loggedInUser = loggedInUser;
-    });
-
     this.dataService.update_sidebar$.subscribe((value: boolean) => {
       if (value) {
         this.checkConversations();
@@ -77,11 +71,6 @@ export class MainContentSideBarComponent {
         this.usersWithConversation.push(user)
       }
     }
-  }
-
-  checkGuestLogIn(): boolean {
-    return this.loggedInUser?.id !== this.guestId;
-
   }
 
   openNewMessageInput() {

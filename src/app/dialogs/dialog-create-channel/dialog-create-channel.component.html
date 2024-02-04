@@ -21,8 +21,9 @@
         <input [(ngModel)]="channel.description" matInput placeholder="Dein Text hier">
     </div>
     <div class="button">
-        <button mat-raised-button color="primary" (click)="createChannel()" [disabled]="!activateCreateChannel()">
+        <button mat-raised-button color="primary" (click)="createChannel()" [disabled]="!activateCreateChannel() || isGuestUser">
             {{ isChannelNameTaken ? 'Channel-Name vergeben' : 'Erstellen' }}
+            {{ isGuestUser ? 'im Gast-Modus deaktiviert' : 'Erstellen' }}
           </button>
     </div>
 </div>

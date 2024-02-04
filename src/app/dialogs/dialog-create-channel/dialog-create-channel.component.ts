@@ -5,6 +5,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { User } from 'src/app/models/user.class';
 import { DataService } from 'src/app/shared-services/data.service';
+import { UserService } from 'src/app/shared-services/user.service';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-create-channel',
@@ -24,13 +26,19 @@ export class DialogCreateChannelComponent {
   channel = new Channel();
   currentUser!: User;
   isChannelNameTaken: boolean = false;
+  guestId: string = 'kMsZHupMksQU5xS5goyZboGicFy2';
+  isGuestUser!: User | null;
 
   constructor(private channelsService: ChannelsService,
     private dialogService: OpenDialogService,
     private dialogRef: MatDialogRef<DialogCreateChannelComponent>,
-    private dataService: DataService) {
+    private dataService: DataService,
+    private userService: UserService) {
     this.channelsService.currentUserInfo$.subscribe((currentUser) => {
       this.currentUser = currentUser;
+    });
+    this.userService.loggedInUser$.subscribe((loggedInUser) => {
+      this.isGuestUser = loggedInUser;
     });
     this.checkMobileView();
   }
@@ -43,6 +51,11 @@ export class DialogCreateChannelComponent {
     this.channelsService.channels$.subscribe(channels => {
       this.isChannelNameTaken = channels.some(channel => channel.name === this.channel.name);
     });
+  }
+
+  checkGuestLogIn(): boolean {
+    return this.isGuestUser?.id !== this.guestId;
+
   }
 
   activateCreateChannel(): boolean {

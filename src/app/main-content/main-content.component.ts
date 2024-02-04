@@ -73,9 +73,6 @@ export class MainContentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   
-  // this.dialogService.openDialog('showWelcomeMessage');
-
     this.setCurrentUser();
     this.channelService.subChannelsList();
     if (!this.mobile) {
