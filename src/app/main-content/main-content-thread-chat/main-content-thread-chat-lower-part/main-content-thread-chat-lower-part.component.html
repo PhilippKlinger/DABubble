@@ -30,7 +30,7 @@
                     {{ thread_subject?.message }}
                 </div>
 
-                <div *ngIf="thread_subject?.img">                        
+                <div *ngIf="thread_subject?.img">
                     <button mat-raised-button (click)="this.commonService.downloadImage(thread_subject?.img)">
                         <mat-icon>file_download</mat-icon> Download
                     </button>
@@ -55,62 +55,65 @@
             </div>
         </div>
 
-        <div *ngFor="let answer of threadAnswers; let i = index">
-            <div class="thread-user-message" *ngIf="answer.creator == this.user.name">
-                <img class="user-message-avatar" src="{{ answer.avatar }}">
-                <div class="flex-end">
-                    <div class="user-message-time-name">
-                        <span>{{ getFormattedTime(answer) }}</span>
-                        <h3>{{ answer.creator }}</h3>
-                    </div>
-                    <div *ngIf="answer.message" class="speech-bubble-user">
-                        {{ answer.message }}
-                    </div>
-                    <div *ngIf="answer.img">                        
-                        <button mat-raised-button (click)="this.commonService.downloadImage(answer.img)">
-                            <mat-icon>file_download</mat-icon> Download
-                        </button>
-                    </div>
-                    <div class="user-message-emojis">
-                        <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
-                            <div>{{ reactions.reaction }}</div>
-                            <span>{{ reactions.amount }}</span>
+        <div *ngIf="threadAnswers && threadAnswers.length > 0">
+            <div *ngFor="let answer of threadAnswers; let i = index">
+                <div class="thread-user-message" *ngIf="answer.creator == this.user.name">
+                    <img class="user-message-avatar" src="{{ answer.avatar }}">
+                    <div class="flex-end">
+                        <div class="user-message-time-name">
+                            <span>{{ getFormattedTime(answer) }}</span>
+                            <h3>{{ answer.creator }}</h3>
                         </div>
-                        <mat-icon class="material-icons-outlined">add_reaction</mat-icon>
-                    </div>
-                </div>
-
-                <div class="user-message-hover-options">
-                    <mat-icon (click)="toggleEmojiWindowForMessage(i)" class="material-icons-outlined">add_reaction</mat-icon>
-                    <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
-                    <span *ngIf="hoverOptionEditMessage_open">
-                        <h1 class="hover-options-edit-message">
-                            Nachricht bearbeiten
-                        </h1>
-                    </span>
-                </div>
-            </div>
-
-            <div class="thread-anon-user-message" *ngIf="answer.creator !== this.user.name">
-                <img class="user-message-avatar" src="{{ answer.avatar }}">
-                <div>
-                    <div class="anon-user-message-time-name">
-                        <span>{{ getFormattedTime(answer) }}</span>
-                        <h3>{{ answer.creator }}</h3>
-                    </div>
-                    <div class="anon-speech-bubble-user">
-                        {{ answer.message }}
-                    </div>
-                    <div class="anon-user-message-emojis">
-                        <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
-                            <div>{{ reactions.reaction }}</div>
-                            <span>{{ reactions.amount }}</span>
+                        <div *ngIf="answer.message" class="speech-bubble-user">
+                            {{ answer.message }}
+                        </div>
+                        <div *ngIf="answer.img">
+                            <button mat-raised-button (click)="this.commonService.downloadImage(answer.img)">
+                                <mat-icon>file_download</mat-icon> Download
+                            </button>
+                        </div>
+                        <div class="user-message-emojis">
+                            <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
+                                <div>{{ reactions.reaction }}</div>
+                                <span>{{ reactions.amount }}</span>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="user-message-hover-options">
+                        <mat-icon (click)="toggleEmojiWindowForMessage(i)"
+                            class="material-icons-outlined">add_reaction</mat-icon>
+                        <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
+                        <span *ngIf="hoverOptionEditMessage_open">
+                            <h1 class="hover-options-edit-message">
+                                Nachricht bearbeiten
+                            </h1>
+                        </span>
+                    </div>
                 </div>
 
-                <div class="anon-message-hover-options">
-                    <mat-icon (click)="toggleEmojiWindowForMessage(i)" class="material-icons-outlined">add_reaction</mat-icon>
+                <div class="thread-anon-user-message" *ngIf="answer.creator !== this.user.name">
+                    <img class="user-message-avatar" src="{{ answer.avatar }}">
+                    <div>
+                        <div class="anon-user-message-time-name">
+                            <span>{{ getFormattedTime(answer) }}</span>
+                            <h3>{{ answer.creator }}</h3>
+                        </div>
+                        <div class="anon-speech-bubble-user">
+                            {{ answer.message }}
+                        </div>
+                        <div class="anon-user-message-emojis">
+                            <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
+                                <div>{{ reactions.reaction }}</div>
+                                <span>{{ reactions.amount }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="anon-message-hover-options">
+                        <mat-icon (click)="toggleEmojiWindowForMessage(i)"
+                            class="material-icons-outlined">add_reaction</mat-icon>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,8 +121,8 @@
 </div>
 
 <div class="chat-input">
-    <textarea *ngIf="!uploadedFileLinkThread && !errorUploadFileThread" (keyup.enter)="sendAnswerToThread()" #answer class="chat-input-design" name="" id="" cols="" rows=""
-        placeholder="Antworten..."></textarea>
+    <textarea *ngIf="!uploadedFileLinkThread && !errorUploadFileThread" (keyup.enter)="sendAnswerToThread()" #answer
+        class="chat-input-design" name="" id="" cols="" rows="" placeholder="Antworten..."></textarea>
     <div *ngIf="uploadedFileLinkThread" class="submit-buttons d-flex-standard">
         <button class="btn-submit" mat-button>
             <a href="{{uploadedFileLinkThread}}" target="_blank">Datei ansehen</a>
@@ -133,7 +136,8 @@
         <div class="chat-input-options">
             <div>
                 <!-- Test for File upload -->
-                <input #fileInputThread id="fileInput-thread-chat" (change)="handleFileInputThread($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png,.pdf" />
+                <input #fileInputThread id="fileInput-thread-chat" (change)="handleFileInputThread($event)"
+                    class="d-none" type="file" accept=".jpg,.jpeg,.png,.pdf" />
                 <mat-icon (click)="this.commonService.triggerFileInput('fileInput-thread-chat')">add</mat-icon>
             </div>
             <div class="chat-input-line"></div>

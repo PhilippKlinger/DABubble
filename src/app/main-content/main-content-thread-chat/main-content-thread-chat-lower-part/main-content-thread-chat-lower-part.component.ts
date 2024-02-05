@@ -16,7 +16,7 @@ export class MainContentThreadChatLowerPartComponent {
   @ViewChild('answer') input_answer!: ElementRef;
   @ViewChild('fileInputThread') fileInput!: ElementRef
   @ViewChild('chat_content') chat_content!: ElementRef;
-  thread_subject: any = null;
+  thread_subject: any = [];
   thread_subject_time: any;
   threadAnswers: any = [];
   answer = new Message();
@@ -29,16 +29,16 @@ export class MainContentThreadChatLowerPartComponent {
   errorUploadFileThread: boolean = false;
 
 
-  constructor(private channelService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService) {
+  constructor(private channelsService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService) {
     this.messagesService.thread_subject$.subscribe((value: Message) => {
       if (value) {
         this.thread_subject_time = this.getFormattedTime(value);
         this.thread_subject = value;
+        this.receiveThreadAnswers();
       }
-      this.receiveThreadAnswers();
     });
 
-    this.channelService.currentUserInfo$.subscribe((user: User) => {
+    this.channelsService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
   }
@@ -76,7 +76,7 @@ export class MainContentThreadChatLowerPartComponent {
   }
 
   addReaction($event: any) {
-    const currentUserInfo = this.channelService.currentUserInfo$.value
+    const currentUserInfo = this.channelsService.currentUserInfo$.value
 
     this.reaction.setReaction($event.emoji.native);
     this.reaction.setCreator(currentUserInfo.name);
@@ -95,9 +95,17 @@ export class MainContentThreadChatLowerPartComponent {
     this.emoji_window_open = !this.emoji_window_open;
   }
 
+  selectMessageForThread(index: number) {
+    this.messagesService.thread_subject$.next(this.messagesService.chatMessages[index]);
+    this.messagesService.thread_subject_index$.next(index);
+  }
+
   async sendAnswerToThread() {
-    const { name, id, avatar } = this.channelService.currentUserInfo$.value;
+    const { name, id, avatar } = this.channelsService.currentUserInfo$.value;
+    const selectedChannel = this.channelsService.selectedChannel$.value;
     const thread_subject = this.messagesService.thread_subject$.value;
+    const thread_subject_index = this.messagesService.thread_subject_index$.value;
+
     this.answer.setCreator(name);
     this.answer.setCreatorId(id);
     this.answer.setTimestampNow();
@@ -113,6 +121,8 @@ export class MainContentThreadChatLowerPartComponent {
       await this.messagesService.pushThreadAnswerToMessage(this.answer);
       await this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
       this.updateScroll();
+      this.channelsService.setSelectedChannel(selectedChannel!);
+      this.selectMessageForThread(thread_subject_index!);
     }
     this.answer.setMessage('');
     this.answer.setImg('');

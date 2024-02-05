@@ -19,7 +19,7 @@ export class MessagesService {
   chatMessages: Message[] = [];
   threadAnswers: any = [];
   directMessages: any = [];
-  answerReactions = [];
+  answerReactions: any = [];
   messageReactions = [];
   DMReactions = [];
   DMReactions2 = [];
@@ -238,17 +238,18 @@ export class MessagesService {
     const selectedChannel = this.channelsService.selectedChannel$.value;
 
     if (selectedChannel && thread_subject) {
-      for (let i = 0; i < this.threadAnswers.length; i++) {
-        let answer = this.threadAnswers[i];
-
-        onSnapshot(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, answer), (snapshot: any) => {
-          this.answerReactions = snapshot.docs.map((doc: any) => doc.data());
-          try {
-            this.threadAnswers[i].reactions = this.answerReactions;
-          } catch {
-            console.log("couldn't set reaction to the answer.")
-          }
-        });
+      if (this.threadAnswers > 0) {
+        for (let i = 0; i < this.threadAnswers.length; i++) {
+          let answer = this.threadAnswers[i];
+          onSnapshot(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, answer), (snapshot: any) => {
+            this.answerReactions = snapshot.docs.map((doc: any) => doc.data());
+            try {
+              this.threadAnswers[i].reactions = this.answerReactions;
+            } catch {
+              console.log("couldn't set reaction to the answer.")
+            }
+          });
+        }
       }
     } else {
       console.log('no selected channel or thread subject available.');
@@ -343,11 +344,13 @@ export class MessagesService {
   }
 
   sortThreadAnswersByTime() {
-    this.threadAnswers.sort((a: any, b: any) => {
-      const timeA = this.parseDate(a.timestamp);
-      const timeB = this.parseDate(b.timestamp);
-      return timeA - timeB;
-    });
+    if (this.threadAnswers > 0) {
+      this.threadAnswers.sort((a: any, b: any) => {
+        const timeA = this.parseDate(a.timestamp);
+        const timeB = this.parseDate(b.timestamp);
+        return timeA - timeB;
+      });
+    }
   }
 
   parseDate(timestamp: any) {
@@ -414,27 +417,18 @@ export class MessagesService {
     this.channelsService.setSelectedChannel(selectedChannel!);
   }
 
-  selectMessageForThread(index: number) {
-    this.thread_subject$.next(this.chatMessages[index]);
-    this.thread_subject_index$.next(index);
-  }
-
-
   async pushThreadAnswerToMessage(answer: Message): Promise<void> {
     const selectedChannel = this.channelsService.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
-    const thread_subject_index = this.thread_subject_index$.value;
 
     answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm:ss', 'en-US');
     if (selectedChannel && thread_subject && thread_subject !== undefined) {
       const docRef = await addDoc(this.getChannelsMessageColRef(selectedChannel, thread_subject), answer.toJSON());
       answer.setId(docRef.id);
-      updateDoc(this.getUpdateChannelsMessageColRef(selectedChannel, thread_subject, docRef.id), answer.toJSON())
+      await updateDoc(this.getUpdateChannelsMessageColRef(selectedChannel, thread_subject, docRef.id), answer.toJSON());
     } else {
       console.error('No selected channel or thread subject available.');
     }
-    this.channelsService.setSelectedChannel(selectedChannel!);
-    this.selectMessageForThread(thread_subject_index!);
   }
 
   async pushMessageToChannel(message: Message): Promise<void> {
