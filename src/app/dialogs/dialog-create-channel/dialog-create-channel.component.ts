@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -6,7 +6,7 @@ import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { User } from 'src/app/models/user.class';
 import { DataService } from 'src/app/shared-services/data.service';
 import { UserService } from 'src/app/shared-services/user.service';
-import { takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-create-channel',
@@ -18,28 +18,21 @@ import { takeUntil } from 'rxjs';
 
 
 export class DialogCreateChannelComponent {
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.checkMobileView();
-  }
-  isMobileView: boolean = false;
+  isMobileView!: boolean;
   channel = new Channel();
   currentUser!: User;
   isChannelNameTaken: boolean = false;
   isGuestUser!: boolean;
+  private destroyed$ = new Subject<void>();
 
   constructor(private channelsService: ChannelsService,
     private dialogService: OpenDialogService,
     private dialogRef: MatDialogRef<DialogCreateChannelComponent>,
     private dataService: DataService,
     private userService: UserService) {
-    this.channelsService.currentUserInfo$.subscribe((currentUser) => {
-      this.currentUser = currentUser;
-    });
-    this.userService.isGuestUser$.subscribe((isGuestUser) => {
-      this.isGuestUser = isGuestUser;
-    });
-    this.checkMobileView();
+    this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => { this.currentUser = currentUser; });
+    this.userService.isGuestUser$.pipe(takeUntil(this.destroyed$)).subscribe(isGuestUser => { this.isGuestUser = isGuestUser; });
+    this.dialogService.isMobileView$.pipe(takeUntil(this.destroyed$)).subscribe((isMobileView) => { this.isMobileView = isMobileView; });
   }
 
   onInput() {
@@ -55,10 +48,6 @@ export class DialogCreateChannelComponent {
   activateCreateChannel(): boolean {
     return !this.isChannelNameTaken && this.channel.name.trim() !== '';
 
-  }
-
-  checkMobileView(): void {
-    this.isMobileView = window.innerWidth <= 650;
   }
 
   createChannel(): void {
@@ -78,6 +67,11 @@ export class DialogCreateChannelComponent {
         console.error('Fehler beim Erstellen des Kanals:', error);
       });
     }
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }
 

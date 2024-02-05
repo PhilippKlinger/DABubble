@@ -10,6 +10,7 @@ import { DialogAddChannelmembersComponent } from '../dialogs/dialog-add-channelm
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { DialogShowChannelmembersComponent } from '../dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component';
 import { DialogShowWelcomeMessageComponent } from '../dialogs/dialog-show-welcome-message/dialog-show-welcome-message.component';
+import { fromEvent, map, startWith } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,10 @@ import { DialogShowWelcomeMessageComponent } from '../dialogs/dialog-show-welcom
 export class OpenDialogService {
 
   public needToAddMoreMembers$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public isMobileView$ = fromEvent(window, 'resize').pipe(
+    startWith(this.checkMobileView()),
+    map(() => this.checkMobileView())
+  );
   private _dialogTriggerElementRef: ElementRef | null = null;
   
   dialogComponents: Record<string, ComponentType<unknown>> = {
@@ -29,9 +34,8 @@ export class OpenDialogService {
     'showChannelmembers': DialogShowChannelmembersComponent,
     'showWelcomeMessage': DialogShowWelcomeMessageComponent,
   };
-
   
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog) {  this.isMobileView$.subscribe(); }
 
   setDialogTriggerElementRef(elementRef: ElementRef) {
     this._dialogTriggerElementRef = elementRef;
@@ -104,6 +108,9 @@ export class OpenDialogService {
     }
 }
 
+checkMobileView(): boolean {
+  return window.innerWidth <= 650;
+}
 
   setNeedToAddMoreMembers(value: boolean): void {
     this.needToAddMoreMembers$.next(value);

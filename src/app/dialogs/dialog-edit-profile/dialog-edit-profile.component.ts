@@ -6,6 +6,7 @@ import { UserService } from 'src/app/shared-services/user.service';
 import { Auth, updateProfile } from '@angular/fire/auth';
 import { Channel } from 'src/app/models/channel.class';
 import { StorageService } from 'src/app/shared-services/storage.service';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-dialog-edit-profile',
   templateUrl: './dialog-edit-profile.component.html',
@@ -19,9 +20,10 @@ export class DialogEditProfileComponent {
   users: User[] = [];
   selectedChannel!: Channel | null;
   isGuestUser!: boolean;
+  private destroyed$ = new Subject<void>();
 
 
-  openAvatarSelection:boolean = false;
+  openAvatarSelection: boolean = false;
   avatarFile: File | null = null;
   errorUploadFile: boolean = false;
   avatarPaths: string[] = [
@@ -35,25 +37,19 @@ export class DialogEditProfileComponent {
 
   constructor(
     private auth: Auth,
-    private channelService: ChannelsService,
+    private channelsService: ChannelsService,
     private userService: UserService,
     private dialogRef: MatDialogRef<DialogEditProfileComponent>,
     private storageService: StorageService
   ) {
-    this.channelService.currentUserInfo$.subscribe((currentUser) => {
+    this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe((currentUser) => {
       this.currentUser = currentUser;
       this.newUserName = currentUser.name;
       this.selectedAvatar = currentUser.avatar;
     });
-    this.userService.users$.subscribe((users) => {
-      this.users = users;
-    });
-    this.channelService.selectedChannel$.subscribe((selectedChannel) => {
-      this.selectedChannel = selectedChannel
-    });
-    this.userService.isGuestUser$.subscribe((isGuestUser) => {
-      this.isGuestUser = isGuestUser;
-    })
+    this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe((users) => { this.users = users });
+    this.channelsService.selectedChannel$.pipe(takeUntil(this.destroyed$)).subscribe(selectedChannel => { this.selectedChannel = selectedChannel });
+    this.userService.isGuestUser$.pipe(takeUntil(this.destroyed$)).subscribe((isGuestUser) => { this.isGuestUser = isGuestUser; });
   }
 
   async saveChanges(): Promise<void> {
@@ -80,28 +76,28 @@ export class DialogEditProfileComponent {
       // Update user info in Firestore
       userToUpdate.name = this.newUserName;
       userToUpdate.avatar = this.selectedAvatar,
-      await this.userService.updateUser(userToUpdate);
+        await this.userService.updateUser(userToUpdate);
 
       // Update user info in Session Storage
       sessionStorage.setItem('user', JSON.stringify(userToUpdate));
-      this.channelService.currentUserInfo$.next(userToUpdate);
+      this.channelsService.currentUserInfo$.next(userToUpdate);
 
 
       // Update channel members
-      const channels = this.channelService.channels$.value;
+      const channels = this.channelsService.channels$.value;
       channels.forEach(channel => {
         const members = channel.members || [];
         const index = members.findIndex(member => member.id === userToUpdate.id);
 
         if (index !== -1) {
           members[index] = userToUpdate.toJSON();
-          this.channelService.updateChannel(channel);
+          this.channelsService.updateChannel(channel);
         }
       });
 
-      await this.channelService.updateUserNameInAllMessages(user.uid, this.newUserName, this.selectedAvatar);
-     
-      this.channelService.refreshChannelsAfterEditingProfile();
+      await this.channelsService.updateUserNameInAllMessages(user.uid, this.newUserName, this.selectedAvatar);
+
+      this.channelsService.refreshChannelsAfterEditingProfile();
       this.dialogRef.close();
 
     } catch (error) {
@@ -123,11 +119,11 @@ export class DialogEditProfileComponent {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
     const file = input.files[0];
-    const MAX_FILE_SIZE = 1572864; 
+    const MAX_FILE_SIZE = 1572864;
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];   //commonService
-    
+
     this.errorUploadFile = !validTypes.includes(file.type) || file.size > MAX_FILE_SIZE;
-  
+
     if (!this.errorUploadFile) {
       this.storageService.uploadFile(file).then(url => {
         this.selectedAvatar = url;
@@ -136,8 +132,11 @@ export class DialogEditProfileComponent {
       });
     }
   }
-  
 
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
 
 }
 

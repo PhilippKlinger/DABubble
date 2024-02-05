@@ -25,24 +25,9 @@ export class DialogShowProfileComponent {
     private dataService: DataService,
     private dialogRef: MatDialogRef<DialogShowProfileComponent>,
     private messageService: MessagesService) {
-
-    this.channelsService.selectedChannel$.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(channel => {
-      this.channel = channel;
-    });
-
-    this.userService.selectedUserforProfileView$.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(user => {
-      this.user = user;
-    });
-
-    this.channelsService.currentUserInfo$.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(currentUser => {
-      this.currentUser = currentUser;
-    });
+    this.channelsService.selectedChannel$.pipe(takeUntil(this.destroyed$)).subscribe(channel => { this.channel = channel });
+    this.userService.selectedUserforProfileView$.pipe(takeUntil(this.destroyed$)).subscribe(user => { this.user = user; });
+    this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => { this.currentUser = currentUser; });
   }
 
   openDM() {

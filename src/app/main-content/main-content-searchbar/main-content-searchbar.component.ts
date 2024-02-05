@@ -124,6 +124,8 @@ export class MainContentSearchbarComponent {
           this.dataService.thread_open$.next(false);
           this.dataService.new_message_open$.next(false);
           this.dataService.directmessage_open$.next(false);
+          this.dataService.mainchat_mobile_open$.next(true);
+          this.dataService.workspace_header_open$.next(true);
           counter++;
           if (counter === 5) {
             clearInterval(intervalId);

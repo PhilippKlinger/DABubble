@@ -20,7 +20,7 @@ export class DialogAddChannelmembersComponent {
 
   filteredUsers: User[] = [];
   selectedUsers: User[] = [];
-
+  isGuestUser!: boolean;
   needToAddMoreMembers: boolean = false;
   addLastUser:boolean = false;
   areUsersAvailable: boolean = true;
@@ -28,7 +28,7 @@ export class DialogAddChannelmembersComponent {
   users: User[] = [];
   currentUser!: User;
   private destroyed$ = new Subject<void>();
-  isGuestUser!: boolean;
+
 
   constructor(private channelsService: ChannelsService,
     private dialogService: OpenDialogService,
@@ -38,9 +38,7 @@ export class DialogAddChannelmembersComponent {
     this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe(users => { this.users = users; });
     this.dialogService.needToAddMoreMembers$.pipe(takeUntil(this.destroyed$)).subscribe(state => { this.needToAddMoreMembers = state; });
     this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe(user => { this.currentUser = user; });
-    this.userService.isGuestUser$.subscribe((isGuestUser) => {
-      this.isGuestUser = isGuestUser;
-    });
+    this.userService.isGuestUser$.pipe(takeUntil(this.destroyed$)).subscribe(isGuestUser => {  this.isGuestUser = isGuestUser;});
     this.updateUsersAvailability();
   }
 

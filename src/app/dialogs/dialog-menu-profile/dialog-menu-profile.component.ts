@@ -4,6 +4,7 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Auth } from '@angular/fire/auth';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-menu-profile',
@@ -14,11 +15,10 @@ export class DialogMenuProfileComponent {
 
   currentUser!: User;
   isLoggedInWithGoogle: boolean = false;
+  private destroyed$ = new Subject<void>();
 
   constructor(private channelService: ChannelsService, private FbAuth: Auth, private dialogService: OpenDialogService, private dialogRef: MatDialogRef<DialogMenuProfileComponent>) {
-    this.channelService.currentUserInfo$.subscribe((currentUser) => {
-      this.currentUser = currentUser;
-    });
+    this.channelService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe((currentUser) => { this.currentUser = currentUser });
     this.checkAuthenticationProvider();
   }
 
@@ -41,6 +41,11 @@ export class DialogMenuProfileComponent {
       window.open("https://myaccount.google.com/")
     }
 
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
 }

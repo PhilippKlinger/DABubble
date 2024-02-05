@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { Channel } from 'src/app/models/channel.class';
@@ -17,11 +17,7 @@ import { take } from 'rxjs/operators';
     '../dialog-edit-profile/dialog-edit-profile.component.scss']
 })
 export class DialogShowChannelmembersComponent {
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.checkMobileView();
-  }
-  isMobileView: boolean = false;
+  isMobileView!: boolean;
   private destroyed$ = new Subject<void>();
   channel: Channel | null = null;
 
@@ -31,7 +27,11 @@ export class DialogShowChannelmembersComponent {
     ).subscribe(channel => {
       this.channel = channel;
     });
-    this.checkMobileView();
+    this.dialogService.isMobileView$.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(isMobileView => {
+      this.isMobileView = isMobileView;
+    });
   }
 
   showSelectedUser(user: User) {
@@ -52,10 +52,6 @@ export class DialogShowChannelmembersComponent {
   openDialogMobile(componentKey: string): void {
     this.dialogService.setNeedToAddMoreMembers(true);
     this.dialogService.openDialog(componentKey, false, this.isMobileView);
-  }
-
-  checkMobileView(): void {
-    this.isMobileView = window.innerWidth <= 650;
   }
 
   ngOnDestroy() {
