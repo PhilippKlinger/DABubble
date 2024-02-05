@@ -1,4 +1,4 @@
-<div class="dialog-content mobile">
+<div class="dialog-content">
     <div class="dialog-head">
         <span>Profil</span>
         <button mat-icon-button mat-dialog-close>
@@ -29,6 +29,6 @@
         </div>
     </div>
     <div class="button">
-        <button (click)="openDM()" mat-raised-button color="primary">Nachricht</button>
+        <button (click)="openDM()" mat-raised-button color="primary">{{ this.user?.id !== currentUser.id ? 'Nachricht' : 'Nachricht an Dich' }}</button>
     </div>
 </div>

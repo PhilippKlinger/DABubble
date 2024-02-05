@@ -26,8 +26,7 @@ export class DialogCreateChannelComponent {
   channel = new Channel();
   currentUser!: User;
   isChannelNameTaken: boolean = false;
-  guestId: string = 'kMsZHupMksQU5xS5goyZboGicFy2';
-  isGuestUser!: User | null;
+  isGuestUser!: boolean;
 
   constructor(private channelsService: ChannelsService,
     private dialogService: OpenDialogService,
@@ -37,8 +36,8 @@ export class DialogCreateChannelComponent {
     this.channelsService.currentUserInfo$.subscribe((currentUser) => {
       this.currentUser = currentUser;
     });
-    this.userService.loggedInUser$.subscribe((loggedInUser) => {
-      this.isGuestUser = loggedInUser;
+    this.userService.isGuestUser$.subscribe((isGuestUser) => {
+      this.isGuestUser = isGuestUser;
     });
     this.checkMobileView();
   }
@@ -51,11 +50,6 @@ export class DialogCreateChannelComponent {
     this.channelsService.channels$.subscribe(channels => {
       this.isChannelNameTaken = channels.some(channel => channel.name === this.channel.name);
     });
-  }
-
-  checkGuestLogIn(): boolean {
-    return this.isGuestUser?.id !== this.guestId;
-
   }
 
   activateCreateChannel(): boolean {

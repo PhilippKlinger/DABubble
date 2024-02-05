@@ -18,7 +18,8 @@
                 <mat-icon *ngIf="isMobileView">edit_outlined</mat-icon>
                 <span *ngIf="!isMobileView">Bearbeiten</span>
             </p>
-            <p class="button" *ngIf="isEditingName" (click)="saveChanges('name')">
+            <p [ngClass]="{'button-disabled-2': isGuestUser}" class="button" *ngIf="isEditingName"
+                (click)="saveChanges('name')">
                 <mat-icon *ngIf="isMobileView">check_circle_outlined</mat-icon>
                 <span *ngIf="!isMobileView">Speichern</span>
             </p>
@@ -27,7 +28,7 @@
             <span class *ngIf="!isEditingName">{{newChannelName}}</span>
             <input [(ngModel)]="newChannelName" *ngIf="isEditingName" matInput placeholder={{channel?.name}}>
         </div>
-        
+
     </div>
     <div class="dialog-bottom" [ngClass]="{'show-border': !isEditingDescription}">
         <div class="name-input">
@@ -37,16 +38,18 @@
                     <mat-icon *ngIf="isMobileView">edit_outlined</mat-icon>
                     <span *ngIf="!isMobileView">Bearbeiten</span>
                 </p>
-                <p class="button" *ngIf="isEditingDescription" (click)="saveChanges('description')">
+                <p [ngClass]="{'button-disabled-2': isGuestUser}" class="button" *ngIf="isEditingDescription"
+                    (click)="saveChanges('description')">
                     <mat-icon *ngIf="isMobileView">check_circle_outlined</mat-icon>
                     <span *ngIf="!isMobileView">Speichern</span>
                 </p>
             </div>
             <div>
                 <span *ngIf="!isEditingDescription">{{newChannelDescription}}</span>
-                <input [(ngModel)]="newChannelDescription" *ngIf="isEditingDescription" matInput placeholder="Dein Text hier">
+                <input [(ngModel)]="newChannelDescription" *ngIf="isEditingDescription" matInput
+                    placeholder="Dein Text hier">
             </div>
-           
+
         </div>
 
         <div class="divider">
@@ -58,11 +61,13 @@
         </div>
     </div>
 
-<div *ngIf="isMobileView" class="mobile-view show-border">
-    <app-dialog-show-channelmembers></app-dialog-show-channelmembers>
-</div>
+    <div *ngIf="isMobileView" class="mobile-view show-border">
+        <app-dialog-show-channelmembers></app-dialog-show-channelmembers>
+    </div>
 
-    <div class="button">
-        <button mat-raised-button color="primary" (click)="leaveChannel()">Channel verlassen</button>
+    <div class="button" [ngClass]="{'button-disabled': isGuestUser}">
+        <button mat-raised-button color="primary" [disabled]="isGuestUser" (click)="leaveChannel()">
+            {{isGuestUser ? 'Channel verlassen im Gast-Modus deaktiviert' : 'Channel verlassen'}}
+        </button>
     </div>
 </div>

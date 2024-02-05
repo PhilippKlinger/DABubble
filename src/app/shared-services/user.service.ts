@@ -15,12 +15,13 @@ import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 export class UserService {
   public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   public selectedUserforProfileView$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
-  public loggedInUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  public isGuestUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 
   private unsubUsers;
+  public guestId: string = 'kMsZHupMksQU5xS5goyZboGicFy2';
 
-  constructor(private firestore: Firestore, private auth:Auth, private channelsService: ChannelsService) {
+  constructor(private firestore: Firestore, private auth: Auth, private channelsService: ChannelsService) {
     this.unsubUsers = this.subUsersList();
     this.monitorAuthState();
   }
@@ -109,23 +110,15 @@ export class UserService {
   }
 
 
-  monitorAuthState() {
+  monitorAuthState(): void {
     onAuthStateChanged(this.auth, (firebaseUser) => {
       if (firebaseUser) {
-        // Benutzer ist eingeloggt
-        this.getUserInfos(firebaseUser.uid).then((userInfo) => {
-          if (userInfo) {
-            const user = new User(userInfo);
-            this.loggedInUser$.next(user);
-          } else {
-            // Fallback oder Gastbenutzer-Logik hier
-            console.log('Keine Benutzerdaten gefunden');
-          }
-        }).catch((error) => console.error(error));
+        this.isGuestUser$.next(firebaseUser.uid === this.guestId);
       } else {
-        // Benutzer ist abgemeldet oder es gibt keinen Benutzer
-        this.loggedInUser$.next(null);
+        this.isGuestUser$.next(false);
       }
     });
+    console.log('is Guest User aktiv', this.isGuestUser$)
   }
 }
+

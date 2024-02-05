@@ -28,7 +28,7 @@ export class DialogAddChannelmembersComponent {
   users: User[] = [];
   currentUser!: User;
   private destroyed$ = new Subject<void>();
-  private guestEmail = 'guestLogin@guest.com'; 
+  isGuestUser!: boolean;
 
   constructor(private channelsService: ChannelsService,
     private dialogService: OpenDialogService,
@@ -38,6 +38,9 @@ export class DialogAddChannelmembersComponent {
     this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe(users => { this.users = users; });
     this.dialogService.needToAddMoreMembers$.pipe(takeUntil(this.destroyed$)).subscribe(state => { this.needToAddMoreMembers = state; });
     this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe(user => { this.currentUser = user; });
+    this.userService.isGuestUser$.subscribe((isGuestUser) => {
+      this.isGuestUser = isGuestUser;
+    });
     this.updateUsersAvailability();
   }
 
@@ -47,29 +50,18 @@ export class DialogAddChannelmembersComponent {
   }
 
   updateUsersAvailability() {
-    // Anzahl der bereits im Channel befindlichen Mitglieder
     const currentMemberCount = this.channel ? this.channel.members.length : 0;
-  
-    // Anzahl der gesamten Benutzer, ausgenommen Gastbenutzer
-    const totalUserCount = this.users.filter(user => user.email !== this.guestEmail).length;
-  
-    // Anzahl der bereits ausgewählten, aber noch nicht hinzugefügten Benutzer
+    const totalUserCount = this.users.filter(user => user.id !== this.userService.guestId).length;
     const selectedUserCount = this.selectedUsers.length;
-  
-    // Verfügbarkeit basiert auf dem Vergleich der Anzahlen
     this.areUsersAvailable = ((currentMemberCount + selectedUserCount) < totalUserCount);
-
     this.addLastUser = (currentMemberCount < totalUserCount);
-
   }
   
-  
-
   filterUsers() {
     if (this.channel) {
       const channelMembers = this.channel.members || [];
       this.filteredUsers = this.users.filter(user => {
-        const isGuestUser = user.email === this.guestEmail; 
+        const isGuestUser = user.id === this.userService.guestId; 
         const userIncluded = channelMembers.some(channelUser => channelUser.id === user.id);
         return (
           user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
@@ -80,7 +72,7 @@ export class DialogAddChannelmembersComponent {
       });
     } else {
       this.filteredUsers = this.users.filter(user => {
-        const isGuestUser = user.email === this.guestEmail; 
+        const isGuestUser = user.id === this.userService.guestId; 
         return (
           user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
           !this.selectedUsers.includes(user) &&
@@ -110,16 +102,16 @@ export class DialogAddChannelmembersComponent {
       if (!this.needToAddMoreMembers) {
         if (this.selectedOption === 'allMembers') {
           newMembers = this.users
-            .filter(user => user.id !== this.currentUser.id && user.email !== this.guestEmail) 
+            .filter(user => user.id !== this.currentUser.id && user.id !== this.userService.guestId) 
             .map(user => user.toJSON());
         } else if (this.selectedOption === 'specificMembers') {
           newMembers = this.selectedUsers
-            .filter(user => user.email !== this.guestEmail) 
+            .filter(user => user.id !== this.userService.guestId) 
             .map(user => user.toJSON());
         }
       } else {
         newMembers = this.selectedUsers
-          .filter(user => user.email !== this.guestEmail)
+          .filter(user => user.id !== this.userService.guestId)
           .map(user => user.toJSON());
       }
   
@@ -133,7 +125,7 @@ export class DialogAddChannelmembersComponent {
       this.dialogService.setNeedToAddMoreMembers(false);
     }
   }
-  
+
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();

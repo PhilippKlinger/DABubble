@@ -1,4 +1,4 @@
-<div class="dialog-content">
+<div class="dialog-content" [ngClass]="{'select-avatar-content': isGuestUser}">
     <div class="dialog-head">
         <span>Profil</span>
         <button mat-icon-button mat-dialog-close>
@@ -11,16 +11,15 @@
     </div>
 
     <div *ngIf="openAvatarSelection" class="avatar-selection">
-        <h3>Wähle deinen Avatar</h3>
-        <div  class="avatar-list">
-            <img *ngFor="let avatar of avatarPaths" (click)="changeAvatar(avatar)" [src]="avatar">
-        </div>
-        <div class="file-upload buttons">
-            <button matTooltip="Dateigröße darf 1.5mb nicht überschreiten!" matTooltipPosition="above" mat-raised-button color="primary" (click)="fileInput.click()">Avatar hochladen</button>
-            <input #fileInput type="file" (change)="onFileSelected($event)" 
+        <div [ngClass]="{'button-disabled': isGuestUser}" class="file-upload buttons">
+            <button [disabled]="isGuestUser"  matTooltip="Dateigröße darf 1.5mb nicht überschreiten!" matTooltipPosition="above" mat-raised-button color="primary" (click)="fileInput.click()">Custom Avatar</button>
+            <input [disabled]="isGuestUser" #fileInput type="file" (change)="onFileSelected($event)" 
                    accept="image/jpeg, image/jpg, image/png" 
                    hidden>
           </div>
+          <div  class="avatar-list">
+            <img *ngFor="let avatar of avatarPaths" (click)="changeAvatar(avatar)" [src]="avatar">
+        </div>
           <span class="error" *ngIf="errorUploadFile">Bitte wählen Sie eine gültige Datei!</span>
       </div>
       
@@ -29,7 +28,7 @@
             <img src="../../../assets/icons/account_circle.svg">
             <span>Vollständiger Name</span>
         </div>
-        <input [(ngModel)]="newUserName" matInput placeholder="{{currentUser.name}}">
+        <input [disabled]="isGuestUser" [(ngModel)]="newUserName" matInput placeholder="{{currentUser.name}}">
     </div>
     <div *ngIf="!openAvatarSelection" class="name-input">
         <div class="name">

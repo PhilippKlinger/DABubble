@@ -66,6 +66,10 @@ $Bg-color: #ECEEFE;
     justify-content: flex-end !important;
 }
 
+.button-disabled {
+    cursor: not-allowed !important;
+}
+
 .added-user-list {
     max-height: 200px;
     overflow-y: auto;

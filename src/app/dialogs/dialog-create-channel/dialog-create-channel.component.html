@@ -22,8 +22,8 @@
     </div>
     <div class="button">
         <button mat-raised-button color="primary" (click)="createChannel()" [disabled]="!activateCreateChannel() || isGuestUser">
-            {{ isChannelNameTaken ? 'Channel-Name vergeben' : 'Erstellen' }}
-            {{ isGuestUser ? 'im Gast-Modus deaktiviert' : 'Erstellen' }}
+            {{ isChannelNameTaken && !isGuestUser ? 'Channel-Name vergeben' : 'Erstellen' }}
+            {{ isGuestUser ? ' im Gast-Modus deaktiviert!' : '' }}
           </button>
     </div>
 </div>

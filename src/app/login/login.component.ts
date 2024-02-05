@@ -5,6 +5,7 @@ import { UserService } from '../shared-services/user.service';
 import { StorageService } from '../shared-services/storage.service';
 import { CommonService } from '../shared-services/common.service';
 import { UserCredential } from 'firebase/auth';
+import { ChannelsService } from '../shared-services/channels.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -35,6 +36,7 @@ export class LoginComponent implements OnInit{
     private userService: UserService,
     private storageService: StorageService,
     public commonService: CommonService,
+    private channelsService: ChannelsService
     ) { this.currentUserCredential = null; }
 
   
@@ -93,6 +95,7 @@ export class LoginComponent implements OnInit{
     this.authService.login('guestLogin@guest.com', 'Guestlogin')
       .then((userCredential) => {
         this.setUserOnline(userCredential);
+        this.channelsService.deleteGuestMessages();
         this.commonService.showPopup('login');
         this.commonService.routeTo('main-content', 2000);
       })

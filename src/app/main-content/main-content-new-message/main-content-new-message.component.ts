@@ -17,6 +17,7 @@ export class MainContentNewMessageComponent {
 
   placeholder: string = 'An: #channel, oder @jemand oder E-Mail Adresse';
   searchQuery: string = '';
+  isGuestUser!: boolean;
   foundChannels: Channel[] = [];
   foundUsers: User[] = [];
   foundEmails: User[] = [];
@@ -33,7 +34,10 @@ export class MainContentNewMessageComponent {
       } else {
         this.placeholder = 'An: #channel, oder @jemand oder E-Mail Adresse';
       }
-    })
+    });
+    this.userService.isGuestUser$.subscribe((isGuestUser) => {
+      this.isGuestUser = isGuestUser;
+    });
   }
 
   onSearchChange(event: Event): void {
@@ -48,16 +52,13 @@ export class MainContentNewMessageComponent {
   }
 
   searchChannelsAndUsers() {
-    this.foundChannels = [];
-    this.foundUsers = [];
-    this.foundEmails = [];
-
     if (!this.searchQuery) {
+      this.clearSearchResults();
       return;
     }
 
     const firstChar = this.searchQuery.charAt(0);
-    const searchQueryLower = this.searchQuery.toLowerCase().slice(1); // Entfernen des ersten Zeichens für die Suche
+    const searchQueryLower = this.searchQuery.toLowerCase().slice(1);
 
     if (firstChar === '#') {
       this.channelsService.channels$.subscribe(channels => {
@@ -66,17 +67,35 @@ export class MainContentNewMessageComponent {
         );
       });
     } else if (firstChar === '@') {
-      this.userService.users$.subscribe(users => {
-        this.foundUsers = users.filter(user =>
-          user.name.toLowerCase().includes(searchQueryLower)
-        );
-      });
+      if (this.isGuestUser) {
+        this.userService.users$.subscribe(users => {
+          this.foundUsers = users.filter(user =>
+            user.id === this.userService.guestId &&
+            user.name.toLowerCase().includes(searchQueryLower)
+          );
+        });
+      } else if(!this.isGuestUser) {
+        this.userService.users$.subscribe(users => {
+          this.foundUsers = users.filter(user => 
+            user.name.toLowerCase().includes(searchQueryLower));
+        });
+      }
     } else {
-      this.userService.users$.subscribe(users => {
-        this.foundEmails = users.filter(user =>
-          user.email.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
-      });
+      if (this.isGuestUser) {
+        this.userService.users$.subscribe(users => {
+          this.foundEmails = users.filter(user =>
+            user.id === this.userService.guestId &&
+            user.email.toLowerCase().includes(this.searchQuery.toLowerCase())
+          );
+        });
+      } else if(!this.isGuestUser) {
+        this.userService.users$.subscribe(users => {
+          this.foundEmails = users.filter(user =>
+            user.email.toLowerCase().includes(this.searchQuery.toLowerCase())
+          );
+        });
+      }
+      
     }
   }
 

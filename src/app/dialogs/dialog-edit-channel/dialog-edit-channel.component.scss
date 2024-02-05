@@ -1,8 +1,5 @@
 .name {
     justify-content: space-between;
-
-
-
     p {
         color: #535AF1;
         margin: 0;
@@ -62,6 +59,19 @@
 
 .button {
     cursor: pointer;
+}
+
+.button-disabled {
+    cursor: not-allowed !important;
+}
+
+.button-disabled-2 {
+    cursor: not-allowed !important;
+
+   span {
+        color: grey !important;
+    }
+   
 }
 
 .dialog-content {

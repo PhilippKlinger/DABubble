@@ -88,8 +88,16 @@ input[disabled] {
     margin-top: 10px;
 }
 
+.select-avatar-content {
+    gap: 15px !important;
+}
+
+.button-disabled {
+    cursor: not-allowed;
+}
+
 @media (max-width: 650px) {
     .avatar-list {
-        max-width: 85%;
+        max-width: 75%;
     }
 }

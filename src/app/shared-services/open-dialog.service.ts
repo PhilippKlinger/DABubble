@@ -48,8 +48,7 @@ export class OpenDialogService {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = disableClose;
       const isMobileView = mobileView;
-      
-
+    
         if (componentKey === 'editChannel' && origin && !isMobileView) {
           dialogConfig.panelClass = 'dialog-edit-channel-no-radius';
           const rect = origin.nativeElement.getBoundingClientRect();
@@ -79,11 +78,11 @@ export class OpenDialogService {
         }
         
         if (componentKey === ('showProfile' || 'menuProfile') && isMobileView) {
-          dialogConfig.panelClass = 'dialog-show-profile-mobile';
+          dialogConfig.maxWidth = '100%';
         }
        
         if (componentKey === 'createChannel') {
-          dialogConfig.panelClass = 'dialog-create-channel-repsonsive';
+          dialogConfig.width = '872px';
         }
 
         if (componentKey === 'addChannelmembers' && disableClose === true && !isMobileView) {
@@ -95,7 +94,7 @@ export class OpenDialogService {
         }
   
         if (componentKey === ('showProfile' || 'menuProfile') && !isMobileView) {
-          dialogConfig.panelClass = 'dialog-show-profile-responsive';
+          dialogConfig.width = '500px';
         }
     
 

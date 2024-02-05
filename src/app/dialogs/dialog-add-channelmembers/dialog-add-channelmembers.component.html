@@ -22,10 +22,10 @@
         </mat-radio-group>
     </div>
 
-    <div class="name-input"
-        *ngIf="selectedOption === 'specificMembers' || needToAddMoreMembers">
-        <input [(ngModel)]="specificMemberInput" matInput placeholder="{{areUsersAvailable ? 'Name eingeben' : 'Es sind bereits alle Mitglieder hinzugefügt!'}}"  [matAutocomplete]="auto"
-            (input)="onInput()"  [disabled]="!areUsersAvailable" />
+    <div class="name-input" *ngIf="selectedOption === 'specificMembers' || needToAddMoreMembers">
+        <input [(ngModel)]="specificMemberInput" matInput
+            placeholder="{{areUsersAvailable ? 'Name eingeben' : 'Es sind bereits alle Mitglieder hinzugefügt!'}}"
+            [matAutocomplete]="auto" (input)="onInput()" [disabled]="!areUsersAvailable || isGuestUser" />
         <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let user of filteredUsers" [value]="user" (click)="selectUser(user)">
                 {{ user.name }}
@@ -51,10 +51,12 @@
 
 
 
-    <div class="button">
-        <button *ngIf="!needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!selectedOption || (selectedOption === 'specificMembers' && selectedUsers.length == 0)"
+    <div class="button" [ngClass]="{'button-disabled': isGuestUser}">
+        <button *ngIf="!needToAddMoreMembers" mat-raised-button color="primary"
+            [disabled]="!selectedOption || (selectedOption === 'specificMembers' && selectedUsers.length == 0)"
             (click)="addChannelMembers()">{{ selectedOption === 'noMembers' ? 'Weiter' : 'Hinzufügen' }}</button>
-        <button *ngIf="needToAddMoreMembers" mat-raised-button color="primary" [disabled]="!addLastUser || selectedUsers.length == 0"
-            (click)="addChannelMembers()">Hinzufügen</button>
+        <button *ngIf="needToAddMoreMembers" mat-raised-button color="primary"
+            [disabled]="!addLastUser || selectedUsers.length == 0 || isGuestUser" (click)="addChannelMembers()">
+             {{ isGuestUser ? 'Hinzufügen im Gast-Modus deaktiviert!' : 'Hinzufügen' }}</button>
     </div>
 </div>

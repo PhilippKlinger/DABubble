@@ -71,35 +71,13 @@ body {
   }
 }
 
-.dialog-show-channelmembers-responsive {
-  .mat-mdc-dialog-container .mdc-dialog__surface {
-    width: 415px !important;  
-  }
-}
-
 .dialog-add-channelmembers-no-radius {
   .mat-mdc-dialog-container .mdc-dialog__surface {
     border-top-right-radius: 0 !important;
     width: 514px !important;  
   }
 }
-.dialog-show-profile-mobile {
-  .mat-mdc-dialog-container .mdc-dialog__surface {
-    width: 100% !important;  
-  }
-}
 
-.dialog-create-channel-repsonsive {
-  .mat-mdc-dialog-container .mdc-dialog__surface {
-    width: 872px !important;  
-  }
-}
-
-.dialog-show-profile-responsive {
-  .mat-mdc-dialog-container .mdc-dialog__surface {
-    width: 500px !important;
-  }
-}
 
 .dialog-add-channelmembers-responsive {
   .mat-mdc-dialog-container .mdc-dialog__surface {
@@ -146,7 +124,6 @@ body {
     margin-left: 15px;
   }
 }
-
 
 
 @media (max-width: 650px ) {

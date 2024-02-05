@@ -17,6 +17,7 @@ export class DialogShowProfileComponent {
   private destroyed$ = new Subject<void>();
   channel: Channel | null = null;
   user: User | null = null;
+  currentUser!: User;
 
   constructor(
     private channelsService: ChannelsService,
@@ -35,6 +36,12 @@ export class DialogShowProfileComponent {
       takeUntil(this.destroyed$)
     ).subscribe(user => {
       this.user = user;
+    });
+
+    this.channelsService.currentUserInfo$.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(currentUser => {
+      this.currentUser = currentUser;
     });
   }
 

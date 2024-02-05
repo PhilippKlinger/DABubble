@@ -6,7 +6,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { DataService } from 'src/app/shared-services/data.service';
-
+import { UserService } from 'src/app/shared-services/user.service';
 
 
 @Component({
@@ -30,13 +30,15 @@ export class DialogEditChannelComponent {
   newChannelDescription: string = '';
   currentUser!: User;
   isMobileView: boolean = false;
+  isGuestUser!: boolean;
   private destroyed$ = new Subject<void>();
 
 
 
   constructor(private channelsService: ChannelsService,
      private dialogRef: MatDialogRef<DialogEditChannelComponent>,
-     private dataService: DataService) {
+     private dataService: DataService,
+     private userService: UserService) {
     this.channelsService.selectedChannel$.pipe(
       takeUntil(this.destroyed$)
     ).subscribe(channel => {
@@ -44,11 +46,15 @@ export class DialogEditChannelComponent {
       this.newChannelName = channel?.name || '';
       this.newChannelDescription = channel?.description || '';
     });
-
     this.channelsService.currentUserInfo$.pipe(
       takeUntil(this.destroyed$)
     ).subscribe(user => {
       this.currentUser = user;
+    });
+    this.userService.isGuestUser$.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(isGuestUser => {
+      this.isGuestUser = isGuestUser;
     });
     this.checkMobileView();
   }
@@ -62,6 +68,7 @@ export class DialogEditChannelComponent {
   }
 
   saveChanges(field: 'name' | 'description'): void {
+    if (!this.isGuestUser) {
     if (this.channel) {
       if (field === 'name') {
         this.channel.name = this.newChannelName;
@@ -73,8 +80,10 @@ export class DialogEditChannelComponent {
       this.channelsService.updateChannel(this.channel);
     }
   }
+}
 
   leaveChannel(): void {
+    if (!this.isGuestUser) {
     if (this.channel && this.currentUser) {
       this.channel.members = this.channel.members.filter(member => member.id !== this.currentUser.id);
       this.channelsService.updateChannel(this.channel);
@@ -89,6 +98,7 @@ export class DialogEditChannelComponent {
       this.dialogRef.close();
     }
   }
+}
 
   selectNextAvailableChannel(): void {
     this.channelsService.channels$.pipe(

@@ -18,6 +18,8 @@ export class DialogEditProfileComponent {
   currentUser!: User;
   users: User[] = [];
   selectedChannel!: Channel | null;
+  isGuestUser!: boolean;
+
 
   openAvatarSelection:boolean = false;
   avatarFile: File | null = null;
@@ -48,6 +50,9 @@ export class DialogEditProfileComponent {
     });
     this.channelService.selectedChannel$.subscribe((selectedChannel) => {
       this.selectedChannel = selectedChannel
+    });
+    this.userService.isGuestUser$.subscribe((isGuestUser) => {
+      this.isGuestUser = isGuestUser;
     })
   }
 

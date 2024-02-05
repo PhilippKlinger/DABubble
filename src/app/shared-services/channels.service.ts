@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, getDocs, query, where, writeBatch } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Channel } from '../models/channel.class';
 import { BehaviorSubject, take } from 'rxjs';
@@ -231,4 +231,22 @@ export class ChannelsService {
   ngOnDestroy() {
     this.unsubChannels();
   }
+
+  async deleteGuestMessages(): Promise<void> {
+    const demoChannelId = 'aDusoQEpfWO6oWyth9fE'; 
+ // Referenz auf die Nachrichten im Demo-Channel
+ const messagesRef = collection(this.firestore, `channels/${demoChannelId}/messages`);
+ const querySnapshot = await getDocs(messagesRef);
+
+ // Durchlaufen aller Nachrichten in der Collection und deren Löschung
+ const batch = writeBatch(this.firestore); // Verwendung einer Batch-Operation für effizientes Löschen
+
+ querySnapshot.forEach((doc) => {
+   batch.delete(doc.ref); // Hinzufügen der Löschoperation zur Batch
+ });
+
+ await batch.commit(); // Ausführen der Batch-Operation
+  }
+  
+
 }
