@@ -21,14 +21,17 @@ export class MainContentSearchbarComponent {
   foundUsers: User[] = [];
   foundMessages: Message[] = [];
   isGuestUser!: boolean;
+  mobile: boolean = false;
+
   private destroyed$ = new Subject<void>();
-  
+
   constructor(
     private channelsService: ChannelsService,
     private userService: UserService,
     private dialogService: OpenDialogService,
     private dataService: DataService) {
     dataService.mobile$.subscribe((value: boolean) => {
+      this.mobile = value;
       if (value) {
         this.placeholder = 'Gehe zu...'
       } else {
@@ -69,13 +72,13 @@ export class MainContentSearchbarComponent {
 
     if (this.isGuestUser) {
       this.userService.users$.subscribe(users => {
-        this.foundUsers = users.filter(user => 
+        this.foundUsers = users.filter(user =>
           user.id === this.userService.guestId &&
           user.name.toLowerCase().includes(searchQueryLower));
       });
     } else {
       this.userService.users$.subscribe(users => {
-        this.foundUsers = users.filter(user => 
+        this.foundUsers = users.filter(user =>
           user.name.toLowerCase().includes(searchQueryLower));
       });
     }
@@ -103,13 +106,19 @@ export class MainContentSearchbarComponent {
 
     if (item instanceof Channel && this.channelsService.isCurrentUserChannelMember(item)) {
       let counter = 0;
-      const intervalId = setInterval(() => {
-        this.channelsService.setSelectedChannel(item);
+      if (this.mobile) {
         this.dataService.thread_open$.next(false);
         this.dataService.new_message_open$.next(false);
         this.dataService.directmessage_open$.next(false);
         this.dataService.mainchat_mobile_open$.next(true);
         this.dataService.workspace_header_open$.next(true);
+      } else {
+        this.dataService.directmessage_open$.next(false);
+        this.dataService.thread_open$.next(false);
+        this.dataService.new_message_open$.next(false);
+      }
+      const intervalId = setInterval(() => {
+        this.channelsService.setSelectedChannel(item);
         counter++;
         if (counter === 5) {
           clearInterval(intervalId);
@@ -119,13 +128,19 @@ export class MainContentSearchbarComponent {
       const channel = this.channelsService.getChannelToFindMessage(item.id);
       if (channel && this.channelsService.isCurrentUserChannelMember(channel)) {
         let counter = 0;
-        const intervalId = setInterval(() => {
-          this.channelsService.setSelectedChannel(channel);
+        if (this.mobile) {
           this.dataService.thread_open$.next(false);
           this.dataService.new_message_open$.next(false);
           this.dataService.directmessage_open$.next(false);
           this.dataService.mainchat_mobile_open$.next(true);
           this.dataService.workspace_header_open$.next(true);
+        } else {
+          this.dataService.directmessage_open$.next(false);
+          this.dataService.thread_open$.next(false);
+          this.dataService.new_message_open$.next(false);
+        }
+        const intervalId = setInterval(() => {
+          this.channelsService.setSelectedChannel(channel);
           counter++;
           if (counter === 5) {
             clearInterval(intervalId);
@@ -148,5 +163,5 @@ export class MainContentSearchbarComponent {
     const re = new RegExp(searchQuery, 'gi');
     return text.replace(re, match => `<mark>${match}</mark>`);
   }
-  
+
 }

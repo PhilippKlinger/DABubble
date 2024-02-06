@@ -588,6 +588,7 @@
         font-size: 18px;
         font-weight: 400;
         color: $Purple-3;
+        cursor: pointer;
 
         @media (max-width:1000px) {
             white-space: nowrap;
@@ -601,6 +602,7 @@
 
     span {
         letter-spacing: 0;
+        cursor: default;
 
         @media (max-width: 1000px) {
             white-space: nowrap;

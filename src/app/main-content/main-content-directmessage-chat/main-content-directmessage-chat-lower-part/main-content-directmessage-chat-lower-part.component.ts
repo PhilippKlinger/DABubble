@@ -60,7 +60,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
     const currentUserInfo = this.channelService.currentUserInfo$.value;
 
     if ((await this.messagesService.findConversation(dm_user!, currentUserInfo)).available) {
-      this.messagesService.updateDirectMessages();
+      await this.messagesService.updateDirectMessages();
       await this.messagesService.getReactionsOfDirectMessages();
       this.messagesService.sortDirectMessagesByTime();
       this.chatMessages = this.messagesService.directMessages;

@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <div *ngFor="let message of chatMessages; let i = index" (click)="selectMessageForThread(i)">
+        <div *ngFor="let message of chatMessages; let i = index">
 
             <div class="chat-timestamp" *ngIf="returnPartingLineValue(i).boolean">
                 <div></div>
@@ -62,6 +62,12 @@
                     </div>
 
                     <div class="user-message-emojis">
+                        <div class="anon-user-answer-container">
+                            <h3 (click)="selectMessageAndOpenThread(i)" *ngIf="message.answered_number != 0">{{ message.answered_number
+                                }} Antworten</h3>
+                            <span *ngIf="message.latest_answer !== ''">Letzte Antwort {{
+                                getFormattedTimeForLatestAnswer(message.latest_answer) }}</span>
+                        </div>
                         <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
                             <div>{{ reactions.reaction }}</div>
                             <span>{{ reactions.amount }}</span>
@@ -70,11 +76,11 @@
                 </div>
 
                 <div class="user-message-hover-options">
-                    <div>✔</div>
-                    <div>🤚</div>
+                    <div (click)="addPreSelectedReaction('✅',i)">✅</div>
+                    <div (click)="addPreSelectedReaction('🙌',i)">🙌</div>
                     <mat-icon (click)="toggleEmojiWindowForMessage(i)"
                         class="material-icons-outlined">add_reaction</mat-icon>
-                    <mat-icon (click)="openThread()" class="material-icons-outlined">insert_comment</mat-icon>
+                    <mat-icon (click)="selectMessageAndOpenThread(i)" class="material-icons-outlined">insert_comment</mat-icon>
                     <mat-icon *ngIf="!message.img" (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                     <span *ngIf="hoverOptionEditMessage_open">
                         <h1 class="hover-options-edit-message" (click)="editMessage(message.message)">
@@ -96,7 +102,7 @@
                     </div>
                     <div class="anon-user-message-emojis">
                         <div class="anon-user-answer-container">
-                            <h3 (click)="openThread()" *ngIf="message.answered_number != 0">{{ message.answered_number
+                            <h3 (click)="selectMessageAndOpenThread(i)" *ngIf="message.answered_number != 0">{{ message.answered_number
                                 }} Antworten</h3>
                             <span *ngIf="message.latest_answer !== ''">Letzte Antwort {{
                                 getFormattedTimeForLatestAnswer(message.latest_answer) }}</span>
@@ -109,11 +115,11 @@
                 </div>
 
                 <div class="anon-message-hover-options">
-                    <div>✔</div>
-                    <div>🤚</div>
+                    <div (click)="addPreSelectedReaction('✅',i)">✅</div>
+                    <div (click)="addPreSelectedReaction('🙌',i)">🙌</div>
                     <mat-icon (click)="toggleEmojiWindowForMessage(i)"
                         class="material-icons-outlined">add_reaction</mat-icon>
-                    <mat-icon (click)="openThread();" class="material-icons-outlined">insert_comment</mat-icon>
+                    <mat-icon (click)="selectMessageAndOpenThread(i)" class="material-icons-outlined">insert_comment</mat-icon>
                 </div>
             </div>
         </div>

@@ -259,9 +259,19 @@ export class MainContentMainChatLowerPartComponent {
     return false;
   }
 
-  addReaction($event: any) {
+  addPreSelectedReaction(emoji: string, i: number) {
+    this.messagesService.selectedMessageMainChat$.next(this.chatMessages[i])
     const currentUserInfo = this.channelService.currentUserInfo$.value
 
+    this.reaction.setReaction(emoji);
+    this.reaction.setCreator(currentUserInfo.name);
+    this.messagesService.addReactionToMessage(this.reaction);
+    this.emoji_window_messages_open = false;
+  }
+
+  addReaction($event: any) {
+    const currentUserInfo = this.channelService.currentUserInfo$.value
+    console.log($event);
     this.reaction.setReaction($event.emoji.native);
     this.reaction.setCreator(currentUserInfo.name);
     this.messagesService.addReactionToMessage(this.reaction);
@@ -271,7 +281,6 @@ export class MainContentMainChatLowerPartComponent {
   addEmoji($event: any) {
     if ($event.emoji.native !== '🫥') {
       this.input_message.nativeElement.value += $event.emoji.native;
-      //console.log($event.emoji);
       this.emoji_window_open = false;
     }
   }
@@ -285,6 +294,11 @@ export class MainContentMainChatLowerPartComponent {
 
   toggleEmojiWindow() {
     this.emoji_window_open = !this.emoji_window_open;
+  }
+
+  selectMessageAndOpenThread(i: number) {
+    this.selectMessageForThread(i);
+    this.openThread();
   }
 
   selectMessageForThread(index: number) {

@@ -201,6 +201,7 @@ export class MessagesService {
   async getReactionsOfDirectMessages() {
     const dm_user = this.dm_user$.value;
     const currentUserInfo = this.channelsService.currentUserInfo$.value
+
     if (dm_user && currentUserInfo) {
       for (let i = 0; i < this.directMessages.length; i++) {
         let message = this.directMessages[i];
