@@ -5,6 +5,8 @@ $Bg-color: #ECEEFE;
 .added-user-list {
     max-height: 300px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .selected-user {
@@ -43,6 +45,10 @@ $Bg-color: #ECEEFE;
         font-size: 18px;
         font-weight: 400;
         letter-spacing: 0;
+    }
+
+    &:hover {
+        background-color: $Bg-color;
     }
 }
 
@@ -107,16 +113,9 @@ $Bg-color: #ECEEFE;
 
     .side-bar-profile {
         margin-left: 0;
-        padding: 0;
     }
 
     .add-person-btn {
         margin-left: 0;
-    }
-
-    .added-user-list {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
     }
 }

@@ -18,15 +18,16 @@
                 <mat-icon *ngIf="isMobileView">edit_outlined</mat-icon>
                 <span *ngIf="!isMobileView">Bearbeiten</span>
             </p>
-            <p [ngClass]="{'button-disabled-2': isGuestUser}" class="button" *ngIf="isEditingName"
-                (click)="saveChanges('name')">
-                <mat-icon *ngIf="isMobileView">check_circle_outlined</mat-icon>
-                <span *ngIf="!isMobileView">Speichern</span>
+            <p [ngClass]="{'button-disabled-2': isGuestUser || isChannelNameTaken}" class="button" *ngIf="isEditingName">
+                <span *ngIf="isChannelNameTaken">Channelname bereits vergeben</span>
+                <mat-icon (click)="saveChanges('name')" *ngIf="isMobileView && !isChannelNameTaken">{{channel?.name !== newChannelName ?  'check_circle_outlined' : 'arrow_back'}}</mat-icon>
+                <span (click)="saveChanges('name')" *ngIf="!isMobileView && !isChannelNameTaken">{{channel?.name !== newChannelName ?  'Speichern' : 'Zurück'}}</span>
             </p>
         </div>
         <div>
             <span class *ngIf="!isEditingName">{{newChannelName}}</span>
-            <input [(ngModel)]="newChannelName" *ngIf="isEditingName" matInput placeholder={{channel?.name}}>
+            <input (input)="onInput()" [(ngModel)]="newChannelName" *ngIf="isEditingName" matInput 
+            placeholder="{{ newChannelName !== '' ? '{{channel?.name}}' : 'Neuer Channelname'}} ">
         </div>
 
     </div>

@@ -61,6 +61,13 @@ body {
 .dialog-edit-channel-no-radius {
   .mat-mdc-dialog-container .mdc-dialog__surface {
     border-top-left-radius: 0 !important;
+    max-width: 872px !important;
+  }
+
+  @media (max-width: 1250px) {
+    .mat-mdc-dialog-container .mdc-dialog__surface {
+      width: 620px !important;
+    }
   }
 }
 

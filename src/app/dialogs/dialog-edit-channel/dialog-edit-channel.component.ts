@@ -24,6 +24,7 @@ export class DialogEditChannelComponent {
   channel: Channel | null = null;
   newChannelName: string = '';
   newChannelDescription: string = '';
+  isChannelNameTaken: boolean = false;
   currentUser!: User;
   isMobileView!: boolean;
   isGuestUser!: boolean;
@@ -113,6 +114,22 @@ export class DialogEditChannelComponent {
       }
     });
   }
+
+  onInput() {
+    this.checkChannelName();
+    console.log('channelname ist already taken', this.isChannelNameTaken)
+  }
+
+  checkChannelName(): void {
+    this.channelsService.channels$.pipe(take(1)).subscribe(channels => {
+      if (this.channel && this.newChannelName === this.channel.name) {
+        this.isChannelNameTaken = false;
+      } else {
+        this.isChannelNameTaken = channels.some(channel => channel.name.toLowerCase() === this.newChannelName.toLowerCase());
+      }
+    });
+  }
+  
 
   openNewMessageInput() {
     this.dataService.new_message_open$.next(true);

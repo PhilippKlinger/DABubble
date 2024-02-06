@@ -37,7 +37,6 @@ export class DialogShowChannelmembersComponent {
   showSelectedUser(user: User) {
     this.userService.setSelectedUser(user);
     this.dialogService.openDialog('showProfile', false, this.isMobileView);
-    this.dialogRef.close();
   }
 
   openDialog(componentKey: string): void {
