@@ -469,6 +469,13 @@ export class MessagesService {
     this.channelsService.setSelectedChannel(selectedChannel!);
   }
 
+  async updateAnswer(message: Message, docRef: Message) {
+    const selectedChannel = this.channelsService.selectedChannel$.value;
+    const thread_subject = this.thread_subject$.value;
+    await updateDoc(this.getUpdateChannelsMessageColRef(selectedChannel!, thread_subject, docRef.id), message.toJSON());
+    this.refreshThreadSubject();
+  }
+
   getUsersRef() {
     return collection(this.firestore, 'users');
   }

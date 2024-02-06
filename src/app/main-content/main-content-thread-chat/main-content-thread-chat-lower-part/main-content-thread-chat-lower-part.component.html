@@ -4,7 +4,7 @@
             <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addReaction($event)"></emoji-mart>
         </div>
     </div>
-    
+
     <div #chat_content class="chat-content">
         <div class="thread-anon-user-message" *ngIf="thread_subject?.creator !== this.user.name">
             <img class="user-message-avatar" src="{{ thread_subject?.avatar }}">
@@ -64,14 +64,28 @@
                             <span>{{ getFormattedTime(answer) }}</span>
                             <h3>{{ answer.creator }}</h3>
                         </div>
-                        <div *ngIf="answer.message" class="speech-bubble-user">
+                        <div *ngIf="((selectedAnswerThreadChat?.id !== answer.id || !editingMessage) && answer.message)"
+                            class="speech-bubble-user">
                             {{ answer.message }}
                         </div>
+
                         <div *ngIf="answer.img">
                             <button mat-raised-button (click)="this.commonService.downloadImage(answer.img)">
                                 <mat-icon>file_download</mat-icon> Download
                             </button>
                         </div>
+
+
+                        <div *ngIf="(selectedAnswerThreadChat?.id == answer.id && editingMessage)"
+                            class="speech-bubble-user-edit">
+                            <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="4"
+                                value="{{ textAreaContent }}"></textarea>
+                            <div>
+                                <button (click)="toggleEditing()" class="btn-cancel">Abbrechen</button>
+                                <button (click)="saveEditedMessage()" class="btn-save">Speichern</button>
+                            </div>
+                        </div>
+                        
                         <div class="user-message-emojis">
                             <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
                                 <div>{{ reactions.reaction }}</div>
@@ -85,7 +99,7 @@
                             class="material-icons-outlined">add_reaction</mat-icon>
                         <mat-icon *ngIf="!answer.img" (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                         <span *ngIf="hoverOptionEditMessage_open">
-                            <h1 class="hover-options-edit-message">
+                            <h1 class="hover-options-edit-message" (click)="editAnswer(answer.message, i)">
                                 Nachricht bearbeiten
                             </h1>
                         </span>

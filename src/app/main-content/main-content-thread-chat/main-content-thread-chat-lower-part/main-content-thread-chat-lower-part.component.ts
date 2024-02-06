@@ -27,7 +27,11 @@ export class MainContentThreadChatLowerPartComponent {
   user: User = null!;
   uploadedFileLinkThread: string | null = null;
   errorUploadFileThread: boolean = false;
-
+  editingMessage: boolean = false;
+  textareaCols!: number;
+  textAreaContent!: string;
+  selectedAnswerThreadChat: any = [];
+  editedText!: string;
 
   constructor(private channelsService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService) {
     this.messagesService.thread_subject$.subscribe((value: Message) => {
@@ -62,6 +66,47 @@ export class MainContentThreadChatLowerPartComponent {
       return containerElement.contains(event.target as Node);
     }
     return false;
+  }
+
+  async saveEditedMessage() {
+    const selectedAnswerThreadChat = this.selectedAnswerThreadChat
+    const editedText = this.editedText;
+
+    this.answer.id = selectedAnswerThreadChat.id;
+    this.answer.setMessage(editedText.trim());
+    this.answer.creator = selectedAnswerThreadChat.creator;
+    this.answer.avatar = selectedAnswerThreadChat.avatar;
+    this.answer.timestamp = selectedAnswerThreadChat.timestamp;
+    this.answer.reactions = selectedAnswerThreadChat.reactions;
+    this.answer.answered_number = selectedAnswerThreadChat.answered_number;
+    this.answer.latest_answer = selectedAnswerThreadChat.latest_answer;
+
+    this.messagesService.updateAnswer(this.answer, selectedAnswerThreadChat);
+    this.toggleEditing();
+  }
+
+
+  changedTextMessage(event: Event) {
+    this.editedText = (event.target as HTMLTextAreaElement).value
+  }
+
+  editAnswer(text: string, i: number) {
+    this.textAreaContent = this.threadAnswers[i].message
+    this.selectedAnswerThreadChat = this.threadAnswers[i];
+    this.updateTextareaSize(text);
+    this.toggleHoverOptionEditMessage();
+    setTimeout(() => {
+      this.toggleEditing();
+    }, 100);
+  }
+
+  updateTextareaSize(text: string) {
+    const lines = text.split('\n');
+    this.textareaCols = Math.max(...lines.map(line => line.length));
+  }
+
+  toggleEditing() {
+    this.editingMessage = !this.editingMessage;
   }
 
   toggleHoverOptionEditMessage() {

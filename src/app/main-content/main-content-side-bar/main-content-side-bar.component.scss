@@ -335,7 +335,7 @@ section {
 .online {
     position: absolute;
     right: 0px;
-    bottom: 5px;
+    bottom: -1px;
     width: 10px;
     height: 10px;
     border-radius: 100%;
@@ -346,7 +346,7 @@ section {
 .offline {
     position: absolute;
     right: 0px;
-    bottom: 5px;
+    bottom: -1px;
     width: 10px;
     height: 10px;
     border-radius: 100%;
