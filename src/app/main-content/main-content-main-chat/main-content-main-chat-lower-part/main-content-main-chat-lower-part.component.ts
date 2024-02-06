@@ -222,7 +222,8 @@ export class MainContentMainChatLowerPartComponent {
     this.toggleEditing();
   }
 
-  editMessage(text: string) {
+  editMessage(text: string, i: number) {
+    this.selectMessageForThread(i);
     this.updateTextareaSize(text);
     this.toggleHoverOptionEditMessage();
     setTimeout(() => {
@@ -260,7 +261,7 @@ export class MainContentMainChatLowerPartComponent {
   }
 
   addPreSelectedReaction(emoji: string, i: number) {
-    this.messagesService.selectedMessageMainChat$.next(this.chatMessages[i])
+    this.messagesService.selectedMessageMainChat$.next(this.chatMessages[i]);
     const currentUserInfo = this.channelService.currentUserInfo$.value
 
     this.reaction.setReaction(emoji);

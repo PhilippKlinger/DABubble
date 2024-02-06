@@ -83,7 +83,7 @@
                     <mat-icon (click)="selectMessageAndOpenThread(i)" class="material-icons-outlined">insert_comment</mat-icon>
                     <mat-icon *ngIf="!message.img" (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                     <span *ngIf="hoverOptionEditMessage_open">
-                        <h1 class="hover-options-edit-message" (click)="editMessage(message.message)">
+                        <h1 class="hover-options-edit-message" (click)="editMessage(message.message, i)">
                             Nachricht bearbeiten
                         </h1>
                     </span>
