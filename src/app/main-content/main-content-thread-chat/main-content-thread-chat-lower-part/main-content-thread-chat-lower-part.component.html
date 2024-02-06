@@ -1,4 +1,10 @@
 <div class="chat">
+    <div class="emoji-window-messages-overlay" *ngIf="emoji_window_messages_open">
+        <div id="emoji-window-messages" class="emoji-window-messages">
+            <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addReaction($event)"></emoji-mart>
+        </div>
+    </div>
+    
     <div #chat_content class="chat-content">
         <div class="thread-anon-user-message" *ngIf="thread_subject?.creator !== this.user.name">
             <img class="user-message-avatar" src="{{ thread_subject?.avatar }}">
@@ -47,12 +53,6 @@
         <div class="answer-timestamp">
             <span>{{ thread_subject?.answered_number }} Antworten</span>
             <div></div>
-        </div>
-
-        <div class="emoji-window-messages-overlay" *ngIf="emoji_window_messages_open">
-            <div id="emoji-window-messages" class="emoji-window-messages">
-                <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addReaction($event)"></emoji-mart>
-            </div>
         </div>
 
         <div *ngIf="threadAnswers.length > 0">

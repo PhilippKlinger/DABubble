@@ -1,4 +1,10 @@
 <div class="chat">
+    <div class="emoji-window-messages-overlay" *ngIf="emoji_window_messages_open">
+        <div id="emoji-window-messages" class="emoji-window-messages">
+            <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addReaction($event)"></emoji-mart>
+        </div>
+    </div>
+
     <div #chat_content class="chat-content">
 
         <div class="dm-chat-start">
@@ -17,12 +23,6 @@
             </div>
         </div>
 
-        <div class="emoji-window-messages-overlay" *ngIf="emoji_window_messages_open">
-            <div id="emoji-window-messages" class="emoji-window-messages">
-                <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addReaction($event)"></emoji-mart>
-            </div>
-        </div>
-
         <div *ngFor="let message of chatMessages; let i = index">
 
             <div class="chat-timestamp" *ngIf="returnPartingLineValue(i).boolean">
@@ -38,11 +38,12 @@
                         <h3>{{ message.creator }}</h3>
                     </div>
 
-                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)" class="speech-bubble-user">
+                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)"
+                        class="speech-bubble-user">
                         {{ message.message }}
                     </div>
 
-                    <div *ngIf="message.img">                        
+                    <div *ngIf="message.img">
                         <button mat-raised-button (click)="this.commonService.downloadImage(message.img)">
                             <mat-icon>file_download</mat-icon> Download
                         </button>
@@ -62,12 +63,11 @@
                             <div>{{ reactions.reaction }}</div>
                             <span>{{ reactions.amount }}</span>
                         </div>
-                        <mat-icon>add_reaction</mat-icon>
                     </div>
                 </div>
 
                 <div class="user-message-hover-options" (mouseenter)="selectDirectMessage(i)">
-                    <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
+                    <mat-icon class="material-icons-outlined" (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
                     <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                     <span *ngIf="hoverOptionEditMessage_open">
                         <h1 class="hover-options-edit-message" (click)="editMessage(message.message)">
@@ -105,8 +105,8 @@
 </div>
 
 <div class="chat-input">
-    <textarea *ngIf="!uploadedFileLinkDirect && !errorUploadFileDirect" (keyup.enter)="sendMessageToUser()" #message class="chat-input-design"
-        placeholder="Nachricht an {{ dm_user?.name }} "></textarea>
+    <textarea *ngIf="!uploadedFileLinkDirect && !errorUploadFileDirect" (keyup.enter)="sendMessageToUser()" #message
+        class="chat-input-design" placeholder="Nachricht an {{ dm_user?.name }} "></textarea>
     <!-- Test for File upload -->
     <div *ngIf="uploadedFileLinkDirect" class="submit-buttons d-flex-standard">
         <button class="btn-submit" mat-button>
@@ -121,7 +121,8 @@
         <div class="chat-input-options">
             <div>
                 <!-- Test for File upload -->
-                <input #fileInputDirect id="fileInput-direct" (change)="handleFileInputDirect($event)" class="d-none" type="file"  accept=".jpg,.jpeg,.png,.pdf" />
+                <input #fileInputDirect id="fileInput-direct" (change)="handleFileInputDirect($event)" class="d-none"
+                    type="file" accept=".jpg,.jpeg,.png,.pdf" />
                 <mat-icon (click)="this.commonService.triggerFileInput('fileInput-direct')">add</mat-icon>
             </div>
 
