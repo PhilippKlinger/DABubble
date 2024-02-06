@@ -433,6 +433,18 @@ footer {
     }
 }
 
+@media (max-height: 1100px) {
+    .header {
+        padding: 30px 75px;
+    }
+    .input-container {
+        margin-top: 12px;
+    }
+    .forgot-password {
+        margin: 12px;
+    }
+}
+
 
 @media (max-width: 726px) {
     header {

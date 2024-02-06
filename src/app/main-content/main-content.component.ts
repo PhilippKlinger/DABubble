@@ -78,7 +78,7 @@ export class MainContentComponent implements OnInit {
     if (!this.mobile) {
       this.channelService.findNextAvailableChannel();
     }
-    this.startUserActivityTimer(); // Starten Sie den Timer beim Initialisieren der Komponente
+    this.startUserActivityTimer();
   }
 
   openNewMessageInputMobile() {
@@ -106,21 +106,21 @@ export class MainContentComponent implements OnInit {
     this.resetUserActivityTimer();
   }
 
-  // Event-Handler für Benutzeraktivität
+
   @HostListener('document:click', ['$event'])
   @HostListener('document:keydown', ['$event'])
   onUserActivity() {
-    this.resetUserActivityTimer(); // Zurücksetzen des Timers bei Aktivität
+    this.resetUserActivityTimer();
   }
 
   private startUserActivityTimer(): void {
     this.userActivityTimer = setTimeout(() => {
-      this.authService.logout(); // Führen Sie hier Ihre Logout-Funktion aus
+      this.authService.logout(); 
     }, this.userActivityTimeout);
   }
 
   private resetUserActivityTimer(): void {
-    clearTimeout(this.userActivityTimer); // Timer zurücksetzen
-    this.startUserActivityTimer(); // Timer erneut starten
+    clearTimeout(this.userActivityTimer); 
+    this.startUserActivityTimer();
   }
 }

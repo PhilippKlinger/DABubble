@@ -13,3 +13,13 @@
 .container {
     max-width: 1920px;
 }
+
+@media (max-width: 500px) {
+    h1 {
+        font-size: 27px !important;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+}
