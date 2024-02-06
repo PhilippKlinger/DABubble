@@ -130,8 +130,8 @@ export class MainContentThreadChatLowerPartComponent {
 
   receiveThreadAnswers() {
     this.messagesService.updateThreadAnswersOfSelectedMessage();
-    // this.messagesService.getReactionsOfAnswers();
-    // this.messagesService.sortThreadAnswersByTime();
+    this.messagesService.getReactionsOfAnswers();
+    this.messagesService.sortThreadAnswersByTime();
     this.threadAnswers = this.messagesService.threadAnswers;
   }
 
