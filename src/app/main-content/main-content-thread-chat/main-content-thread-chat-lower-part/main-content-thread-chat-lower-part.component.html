@@ -83,7 +83,7 @@
                     <div class="user-message-hover-options">
                         <mat-icon (click)="toggleEmojiWindowForMessage(i)"
                             class="material-icons-outlined">add_reaction</mat-icon>
-                        <mat-icon (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
+                        <mat-icon *ngIf="!answer.img" (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                         <span *ngIf="hoverOptionEditMessage_open">
                             <h1 class="hover-options-edit-message">
                                 Nachricht bearbeiten
