@@ -17,7 +17,7 @@ import { DataService } from './data.service';
 export class MessagesService {
 
   chatMessages: Message[] = [];
-  threadAnswers: any = [];
+  threadAnswers: Message[] = [];
   directMessages: any = [];
   answerReactions: any = [];
   messageReactions = [];
@@ -238,18 +238,17 @@ export class MessagesService {
     const selectedChannel = this.channelsService.selectedChannel$.value;
 
     if (selectedChannel && thread_subject) {
-      if (this.threadAnswers > 0) {
-        for (let i = 0; i < this.threadAnswers.length; i++) {
-          let answer = this.threadAnswers[i];
-          onSnapshot(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, answer), (snapshot: any) => {
-            this.answerReactions = snapshot.docs.map((doc: any) => doc.data());
-            try {
-              this.threadAnswers[i].reactions = this.answerReactions;
-            } catch {
-              console.log("couldn't set reaction to the answer.")
-            }
-          });
-        }
+      for (let i = 0; i < this.threadAnswers.length; i++) {
+        let answer = this.threadAnswers[i];
+
+        onSnapshot(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, answer), (snapshot: any) => {
+          this.answerReactions = snapshot.docs.map((doc: any) => doc.data());
+          try {
+            this.threadAnswers[i].reactions = this.answerReactions;
+          } catch {
+            console.log("couldn't set reaction to the answer.")
+          }
+        });
       }
     } else {
       console.log('no selected channel or thread subject available.');
@@ -344,13 +343,11 @@ export class MessagesService {
   }
 
   sortThreadAnswersByTime() {
-    if (this.threadAnswers > 0) {
-      this.threadAnswers.sort((a: any, b: any) => {
-        const timeA = this.parseDate(a.timestamp);
-        const timeB = this.parseDate(b.timestamp);
-        return timeA - timeB;
-      });
-    }
+    this.threadAnswers.sort((a: any, b: any) => {
+      const timeA = this.parseDate(a.timestamp);
+      const timeB = this.parseDate(b.timestamp);
+      return timeA - timeB;
+    });
   }
 
   parseDate(timestamp: any) {

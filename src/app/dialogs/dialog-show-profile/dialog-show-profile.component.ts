@@ -18,6 +18,7 @@ export class DialogShowProfileComponent {
   channel: Channel | null = null;
   user: User | null = null;
   currentUser!: User;
+  mobile: boolean = false;
 
   constructor(
     private channelsService: ChannelsService,
@@ -28,14 +29,24 @@ export class DialogShowProfileComponent {
     this.channelsService.selectedChannel$.pipe(takeUntil(this.destroyed$)).subscribe(channel => { this.channel = channel });
     this.userService.selectedUserforProfileView$.pipe(takeUntil(this.destroyed$)).subscribe(user => { this.user = user; });
     this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => { this.currentUser = currentUser; });
+    this.dataService.mobile$.pipe(takeUntil(this.destroyed$)).subscribe(mobile => { this.mobile = mobile; });
   }
 
   openDM() {
-    this.dataService.directmessage_open$.next(true);
-    this.dataService.thread_open$.next(false);
-    this.dataService.new_message_open$.next(false);
-    this.messageService.dm_user$.next(this.user);
-    this.dialogRef.close();
+    if (this.mobile) {
+      this.dataService.directmessage_open$.next(true);
+      this.dataService.thread_open$.next(false);
+      this.dataService.new_message_open$.next(false);
+      this.messageService.dm_user$.next(this.user);
+      this.dataService.workspace_header_open$.next(true);
+      this.dialogRef.close();
+    } else {
+      this.dataService.directmessage_open$.next(true);
+      this.dataService.thread_open$.next(false);
+      this.dataService.new_message_open$.next(false);
+      this.messageService.dm_user$.next(this.user);
+      this.dialogRef.close();
+    }
   }
 
   ngOnDestroy() {

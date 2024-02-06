@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <div *ngIf="threadAnswers && threadAnswers.length > 0">
+        <div *ngIf="threadAnswers.length > 0">
             <div *ngFor="let answer of threadAnswers; let i = index">
                 <div class="thread-user-message" *ngIf="answer.creator == this.user.name">
                     <img class="user-message-avatar" src="{{ answer.avatar }}">

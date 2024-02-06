@@ -7,7 +7,7 @@ export class Message {
     creatorId: string;
     avatar: string;
     timestamp: string | number;
-    reactions?: object;
+    reactions: any[] = [];
     universalId?: string;
     answered_number: number;
     latest_answer: string | number;

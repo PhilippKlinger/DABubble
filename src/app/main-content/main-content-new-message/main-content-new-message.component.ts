@@ -21,6 +21,7 @@ export class MainContentNewMessageComponent {
   foundChannels: Channel[] = [];
   foundUsers: User[] = [];
   foundEmails: User[] = [];
+  mobile: boolean = false;
 
   constructor(
     private channelsService: ChannelsService,
@@ -29,6 +30,7 @@ export class MainContentNewMessageComponent {
     private messagesService: MessagesService
   ) {
     dataService.mobile$.subscribe((value: boolean) => {
+      this.mobile = value;
       if (value) {
         this.placeholder = 'An: #channel, oder @jemand';
       } else {
@@ -74,9 +76,9 @@ export class MainContentNewMessageComponent {
             user.name.toLowerCase().includes(searchQueryLower)
           );
         });
-      } else if(!this.isGuestUser) {
+      } else if (!this.isGuestUser) {
         this.userService.users$.subscribe(users => {
-          this.foundUsers = users.filter(user => 
+          this.foundUsers = users.filter(user =>
             user.name.toLowerCase().includes(searchQueryLower));
         });
       }
@@ -88,14 +90,14 @@ export class MainContentNewMessageComponent {
             user.email.toLowerCase().includes(this.searchQuery.toLowerCase())
           );
         });
-      } else if(!this.isGuestUser) {
+      } else if (!this.isGuestUser) {
         this.userService.users$.subscribe(users => {
           this.foundEmails = users.filter(user =>
             user.email.toLowerCase().includes(this.searchQuery.toLowerCase())
           );
         });
       }
-      
+
     }
   }
 
@@ -107,28 +109,56 @@ export class MainContentNewMessageComponent {
 
   openChannel(channel: Channel): void {
     if (this.channelsService.isCurrentUserChannelMember(channel)) {
-      if (this.dataService.directmessage_open$) {
+      if (this.mobile) {
+        this.dataService.mainchat_mobile_open$.next(true);
+        this.dataService.workspace_header_open$.next(true);
         this.dataService.directmessage_open$.next(false);
-      }
-      let counter = 0;
-      const intervalId = setInterval(() => {
-        this.channelsService.setSelectedChannel(channel);
         this.dataService.thread_open$.next(false);
         this.dataService.new_message_open$.next(false);
-        counter++;
-        if (counter === 5) {
-          clearInterval(intervalId);
-        }
-      }, 100);
+        let counter = 0;
+
+        const intervalId = setInterval(() => {
+          this.channelsService.setSelectedChannel(channel);
+          counter++;
+
+          if (counter === 5) {
+            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+          }
+        }, 100);
+      } else {
+        this.dataService.directmessage_open$.next(false);
+        this.dataService.thread_open$.next(false);
+        this.dataService.new_message_open$.next(false);
+        let counter = 0;
+
+        const intervalId = setInterval(() => {
+          this.channelsService.setSelectedChannel(channel);
+          counter++;
+
+          if (counter === 5) {
+            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+          }
+        }, 100);
+      }
+    } else {
+
     }
     this.clearSearchQuery();
   }
 
   openDM(user: User) {
-    this.dataService.directmessage_open$.next(true);
-    this.dataService.thread_open$.next(false);
-    this.dataService.new_message_open$.next(false);
-    this.messagesService.dm_user$.next(user);
+    if (this.mobile) {
+      this.dataService.directmessage_open$.next(true);
+      this.dataService.thread_open$.next(false);
+      this.dataService.new_message_open$.next(false);
+      this.messagesService.dm_user$.next(user);
+      this.dataService.workspace_header_open$.next(true);
+    } else {
+      this.dataService.directmessage_open$.next(true);
+      this.dataService.thread_open$.next(false);
+      this.dataService.new_message_open$.next(false);
+      this.messagesService.dm_user$.next(user);
+    }
     this.clearSearchQuery();
   }
 

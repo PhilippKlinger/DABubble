@@ -18,7 +18,7 @@ export class MainContentThreadChatLowerPartComponent {
   @ViewChild('chat_content') chat_content!: ElementRef;
   thread_subject: any = [];
   thread_subject_time: any;
-  threadAnswers: any = [];
+  threadAnswers: Message[] = [];
   answer = new Message();
   reaction = new Reaction();
   emoji_window_open: boolean = false;
@@ -130,8 +130,8 @@ export class MainContentThreadChatLowerPartComponent {
 
   receiveThreadAnswers() {
     this.messagesService.updateThreadAnswersOfSelectedMessage();
-    this.messagesService.getReactionsOfAnswers();
-    this.messagesService.sortThreadAnswersByTime();
+    // this.messagesService.getReactionsOfAnswers();
+    // this.messagesService.sortThreadAnswersByTime();
     this.threadAnswers = this.messagesService.threadAnswers;
   }
 
