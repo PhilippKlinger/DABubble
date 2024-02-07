@@ -78,7 +78,7 @@
 
                         <div *ngIf="(selectedAnswerThreadChat?.id == answer.id && editingMessage)"
                             class="speech-bubble-user-edit">
-                            <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="4"
+                            <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="2"
                                 value="{{ textAreaContent }}"></textarea>
                             <div>
                                 <button (click)="toggleEditing()" class="btn-cancel">Abbrechen</button>
@@ -113,7 +113,7 @@
                             <span>{{ getFormattedTime(answer) }}</span>
                             <h3>{{ answer.creator }}</h3>
                         </div>
-                        <div class="anon-speech-bubble-user">
+                        <div class="anon-speech-bubble-user" >
                             {{ answer.message }}
                         </div>
                         <div class="anon-user-message-emojis">
