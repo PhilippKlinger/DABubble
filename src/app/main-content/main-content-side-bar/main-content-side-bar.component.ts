@@ -20,13 +20,13 @@ export class MainContentSideBarComponent {
   directmessages_opened: boolean = true;
 
   mobile: boolean = false;
-  
+
 
   channels: Channel[] = [];
   currentUser!: User;
   users: any[] = [];
   usersWithConversation: any[] = [];
- 
+
   private destroyed$ = new Subject<void>();
 
   constructor(private dialogService: OpenDialogService,
@@ -63,7 +63,7 @@ export class MainContentSideBarComponent {
     const currentUserInfo = this.channelsService.currentUserInfo$.value;
     let users = this.users;
     this.usersWithConversation = [];
-    
+
     for (let i = 0; i < users.length; i++) {
       let user = users[i];
       const dm_user = user;
@@ -105,13 +105,31 @@ export class MainContentSideBarComponent {
       this.dataService.directmessage_open$.next(true);
       this.dataService.thread_open$.next(false);
       this.dataService.new_message_open$.next(false);
-      this.messagesService.dm_user$.next(user);
       this.dataService.workspace_header_open$.next(true);
+      let counter = 0;
+
+      const intervalId = setInterval(() => {
+        this.messagesService.dm_user$.next(user);
+        counter++;
+
+        if (counter === 10) {
+          clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+        }
+      }, 100);
     } else {
       this.dataService.directmessage_open$.next(true);
       this.dataService.thread_open$.next(false);
       this.dataService.new_message_open$.next(false);
-      this.messagesService.dm_user$.next(user);
+      let counter = 0;
+
+      const intervalId = setInterval(() => {
+        this.messagesService.dm_user$.next(user);
+        counter++;
+
+        if (counter === 10) {
+          clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+        }
+      }, 100);
     }
   }
 

@@ -111,7 +111,7 @@ export class MessagesService {
   }
 
   async findConversation(dm_user: User, currentUserInfo: User): Promise<{ DMInfo: DMInfo | null, available: boolean, docId: string }> {
-    const querySnapshot = await getDocs(query(this.getUsersDMRef(dm_user), where('chatPartnerId', '==', currentUserInfo?.id)));
+    const querySnapshot = await getDocs(query(this.getUsersDMRef(dm_user), where('chatPartnerId', '==', currentUserInfo.id)));
 
     let dm_info_result: DMInfo | null = null;
     let available = false;
@@ -205,14 +205,18 @@ export class MessagesService {
     if (dm_user && currentUserInfo) {
       for (let i = 0; i < this.directMessages.length; i++) {
         let message = this.directMessages[i];
-        onSnapshot(this.getUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, message)).docId)), (snapshot: any) => {
-          this.DMReactions = snapshot.docs.map((doc: any) => doc.data());
-          try {
-            this.directMessages[i].reactions = this.DMReactions;
-          } catch {
-            console.log("couldn't set reaction to the message.")
-          }
-        });
+        if(((await this.findMessage(dm_user, currentUserInfo, message)).docId)){
+          onSnapshot(this.getUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, message)).docId)), (snapshot: any) => {
+            this.DMReactions = snapshot.docs.map((doc: any) => doc.data());
+            try {
+              this.directMessages[i].reactions = this.DMReactions;
+            } catch {
+              console.log("couldn't set reaction to the message.")
+            }
+          });
+        } else {
+          console.log('die docIdMessage ist nochnicht vollständig verfügbar, bitte habe gedult');
+        }
       }
     }
   }

@@ -62,6 +62,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
     if ((await this.messagesService.findConversation(dm_user!, currentUserInfo)).available) {
       await this.messagesService.updateDirectMessages();
       await this.messagesService.getReactionsOfDirectMessages();
+      console.log('alles in Ordnung bis hier')
       this.messagesService.sortDirectMessagesByTime();
       this.chatMessages = this.messagesService.directMessages;
     } else {
