@@ -98,7 +98,6 @@ export class ChannelsService {
   filterChannelsBasedOnUserType(channels: Channel[]): Channel[] {
     const currentUser = this.auth.currentUser?.uid;
     if (!currentUser) {
-      console.log('No user logged in');
       return [];
     }
 
@@ -107,7 +106,6 @@ export class ChannelsService {
     );
 
     if (filteredChannels.length === 0) {
-      console.log('User is not a member of any channels');
       this.openNewMessageInput();
     } else {
       this.closeNewMessageInput();
@@ -232,6 +230,7 @@ export class ChannelsService {
     this.unsubChannels();
   }
 
+
   async deleteGuestMessages(): Promise<void> {
     const demoChannelId = 'aDusoQEpfWO6oWyth9fE'; 
  // Referenz auf die Nachrichten im Demo-Channel
@@ -239,7 +238,7 @@ export class ChannelsService {
  const querySnapshot = await getDocs(messagesRef);
 
  // Durchlaufen aller Nachrichten in der Collection und deren Löschung
- const batch = writeBatch(this.firestore); // Verwendung einer Batch-Operation für effizientes Löschen
+ const batch = writeBatch(this.firestore); 
 
  querySnapshot.forEach((doc) => {
    batch.delete(doc.ref); // Hinzufügen der Löschoperation zur Batch

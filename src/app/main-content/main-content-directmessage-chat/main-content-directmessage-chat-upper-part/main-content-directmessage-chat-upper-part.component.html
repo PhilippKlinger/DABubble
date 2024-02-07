@@ -1,5 +1,5 @@
 <nav>
-    <div class="channel-name">
+    <div class="channel-name" (click)="showSelectedUser()">
         <div class="profile-picture">
             <img src="{{ dm_user?.avatar }}">
             <div *ngIf="dm_user?.onlineStatus" class="online"></div>

@@ -118,7 +118,6 @@ export class UserService {
         this.isGuestUser$.next(false);
       }
     });
-    console.log('is Guest User aktiv', this.isGuestUser$)
   }
 }
 

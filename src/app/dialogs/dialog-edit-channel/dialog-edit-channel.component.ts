@@ -117,7 +117,7 @@ export class DialogEditChannelComponent {
 
   onInput() {
     this.checkChannelName();
-    console.log('channelname ist already taken', this.isChannelNameTaken)
+    console.warn('channelname ist already taken', this.isChannelNameTaken)
   }
 
   checkChannelName(): void {

@@ -254,8 +254,6 @@ export class LoginComponent implements OnInit{
     }
   }
 
-  routeTo(router_link: string, seconds: number) {
-    this.commonService.routeTo(router_link, seconds);
-  }
+ 
 
 }
