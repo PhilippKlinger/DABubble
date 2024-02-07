@@ -17,6 +17,7 @@ export class UserService {
   public selectedUserforProfileView$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   public isGuestUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  public userForMessageService!: User;
 
   private unsubUsers;
   public guestId: string = 'kMsZHupMksQU5xS5goyZboGicFy2';
@@ -114,6 +115,7 @@ export class UserService {
     onAuthStateChanged(this.auth, (firebaseUser) => {
       if (firebaseUser) {
         this.isGuestUser$.next(firebaseUser.uid === this.guestId);
+        this.userForMessageService = new User({ id: firebaseUser.uid }); ;
       } else {
         this.isGuestUser$.next(false);
       }

@@ -7,7 +7,6 @@ import { DataService } from 'src/app/shared-services/data.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 import { UserService } from 'src/app/shared-services/user.service';
 import { MessagesService } from 'src/app/shared-services/messages.service';
-import { user } from '@angular/fire/auth';
 @Component({
   selector: 'app-main-content-side-bar',
   templateUrl: './main-content-side-bar.component.html',
@@ -27,14 +26,14 @@ export class MainContentSideBarComponent {
   users: any[] = [];
   usersWithConversation: any[] = [];
 
+
   private destroyed$ = new Subject<void>();
 
   constructor(private dialogService: OpenDialogService,
     private channelsService: ChannelsService,
     private dataService: DataService,
     private userService: UserService,
-    private messagesService: MessagesService) {
-
+    private messagesService: MessagesService,) {
     this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe((currentUser) => {
       this.currentUser = currentUser;
     });
@@ -58,9 +57,11 @@ export class MainContentSideBarComponent {
       }
     })
   }
+ 
 
   async checkConversations() {
-    const currentUserInfo = this.channelsService.currentUserInfo$.value;
+    const currentUserInfo = this.userService.userForMessageService;
+
     let users = this.users;
     this.usersWithConversation = [];
 
