@@ -69,7 +69,7 @@ export class MainContentThreadChatLowerPartComponent {
   }
 
   async saveEditedMessage() {
-    const selectedAnswerThreadChat = this.selectedAnswerThreadChat
+    const selectedAnswerThreadChat = this.selectedAnswerThreadChat;
     const editedText = this.editedText;
 
     this.answer.id = selectedAnswerThreadChat.id;
@@ -91,7 +91,7 @@ export class MainContentThreadChatLowerPartComponent {
   }
 
   editAnswer(text: string, i: number) {
-    this.textAreaContent = this.threadAnswers[i].message
+    this.textAreaContent = this.threadAnswers[i].message;
     this.selectedAnswerThreadChat = this.threadAnswers[i];
     this.updateTextareaSize(text);
     this.toggleHoverOptionEditMessage();

@@ -38,7 +38,7 @@
                         <h3>{{ message.creator }}</h3>
                     </div>
 
-                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)"
+                    <div *ngIf="((selectedDirectMessage?.id !== message.id || !editingMessage) && message.message)"
                         class="speech-bubble-user">
                         {{ message.message }}
                     </div>
@@ -49,7 +49,7 @@
                         </button>
                     </div>
 
-                    <div *ngIf="(thread_subject?.id == message.id && editingMessage)" class="speech-bubble-user-edit">
+                    <div *ngIf="(selectedDirectMessage?.id == message.id && editingMessage)" class="speech-bubble-user-edit">
                         <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="4"
                             value="{{ textAreaContent }}"></textarea>
                         <div>
@@ -66,11 +66,11 @@
                     </div>
                 </div>
 
-                <div class="user-message-hover-options" (mouseenter)="selectDirectMessage(i)">
+                <div class="user-message-hover-options">
                     <mat-icon class="material-icons-outlined" (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
                     <mat-icon *ngIf="!message.img" (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                     <span *ngIf="hoverOptionEditMessage_open && !message.img">
-                        <h1 class="hover-options-edit-message" (click)="editMessage(message.message)">
+                        <h1 class="hover-options-edit-message" (click)="editMessage(message.message, i)">
                             Nachricht bearbeiten
                         </h1>
                     </span>
@@ -95,7 +95,7 @@
                     </div>
                 </div>
 
-                <div class="anon-message-hover-options" (mouseenter)="selectDirectMessage(i)">
+                <div class="anon-message-hover-options">
                     <mat-icon (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
                 </div>
             </div>

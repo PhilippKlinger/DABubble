@@ -34,13 +34,13 @@ export class MainContentDirectmessageChatLowerPartComponent {
   hoverOptionEditMessage_open: boolean = false;
   uploadedFileLinkDirect: string | null = null;
   errorUploadFileDirect: boolean = false;
+  selectedDirectMessage: any = [];
 
   constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
     this.messagesService.dm_user$.subscribe((dm_user) => {
       if (dm_user) {
         this.dm_user = dm_user;
         this.receiveDirectMessages();
-        this.updateScroll();
       } else {
         console.log('waiting for a direct message user')
       }
@@ -48,11 +48,16 @@ export class MainContentDirectmessageChatLowerPartComponent {
     this.channelService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
+
+    this.messagesService.selectedDirectMessage$.subscribe((message: Message) => {
+      this.selectedDirectMessage = message;
+    })
   }
 
   updateScroll() {
-    let chat = this.chat_content.nativeElement
-    chat.scrollTop = chat.scrollHeight;
+    setTimeout(() => {
+      this.chat_content.nativeElement.scrollTop = this.chat_content.nativeElement.scrollHeight;
+    }, 0);
   }
 
   async receiveDirectMessages() {
@@ -62,16 +67,18 @@ export class MainContentDirectmessageChatLowerPartComponent {
     if ((await this.messagesService.findConversation(dm_user!, currentUserInfo)).available) {
       await this.messagesService.updateDirectMessages();
       await this.messagesService.getReactionsOfDirectMessages();
-      console.log('alles in Ordnung bis hier')
       this.messagesService.sortDirectMessagesByTime();
       this.chatMessages = this.messagesService.directMessages;
+      this.updateScroll();
     } else {
       this.chatMessages = [];
       console.log('no conversation available');
     }
   }
 
-  editMessage(text: string) {
+  editMessage(text: string, i: number) {
+    this.selectedDirectMessage = this.chatMessages[i];
+    this.textAreaContent = this.chatMessages[i].message;
     this.updateTextareaSize(text);
     this.toggleHoverOptionEditMessage();
     setTimeout(() => {
@@ -89,6 +96,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
   }
 
   toggleEmojiWindowForMessage(index: number) {
+    this.selectDirectMessage(index);
     setTimeout(() => {
       this.emoji_window_messages_open = !this.emoji_window_messages_open;
     }, 50);
@@ -99,19 +107,20 @@ export class MainContentDirectmessageChatLowerPartComponent {
   }
 
   async saveEditedMessage() {
-    const thread_subject = this.messagesService.thread_subject$.value
+    const selectedDirectMessage = this.selectedDirectMessage
+    this.messagesService.selectedDirectMessage$.next(selectedDirectMessage);
     const editedText = this.editedText;
 
-    this.message.id = thread_subject.id;
+    this.message.id = selectedDirectMessage.id;
     this.message.setMessage(editedText.trim());
-    this.message.creator = thread_subject.creator;
-    this.message.avatar = thread_subject.avatar;
-    this.message.timestamp = thread_subject.timestamp;
-    this.message.reactions = thread_subject.reactions;
-    this.message.answered_number = thread_subject.answered_number;
-    this.message.latest_answer = thread_subject.latest_answer;
+    this.message.creator = selectedDirectMessage.creator;
+    this.message.avatar = selectedDirectMessage.avatar;
+    this.message.timestamp = selectedDirectMessage.timestamp;
+    this.message.reactions = selectedDirectMessage.reactions;
+    this.message.answered_number = selectedDirectMessage.answered_number;
+    this.message.latest_answer = selectedDirectMessage.latest_answer;
 
-    this.messagesService.updateMessage(this.message);
+    this.messagesService.updateDirectMessage(this.message, selectedDirectMessage);
     this.toggleEditing();
   }
 
@@ -282,16 +291,19 @@ export class MainContentDirectmessageChatLowerPartComponent {
     this.message.setAvatar(avatar);
     this.message.setTimestampNow();
     this.message.setAnwers();
-    if (this.uploadedFileLinkDirect) {
-      this.message.setImg(this.uploadedFileLinkDirect);
-      this.removeUploadedFileDirect();
-    } else if (this.input_message.nativeElement.value.trim() !== '') {
-      this.message.setMessage(this.input_message.nativeElement.value.trim());
-      this.input_message.nativeElement.value = '';
+    if (this.uploadedFileLinkDirect || this.input_message.nativeElement.value.trim() !== '') {
+      if (this.uploadedFileLinkDirect) {
+        this.message.setImg(this.uploadedFileLinkDirect);
+        this.removeUploadedFileDirect();
+      } else if (this.input_message.nativeElement.value.trim() !== '') {
+        this.message.setMessage(this.input_message.nativeElement.value.trim());
+        this.input_message.nativeElement.value = '';
+      }
+      await this.messagesService.pushMessageToUser(this.message);
+      this.updateScroll()
+      this.message.setMessage('');
+      this.message.setImg('');
     }
-    await this.messagesService.pushMessageToUser(this.message);
-    this.message.setMessage('');
-    this.message.setImg('');
   }
 
   async handleFileInputDirect(event: any) {

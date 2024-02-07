@@ -38,6 +38,19 @@ export class MessagesService {
 
   }
 
+  refreshDMChat() {
+    let counter = 0;
+
+    const intervalId = setInterval(() => {
+      this.dm_user$.next(this.dm_user$.value);
+      counter++;
+
+      if (counter === 10) {
+        clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+      }
+    }, 100);
+  }
+
   async addReactionToDM(reaction: Reaction) {
     const dm_user = this.dm_user$.value;
     const currentUserInfo = this.channelsService.currentUserInfo$.value
@@ -69,7 +82,7 @@ export class MessagesService {
     } else {
       console.error('No selected channel or selected message available.');
     }
-    this.dm_user$.next(dm_user);
+    this.refreshDMChat();
   }
 
   async findReaction(dm_user: User, currentUserInfo: User, selectedDirectMessage: Message, reaction: string): Promise<{ available: boolean, docId: string }> {
@@ -183,7 +196,7 @@ export class MessagesService {
       console.log('kein direct messages user verfügbar');
     }
 
-    this.dm_user$.next(dm_user);
+    this.refreshDMChat();
   }
 
 
@@ -205,7 +218,7 @@ export class MessagesService {
     if (dm_user && currentUserInfo) {
       for (let i = 0; i < this.directMessages.length; i++) {
         let message = this.directMessages[i];
-        if(((await this.findMessage(dm_user, currentUserInfo, message)).docId)){
+        if (((await this.findMessage(dm_user, currentUserInfo, message)).docId)) {
           onSnapshot(this.getUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, message)).docId)), (snapshot: any) => {
             this.DMReactions = snapshot.docs.map((doc: any) => doc.data());
             try {
@@ -215,7 +228,7 @@ export class MessagesService {
             }
           });
         } else {
-          console.log('die docIdMessage ist nochnicht vollständig verfügbar, bitte habe gedult');
+          console.log('die docId der Nachricht ist noch nicht verfügbar, bitte habe etwas gedult');
         }
       }
     }
@@ -478,6 +491,18 @@ export class MessagesService {
     const thread_subject = this.thread_subject$.value;
     await updateDoc(this.getUpdateChannelsMessageColRef(selectedChannel!, thread_subject, docRef.id), message.toJSON());
     this.refreshThreadSubject();
+  }
+
+  async updateDirectMessage(message: Message, docRef: Message) {
+    const dm_user = this.dm_user$.value;
+    const currentUserInfo = this.channelsService.currentUserInfo$.value;
+    const selectedDirectMessage = this.selectedDirectMessage$.value;
+
+    if (dm_user && currentUserInfo) {
+      await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON());
+      await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId)), message.toJSON());
+    }
+    this.refreshDMChat();
   }
 
   getUsersRef() {
