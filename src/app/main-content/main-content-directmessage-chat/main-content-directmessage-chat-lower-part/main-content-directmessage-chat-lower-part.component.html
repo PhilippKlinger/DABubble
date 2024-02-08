@@ -125,36 +125,49 @@
     </div>
 </div>
 
-<div class="chat-input">
-    <textarea *ngIf="!uploadedFileLinkDirect && !errorUploadFileDirect" (keyup.enter)="sendMessageToUser()" #message
-        class="chat-input-design" placeholder="Nachricht an {{ dm_user?.name }} "></textarea>
-    <!-- Test for File upload -->
-    <div *ngIf="uploadedFileLinkDirect" class="submit-buttons d-flex-standard">
-        <button class="btn-submit" mat-button>
-            <a href="{{uploadedFileLinkDirect}}" target="_blank">Datei ansehen</a>
-        </button>
-        <button class="btn-guest" mat-button (click)="removeUploadedFileDirect()">Entfernen</button>
-    </div>
-    <div *ngIf="errorUploadFileDirect">
-        <p class="error-txt">Bitte wählen Sie eine Datei unter 5 MB und im jpg/jpeg/pdf/png-Format.</p>
-    </div>
-    <div class="chat-input-lower-position">
-        <div class="chat-input-options">
-            <div>
-                <!-- Test for File upload -->
-                <input #fileInputDirect id="fileInput-direct" (change)="handleFileInputDirect($event)" class="d-none"
-                    type="file" accept=".jpg,.jpeg,.png,.pdf" />
-                <mat-icon (click)="this.commonService.triggerFileInput('fileInput-direct')">add</mat-icon>
+<div class="chat-input-container">
+    <div *ngIf="showUserList" class="added-user-list">
+        <div class="selected-user" *ngFor="let user of filteredUsers" (click)="insertUserName(user.name)">
+            <div class="side-bar-profile">
+                <div class="side-bar-profile-picture">
+                    <img src="{{user.avatar}}">
+                    <div [ngClass]="{ 'online': user.onlineStatus, 'offline': !user.onlineStatus }"></div>
+                </div>
+                <span>{{ user.name }}</span>
             </div>
-
-            <div class="chat-input-line"></div>
-
-            <div class="emoji-window" [ngClass]="{'d-none': !emoji_window_open}">
-                <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addEmoji($event)"></emoji-mart>
-            </div>
-
-            <mat-icon (click)="toggleEmojiWindow()">sentiment_satisfied</mat-icon>
         </div>
-        <mat-icon class="chat-input-send" (click)="sendMessageToUser()">send</mat-icon>
+    </div>
+    <div class="chat-input">
+        <textarea *ngIf="!uploadedFileLinkDirect && !errorUploadFileDirect" (keyup.enter)="sendMessageToUser()" (input)="onTextareaInput($event)" #message
+            class="chat-input-design" placeholder="Nachricht an {{ dm_user?.name }} "></textarea>
+        <!-- Test for File upload -->
+        <div *ngIf="uploadedFileLinkDirect" class="submit-buttons d-flex-standard">
+            <button class="btn-submit" mat-button>
+                <a href="{{uploadedFileLinkDirect}}" target="_blank">Datei ansehen</a>
+            </button>
+            <button class="btn-guest" mat-button (click)="removeUploadedFileDirect()">Entfernen</button>
+        </div>
+        <div *ngIf="errorUploadFileDirect">
+            <p class="error-txt">Bitte wählen Sie eine Datei unter 5 MB und im jpg/jpeg/pdf/png-Format.</p>
+        </div>
+        <div class="chat-input-lower-position">
+            <div class="chat-input-options">
+                <div>
+                    <!-- Test for File upload -->
+                    <input #fileInputDirect id="fileInput-direct" (change)="handleFileInputDirect($event)" class="d-none"
+                        type="file" accept=".jpg,.jpeg,.png,.pdf" />
+                    <mat-icon (click)="this.commonService.triggerFileInput('fileInput-direct')">add</mat-icon>
+                </div>
+
+                <div class="chat-input-line"></div>
+
+                <div class="emoji-window" [ngClass]="{'d-none': !emoji_window_open}">
+                    <emoji-mart emoji="santa" set="apple" size="16" (emojiClick)="addEmoji($event)"></emoji-mart>
+                </div>
+
+                <mat-icon (click)="toggleEmojiWindow()">sentiment_satisfied</mat-icon>
+            </div>
+            <mat-icon class="chat-input-send" (click)="sendMessageToUser()">send</mat-icon>
+        </div>
     </div>
 </div>

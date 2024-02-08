@@ -1,4 +1,9 @@
 @import './../../../../styles.scss';
+@import '../../../dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component.scss';
+
+.added-user-list {
+    width: max-content;
+}
 
 .reactioninfo {
     height: 110px;
@@ -561,14 +566,20 @@
 }
 
 // chat input related code below
+
+.chat-input-container {
+    position: absolute;
+    bottom: 0;
+    width: -webkit-fill-available;
+    min-height: 150px;
+}
+
 .chat-input {
     width: -webkit-fill-available;
     min-height: 150px;
     margin: 30px;
     border-radius: 20px;
     border: 1px solid #ADB0D9;
-    position: absolute;
-    bottom: 0;
 }
 
 .chat-input-lower-position {
@@ -576,8 +587,6 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    position: absolute;
-    bottom: 0;
     width: -webkit-fill-available;
 }
 
@@ -622,9 +631,6 @@
 .chat-input-design {
     width: -webkit-fill-available;
     margin: 20px;
-    margin-bottom: 80px;
-    position: absolute;
-    bottom: 0;
     min-height: -webkit-fill-available;
     overflow-y: scroll;
     font-size: 18px;

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from './storage.service';
+import { User } from '../models/user.class';
 
 @Injectable({
   providedIn: 'root'
@@ -93,6 +94,46 @@ export class CommonService {
       return validTypes.includes(fileType) && file.size < MAX_FILE_SIZE;
     } else {
       return false;
+    }
+  }
+
+  onTextareaInput(event: any, allUser: User[], callback: (filteredUsers: User[], showUserList: boolean) => void) {
+    const value = event.target.value;
+    const showUserList = value.includes('@');
+  
+    if (showUserList) {
+      const parts = value.split('@').pop().split('  ');
+      const filterText = parts[0];
+      const filteredUsers = this.filterUsers(filterText.trim(), allUser);
+      callback(filteredUsers, true);
+    } else {
+      callback(allUser, false);
+    }
+  }
+  
+  filterUsers(filterText: string, allUser: User[]): User[] {
+    if (!filterText) {
+      return allUser;
+    } else {
+      return allUser.filter(user => user.name.toLowerCase().includes(filterText));
+    }
+  }
+
+  insertUserName(userName: string, textarea: HTMLTextAreaElement, allUser: User[], callback: (filteredUsers: User[], showUserList: boolean) => void) {
+    let currentValue = textarea.value;
+    const lastIndex = currentValue.lastIndexOf('@');
+  
+    if (lastIndex !== -1) {
+      const beforeTag = currentValue.substring(0, lastIndex);
+      const afterTag = currentValue.substring(textarea.selectionStart);
+      const insertion = `${userName}  `;
+      const newValue = `${beforeTag}@${insertion}${afterTag}`;  
+      textarea.value = newValue;
+      const newPosition = beforeTag.length + insertion.length + 1;
+      textarea.selectionStart = newPosition;
+      textarea.selectionEnd = newPosition;  
+      textarea.focus();  
+      this.onTextareaInput({ target: { value: newValue } }, allUser, callback);
     }
   }
 

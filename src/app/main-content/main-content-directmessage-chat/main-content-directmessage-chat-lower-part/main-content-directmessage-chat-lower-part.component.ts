@@ -38,6 +38,9 @@ export class MainContentDirectmessageChatLowerPartComponent {
   reactionInfo: boolean = false;
   reactionInfoNumber!: number;
   reactionInfoMessage!: number;
+  allUser: User[] = [];
+  filteredUsers: User[] = [];
+  showUserList: boolean = false;
 
   constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
     this.messagesService.dm_user$.subscribe((dm_user) => {
@@ -54,8 +57,26 @@ export class MainContentDirectmessageChatLowerPartComponent {
 
     this.messagesService.selectedDirectMessage$.subscribe((message: Message) => {
       this.selectedDirectMessage = message;
-    })
+    });
+
+    this.userService.users$.subscribe(users => {
+      this.allUser = users;
+    });
   }
+
+  onTextareaInput(event: any) {
+    this.commonService.onTextareaInput(event, this.allUser, (filteredUsers, showUserList) => {
+      this.filteredUsers = filteredUsers;
+      this.showUserList = showUserList;
+    });
+  }
+
+  insertUserName(userName: string) {
+    this.commonService.insertUserName(userName, this.input_message.nativeElement, this.allUser, (filteredUsers, showUserList) => {
+      this.filteredUsers = filteredUsers;
+      this.showUserList = showUserList;
+    });
+  }  
 
   openReactionInfo(i: number, j: number) {
     this.reactionInfo = true;

@@ -10,6 +10,7 @@ import { CommonService } from 'src/app/shared-services/common.service';
 import { StorageService } from 'src/app/shared-services/storage.service';
 import { formatDate } from '@angular/common';
 import { MessagesService } from 'src/app/shared-services/messages.service';
+import { UserService } from 'src/app/shared-services/user.service';
 
 @Component({
   selector: 'app-main-content-main-chat-lower-part',
@@ -42,8 +43,11 @@ export class MainContentMainChatLowerPartComponent {
   reactionInfo: boolean = false;
   reactionInfoNumber!: number;
   reactionInfoMessage!: number;
+  allUser: User[] = [];
+  filteredUsers: User[] = [];
+  showUserList: boolean = false;
   
-  constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
+  constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService, public userService: UserService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
@@ -70,8 +74,27 @@ export class MainContentMainChatLowerPartComponent {
 
     this.dataService.mobile$.subscribe((value: boolean) => {
       this.mobile = value;
-    })
+    });
+    
+    this.userService.users$.subscribe(users => {
+      this.allUser = users;
+    });
   }
+
+  onTextareaInput(event: any) {
+    this.commonService.onTextareaInput(event, this.allUser, (filteredUsers, showUserList) => {
+      this.filteredUsers = filteredUsers;
+      this.showUserList = showUserList;
+    });
+  }
+
+  insertUserName(userName: string) {
+    this.commonService.insertUserName(userName, this.input_message.nativeElement, this.allUser, (filteredUsers, showUserList) => {
+      this.filteredUsers = filteredUsers;
+      this.showUserList = showUserList;
+    });
+  }
+  
 
   openReactionInfo(i: number, j: number) {
     this.reactionInfo = true;

@@ -6,6 +6,7 @@ import { ChannelsService } from 'src/app/shared-services/channels.service';
 import { MessagesService } from 'src/app/shared-services/messages.service';
 import { CommonService } from 'src/app/shared-services/common.service';
 import { StorageService } from 'src/app/shared-services/storage.service';
+import { UserService } from 'src/app/shared-services/user.service';
 
 @Component({
   selector: 'app-main-content-thread-chat-lower-part',
@@ -35,8 +36,11 @@ export class MainContentThreadChatLowerPartComponent {
   reactionInfo: boolean = false;
   reactionInfoNumber!: number;
   reactionInfoMessage!: number;
+  allUser: User[] = [];
+  filteredUsers: User[] = [];
+  showUserList: boolean = false;
 
-  constructor(private channelsService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService) {
+  constructor(private channelsService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService, public userService: UserService) {
     this.messagesService.thread_subject$.subscribe((value: Message) => {
       if (value) {
         this.thread_subject_time = this.getFormattedTime(value);
@@ -47,6 +51,24 @@ export class MainContentThreadChatLowerPartComponent {
 
     this.channelsService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
+    });
+
+    this.userService.users$.subscribe(users => {
+      this.allUser = users;
+    });
+  }
+
+  onTextareaInput(event: any) {
+    this.commonService.onTextareaInput(event, this.allUser, (filteredUsers, showUserList) => {
+      this.filteredUsers = filteredUsers;
+      this.showUserList = showUserList;
+    });
+  }
+
+  insertUserName(userName: string) {
+    this.commonService.insertUserName(userName, this.input_answer.nativeElement, this.allUser, (filteredUsers, showUserList) => {
+      this.filteredUsers = filteredUsers;
+      this.showUserList = showUserList;
     });
   }
 
