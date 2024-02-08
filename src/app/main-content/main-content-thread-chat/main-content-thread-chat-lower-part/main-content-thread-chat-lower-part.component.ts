@@ -32,6 +32,8 @@ export class MainContentThreadChatLowerPartComponent {
   textAreaContent!: string;
   selectedAnswerThreadChat: any = [];
   editedText!: string;
+  reactionInfo: boolean = false;
+  reactionInfoNumber!: number;
 
   constructor(private channelsService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService) {
     this.messagesService.thread_subject$.subscribe((value: Message) => {
@@ -45,6 +47,15 @@ export class MainContentThreadChatLowerPartComponent {
     this.channelsService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
+  }
+
+  openReactionInfo(i: number) {
+    this.reactionInfo = true;
+    this.reactionInfoNumber = i;
+  }
+
+  closeReactionInfo() {
+    this.reactionInfo = false;
   }
 
   updateScroll() {
@@ -124,7 +135,6 @@ export class MainContentThreadChatLowerPartComponent {
     const currentUserInfo = this.channelsService.currentUserInfo$.value
 
     this.reaction.setReaction($event.emoji.native);
-    this.reaction.setCreator(currentUserInfo.name);
     this.messagesService.addReactionToAnswer(this.reaction);
     this.emoji_window_messages_open = false;
   }

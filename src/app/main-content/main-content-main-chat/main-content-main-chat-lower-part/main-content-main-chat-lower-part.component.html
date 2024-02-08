@@ -63,14 +63,21 @@
 
                     <div class="user-message-emojis">
                         <div class="anon-user-answer-container">
-                            <h3 (click)="selectMessageAndOpenThread(i)" *ngIf="message.answered_number != 0">{{ message.answered_number
+                            <h3 (click)="selectMessageAndOpenThread(i)" *ngIf="message.answered_number != 0">{{
+                                message.answered_number
                                 }} Antworten</h3>
                             <span *ngIf="message.latest_answer !== ''">Letzte Antwort {{
                                 getFormattedTimeForLatestAnswer(message.latest_answer) }}</span>
                         </div>
-                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
+                        <div (mouseenter)="openReactionInfo(i)" (mouseleave)="closeReactionInfo()" class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions; let i = index">
                             <div>{{ reactions.reaction }}</div>
                             <span>{{ reactions.amount }}</span>
+
+                            <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                                <div>{{ reactions.reaction }}</div>
+                                <h4>{{ reactions.creator }}</h4>
+                                <span>hat reagiert</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -80,7 +87,8 @@
                     <div (click)="addPreSelectedReaction('🙌',i)">🙌</div>
                     <mat-icon (click)="toggleEmojiWindowForMessage(i)"
                         class="material-icons-outlined">add_reaction</mat-icon>
-                    <mat-icon (click)="selectMessageAndOpenThread(i)" class="material-icons-outlined">insert_comment</mat-icon>
+                    <mat-icon (click)="selectMessageAndOpenThread(i)"
+                        class="material-icons-outlined">insert_comment</mat-icon>
                     <mat-icon *ngIf="!message.img" (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                     <span *ngIf="hoverOptionEditMessage_open && !message.img">
                         <h1 class="hover-options-edit-message" (click)="editMessage(message.message, i)">
@@ -102,14 +110,21 @@
                     </div>
                     <div class="anon-user-message-emojis">
                         <div class="anon-user-answer-container">
-                            <h3 (click)="selectMessageAndOpenThread(i)" *ngIf="message.answered_number != 0">{{ message.answered_number
+                            <h3 (click)="selectMessageAndOpenThread(i)" *ngIf="message.answered_number != 0">{{
+                                message.answered_number
                                 }} Antworten</h3>
                             <span *ngIf="message.latest_answer !== ''">Letzte Antwort {{
                                 getFormattedTimeForLatestAnswer(message.latest_answer) }}</span>
                         </div>
-                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions">
+                        <div (mouseenter)="openReactionInfo(i)" (mouseleave)="closeReactionInfo()"  class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions; let i = index">
                             <div>{{ reactions.reaction }}</div>
                             <span>{{ reactions.amount }}</span>
+
+                            <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                                <div>{{ reactions.reaction }}</div>
+                                <h4>{{ reactions.creator }}</h4>
+                                <span>hat reagiert</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -119,7 +134,8 @@
                     <div (click)="addPreSelectedReaction('🙌',i)">🙌</div>
                     <mat-icon (click)="toggleEmojiWindowForMessage(i)"
                         class="material-icons-outlined">add_reaction</mat-icon>
-                    <mat-icon (click)="selectMessageAndOpenThread(i)" class="material-icons-outlined">insert_comment</mat-icon>
+                    <mat-icon (click)="selectMessageAndOpenThread(i)"
+                        class="material-icons-outlined">insert_comment</mat-icon>
                 </div>
             </div>
         </div>

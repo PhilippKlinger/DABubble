@@ -1,7 +1,7 @@
 export class Reaction {
     id: string;
     reaction: string;
-    creator: string;
+    creator: string | object = [];
     amount: number;
 
     constructor(obj?: any) {
@@ -15,7 +15,7 @@ export class Reaction {
         this.amount = number;
     }
 
-    setCreator(name: string): void {
+    setCreator(name: string | object): void {
         this.creator = name;
     }
 

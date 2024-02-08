@@ -39,6 +39,8 @@ export class MainContentMainChatLowerPartComponent {
   uploadedFileLink: string | null = null;
   errorUploadFile: boolean = false;
   mobile: boolean = false;
+  reactionInfo: boolean = false;
+  reactionInfoNumber!: number;
 
   constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
@@ -68,6 +70,15 @@ export class MainContentMainChatLowerPartComponent {
     this.dataService.mobile$.subscribe((value: boolean) => {
       this.mobile = value;
     })
+  }
+
+  openReactionInfo(i: number) {
+    this.reactionInfo = true;
+    this.reactionInfoNumber = i;
+  }
+
+  closeReactionInfo() {
+    this.reactionInfo = false;
   }
 
   updateScroll() {
@@ -265,16 +276,16 @@ export class MainContentMainChatLowerPartComponent {
     const currentUserInfo = this.channelService.currentUserInfo$.value
 
     this.reaction.setReaction(emoji);
-    this.reaction.setCreator(currentUserInfo.name);
+    // this.reaction.setCreator(currentUserInfo.name);
     this.messagesService.addReactionToMessage(this.reaction);
     this.emoji_window_messages_open = false;
   }
 
   addReaction($event: any) {
     const currentUserInfo = this.channelService.currentUserInfo$.value
-    console.log($event);
+    
     this.reaction.setReaction($event.emoji.native);
-    this.reaction.setCreator(currentUserInfo.name);
+    // this.reaction.setCreator(currentUserInfo.name);
     this.messagesService.addReactionToMessage(this.reaction);
     this.emoji_window_messages_open = false;
   }
@@ -305,15 +316,15 @@ export class MainContentMainChatLowerPartComponent {
   selectMessageForThread(index: number) {
     let counter = 0;
     try {
-    const intervalId = setInterval(() => {
-      this.messagesService.thread_subject$.next(this.chatMessages[index]);
-      this.messagesService.thread_subject_index$.next(index);
-      counter++;
+      const intervalId = setInterval(() => {
+        this.messagesService.thread_subject$.next(this.chatMessages[index]);
+        this.messagesService.thread_subject_index$.next(index);
+        counter++;
 
-      if (counter === 6) {
-        clearInterval(intervalId); // Stoppt das Intervall, nachdem es dreimal aufgerufen wurde
-      }
-    }, 30);
+        if (counter === 6) {
+          clearInterval(intervalId); // Stoppt das Intervall, nachdem es dreimal aufgerufen wurde
+        }
+      }, 30);
     }
     catch {
       console.log('Fehler beim Interval');

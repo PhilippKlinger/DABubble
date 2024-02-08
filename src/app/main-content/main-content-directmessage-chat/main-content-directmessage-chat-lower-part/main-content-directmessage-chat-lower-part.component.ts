@@ -35,6 +35,8 @@ export class MainContentDirectmessageChatLowerPartComponent {
   uploadedFileLinkDirect: string | null = null;
   errorUploadFileDirect: boolean = false;
   selectedDirectMessage: any = [];
+  reactionInfo: boolean = false;
+  reactionInfoNumber!: number;
 
   constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
     this.messagesService.dm_user$.subscribe((dm_user) => {
@@ -52,6 +54,15 @@ export class MainContentDirectmessageChatLowerPartComponent {
     this.messagesService.selectedDirectMessage$.subscribe((message: Message) => {
       this.selectedDirectMessage = message;
     })
+  }
+
+  openReactionInfo(i: number) {
+    this.reactionInfo = true;
+    this.reactionInfoNumber = i;
+  }
+
+  closeReactionInfo() {
+    this.reactionInfo = false;
   }
 
   updateScroll() {
@@ -272,7 +283,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
     const currentUserInfo = this.channelService.currentUserInfo$.value
 
     this.reaction.setReaction($event.emoji.native);
-    this.reaction.setCreator(currentUserInfo.name);
+    // this.reaction.setCreator(currentUserInfo.name);
     this.messagesService.addReactionToDM(this.reaction);
     this.emoji_window_messages_open = false;
   }

@@ -87,9 +87,15 @@
                         </div>
                         
                         <div class="user-message-emojis">
-                            <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
+                            <div (mouseenter)="openReactionInfo(i)" (mouseleave)="closeReactionInfo()" class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions; let i = index">
                                 <div>{{ reactions.reaction }}</div>
                                 <span>{{ reactions.amount }}</span>
+
+                                <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                                    <div>{{ reactions.reaction }}</div>
+                                    <h4>{{ reactions.creator }}</h4>
+                                    <span>hat reagiert</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -117,9 +123,15 @@
                             {{ answer.message }}
                         </div>
                         <div class="anon-user-message-emojis">
-                            <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions">
+                            <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions; let i = index">
                                 <div>{{ reactions.reaction }}</div>
                                 <span>{{ reactions.amount }}</span>
+
+                                <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                                    <div>{{ reactions.reaction }}</div>
+                                    <h4>{{ reactions.creator }}</h4>
+                                    <span>hat reagiert</span>
+                                </div>
                             </div>
                         </div>
                     </div>
