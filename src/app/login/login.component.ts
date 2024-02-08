@@ -53,9 +53,7 @@ export class LoginComponent implements OnInit{
         .then((userCredential) => {
           this.currentUserCredential = userCredential;
           if (userCredential.user.emailVerified) {
-            this.setUserOnline(userCredential);
-            this.commonService.showPopup('login');
-            this.commonService.routeTo('main-content', 2000);
+            this.loginUser(userCredential);
           } else {
             this.commonService.showVerifyPopup('verifiy-mail-login');
           }
@@ -66,6 +64,37 @@ export class LoginComponent implements OnInit{
           }
         })
     }
+  }
+
+
+  loginGuest() {
+    this.loginErrorUser = false;
+    this.authService.login('guestLogin@guest.com', 'Guestlogin')
+      .then((userCredential) => {
+        this.channelsService.deleteGuestMessages();
+        this.loginUser(userCredential);
+      })
+  }
+
+  async loginGoogle() {
+    try {
+      let result = await this.authService.loginWithGoogle();
+      let {email, displayName, uid} = result.user;
+      if (email && displayName) {
+        this.checkGooleUserExistsAndCreate(email, displayName, uid);
+        this.loginUser(result);
+      } else {
+        console.log("Google-Konto hat keine gültige E-Mail oder keinen Namen.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  loginUser(userCredential: UserCredential) {
+    this.setUserOnline(userCredential);
+    this.commonService.showPopup('login');
+    this.commonService.routeTo('main-content', 2000);
   }
 
   async setUserOnline(userCredential: UserCredential) {
@@ -89,34 +118,7 @@ export class LoginComponent implements OnInit{
       return true;
     }
   }
-
-  loginGuest() {
-    this.loginErrorUser = false;
-    this.authService.login('guestLogin@guest.com', 'Guestlogin')
-      .then((userCredential) => {
-        this.setUserOnline(userCredential);
-        this.channelsService.deleteGuestMessages();
-        this.commonService.showPopup('login');
-        this.commonService.routeTo('main-content', 2000);
-      })
-  }
-
-  async loginGoogle() {
-    try {
-      let result = await this.authService.loginWithGoogle();
-      let {email, displayName, uid} = result.user;
-      if (email && displayName) {
-        this.checkGooleUserExistsAndCreate(email, displayName, uid);
-        await this.setUserOnline(result);
-        this.commonService.showPopup('login');
-        this.commonService.routeTo('main-content', 2000);
-      } else {
-        console.log("Google-Konto hat keine gültige E-Mail oder keinen Namen.");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  
 
   async checkGooleUserExistsAndCreate(email: string, displayName: string, uid: string) {
     let userExists = await this.userService.userExistsByEmail(email);
