@@ -20,7 +20,7 @@ export class UserService {
   public userForMessageService!: User;
 
   private unsubUsers;
-  public guestId: string = 'kMsZHupMksQU5xS5goyZboGicFy2';
+  public guestId: string = 'kMsZHupMksQU5xS5goyZboGicFy2exit';
 
   constructor(private firestore: Firestore, private auth: Auth, private channelsService: ChannelsService) {
     this.unsubUsers = this.subUsersList();

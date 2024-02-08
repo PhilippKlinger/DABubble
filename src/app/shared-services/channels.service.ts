@@ -52,7 +52,17 @@ export class ChannelsService {
         channel.members.some(member => member.id === currentUser.id)
       );
       if (firstMemberChannel) {
-        this.setSelectedChannel(firstMemberChannel);
+        let counter = 0;
+
+        const intervalId = setInterval(() => {
+          this.setSelectedChannel(firstMemberChannel);
+          counter++;
+
+          if (counter === 2) {
+            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+          }
+        }, 100);
+       
         this.closeNewMessageInput();
       } else {
         this.openNewMessageInput();

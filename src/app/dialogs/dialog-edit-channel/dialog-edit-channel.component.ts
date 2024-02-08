@@ -108,7 +108,18 @@ export class DialogEditChannelComponent {
         this.channelsService.isCurrentUserChannelMember(channel)
       );
       if (firstMemberChannel) {
-        this.channelsService.setSelectedChannel(firstMemberChannel);
+        let counter = 0;
+        const intervalId = setInterval(() => {
+          this.channelsService.setSelectedChannel(firstMemberChannel);
+          counter++;
+
+          if (counter === 2) {
+            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+          }
+        }, 100);
+    
+
+
       } else {
         this.openNewMessageInput();
       }
