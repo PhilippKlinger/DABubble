@@ -15,7 +15,7 @@
         </div>
     </header>
     <div class="login d-flex-standard">
-        <div *ngSwitchCase="'login'" class="container bg-white">
+        <div *ngSwitchCase="'login'" class="container bg-white login">
           <div id="login-bg" class="overlay d-none"></div>
           <div id="login" class="popup d-none">
             <p>Erfolgreich angemeldet!</p>
@@ -29,7 +29,7 @@
             <div>
               <div class="input-container d-flex-standard cursor-pointer">
                 <img src="assets/icons/mail.svg">
-                <input type="email" matInput placeholder="beispielname@email.com" [(ngModel)]="user.email" name="email" required>
+                <input #emailInputLogin="ngModel" type="email" matInput placeholder="beispielname@email.com" [(ngModel)]="user.email" name="email" required>
                 <img src="assets/icons/empty.svg">
               </div>
               <span [class.show]="loginErrorUser" class="error-txt">*Diese E-Mail-Adresse ist leider ungültig.</span>   
@@ -53,7 +53,7 @@
               <span>Anmelden mit Google</span>
             </div>
             <div class="submit-buttons d-flex-standard">
-              <button class="btn-submit" mat-button type="submit">Anmelden</button>
+              <button class="btn-submit" mat-button type="submit" [disabled]="!validateEmail(user.email)">Anmelden</button>
               <button class="btn-guest" mat-button type="button" (click)="loginGuest()">Gäste-Login</button>
             </div>
           </form>
@@ -99,6 +99,7 @@
               <a class="link privacy-policy" href="http://localhost:4200/privacy-policy" target="_blank">Datenschutzerklärung</a>
               <p>zu</p>
             </div>
+            <span [class.show]="isPasswordMatching() && validateEmail(user.email) && nameInput.valid && !isCheckboxChecked && passwordInput.valid" class="error-txt">*Datenschutzerklärung zustimmen</span>             
             <div class="btn-end submit-buttons d-flex-standard">
               <button class="btn-submit" mat-button type="submit" [disabled]="!isFormValid()">Weiter</button>
             </div>

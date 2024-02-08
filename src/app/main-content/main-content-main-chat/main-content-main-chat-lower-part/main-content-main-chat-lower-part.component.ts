@@ -304,6 +304,7 @@ export class MainContentMainChatLowerPartComponent {
 
   selectMessageForThread(index: number) {
     let counter = 0;
+    try {
     const intervalId = setInterval(() => {
       this.messagesService.thread_subject$.next(this.chatMessages[index]);
       this.messagesService.thread_subject_index$.next(index);
@@ -313,6 +314,10 @@ export class MainContentMainChatLowerPartComponent {
         clearInterval(intervalId); // Stoppt das Intervall, nachdem es dreimal aufgerufen wurde
       }
     }, 30);
+    }
+    catch {
+      console.log('Fehler beim Interval');
+    }
   }
 
   receiveChatMessages() {
