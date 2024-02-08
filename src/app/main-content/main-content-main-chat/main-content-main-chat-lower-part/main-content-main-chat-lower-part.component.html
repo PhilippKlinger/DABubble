@@ -69,11 +69,11 @@
                             <span *ngIf="message.latest_answer !== ''">Letzte Antwort {{
                                 getFormattedTimeForLatestAnswer(message.latest_answer) }}</span>
                         </div>
-                        <div (mouseenter)="openReactionInfo(i)" (mouseleave)="closeReactionInfo()" class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions; let i = index">
+                        <div (mouseenter)="openReactionInfo(i,j)" (mouseleave)="closeReactionInfo()" class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions; let j = index">
                             <div>{{ reactions.reaction }}</div>
                             <span>{{ reactions.amount }}</span>
 
-                            <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                            <div [ngClass]="{'short-reactioninfo': reactionInfoNumber == message.reactions.length-1,'reactioninfo': reactionInfoNumber !== message.reactions.length-1 }" *ngIf="reactionInfo && reactionInfoNumber == j && reactionInfoMessage == i">
                                 <div>{{ reactions.reaction }}</div>
                                 <h4>{{ reactions.creator }}</h4>
                                 <span>hat reagiert</span>
@@ -116,11 +116,11 @@
                             <span *ngIf="message.latest_answer !== ''">Letzte Antwort {{
                                 getFormattedTimeForLatestAnswer(message.latest_answer) }}</span>
                         </div>
-                        <div (mouseenter)="openReactionInfo(i)" (mouseleave)="closeReactionInfo()"  class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions; let i = index">
+                        <div (mouseenter)="openReactionInfo(i,j)" (mouseleave)="closeReactionInfo()"  class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions; let j = index">
                             <div>{{ reactions.reaction }}</div>
                             <span>{{ reactions.amount }}</span>
 
-                            <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                            <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == j && reactionInfoMessage == i">
                                 <div>{{ reactions.reaction }}</div>
                                 <h4>{{ reactions.creator }}</h4>
                                 <span>hat reagiert</span>

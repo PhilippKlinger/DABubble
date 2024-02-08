@@ -87,11 +87,11 @@
                         </div>
                         
                         <div class="user-message-emojis">
-                            <div (mouseenter)="openReactionInfo(i)" (mouseleave)="closeReactionInfo()" class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions; let i = index">
+                            <div (mouseenter)="openReactionInfo(i, j)" (mouseleave)="closeReactionInfo()" class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions; let j = index">
                                 <div>{{ reactions.reaction }}</div>
                                 <span>{{ reactions.amount }}</span>
 
-                                <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                                <div [ngClass]="{'short-reactioninfo': reactionInfoNumber == answer.reactions.length-1,'reactioninfo': reactionInfoNumber !== answer.reactions.length-1 }" *ngIf="reactionInfo && reactionInfoNumber == j && reactionInfoMessage == i">
                                     <div>{{ reactions.reaction }}</div>
                                     <h4>{{ reactions.creator }}</h4>
                                     <span>hat reagiert</span>
@@ -123,11 +123,11 @@
                             {{ answer.message }}
                         </div>
                         <div class="anon-user-message-emojis">
-                            <div class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions; let i = index">
+                            <div (mouseenter)="openReactionInfo(i,j)" (mouseleave)="closeReactionInfo()"  class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions; let j = index">
                                 <div>{{ reactions.reaction }}</div>
                                 <span>{{ reactions.amount }}</span>
 
-                                <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                                <div  [ngClass]="{'reactioninfo': reactionInfoNumber == 0,'opposite-reactioninfo': reactionInfoNumber !== 0 }" *ngIf="reactionInfo && reactionInfoNumber == j && reactionInfoMessage == i">
                                     <div>{{ reactions.reaction }}</div>
                                     <h4>{{ reactions.creator }}</h4>
                                     <span>hat reagiert</span>

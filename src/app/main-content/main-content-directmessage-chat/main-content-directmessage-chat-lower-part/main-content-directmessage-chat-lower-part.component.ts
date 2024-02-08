@@ -37,6 +37,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
   selectedDirectMessage: any = [];
   reactionInfo: boolean = false;
   reactionInfoNumber!: number;
+  reactionInfoMessage!: number;
 
   constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
     this.messagesService.dm_user$.subscribe((dm_user) => {
@@ -56,9 +57,10 @@ export class MainContentDirectmessageChatLowerPartComponent {
     })
   }
 
-  openReactionInfo(i: number) {
+  openReactionInfo(i: number, j: number) {
     this.reactionInfo = true;
-    this.reactionInfoNumber = i;
+    this.reactionInfoMessage = i;
+    this.reactionInfoNumber = j;
   }
 
   closeReactionInfo() {

@@ -34,6 +34,7 @@ export class MainContentThreadChatLowerPartComponent {
   editedText!: string;
   reactionInfo: boolean = false;
   reactionInfoNumber!: number;
+  reactionInfoMessage!: number;
 
   constructor(private channelsService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService) {
     this.messagesService.thread_subject$.subscribe((value: Message) => {
@@ -49,9 +50,10 @@ export class MainContentThreadChatLowerPartComponent {
     });
   }
 
-  openReactionInfo(i: number) {
+  openReactionInfo(i: number, j: number) {
     this.reactionInfo = true;
-    this.reactionInfoNumber = i;
+    this.reactionInfoMessage = i;
+    this.reactionInfoNumber = j;
   }
 
   closeReactionInfo() {

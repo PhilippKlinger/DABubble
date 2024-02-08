@@ -49,7 +49,8 @@
                         </button>
                     </div>
 
-                    <div *ngIf="(selectedDirectMessage?.id == message.id && editingMessage)" class="speech-bubble-user-edit">
+                    <div *ngIf="(selectedDirectMessage?.id == message.id && editingMessage)"
+                        class="speech-bubble-user-edit">
                         <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="4"
                             value="{{ textAreaContent }}"></textarea>
                         <div>
@@ -59,11 +60,14 @@
                     </div>
 
                     <div class="user-message-emojis">
-                        <div (mouseenter)="openReactionInfo(i)" (mouseleave)="closeReactionInfo()" class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions; let i = index">
+                        <div (mouseenter)="openReactionInfo(i,j)" (mouseleave)="closeReactionInfo()"
+                            class="user-message-emojis-showcase"
+                            *ngFor="let reactions of message.reactions; let j = index">
                             <div>{{ reactions.reaction }}</div>
                             <span>{{ reactions.amount }}</span>
 
-                            <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                            <div [ngClass]="{'short-reactioninfo': reactionInfoNumber == message.reactions.length-1,'reactioninfo': reactionInfoNumber !== message.reactions.length-1 }"
+                                *ngIf="reactionInfo && reactionInfoNumber == j && reactionInfoMessage == i">
                                 <div>{{ reactions.reaction }}</div>
                                 <h4>{{ reactions.creator }}</h4>
                                 <span>hat reagiert</span>
@@ -73,7 +77,8 @@
                 </div>
 
                 <div class="user-message-hover-options">
-                    <mat-icon class="material-icons-outlined" (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
+                    <mat-icon class="material-icons-outlined"
+                        (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
                     <mat-icon *ngIf="!message.img" (click)="toggleHoverOptionEditMessage()">more_vert</mat-icon>
                     <span *ngIf="hoverOptionEditMessage_open && !message.img">
                         <h1 class="hover-options-edit-message" (click)="editMessage(message.message, i)">
@@ -94,11 +99,14 @@
                         {{ message.message }}
                     </div>
                     <div class="anon-user-message-emojis">
-                        <div class="user-message-emojis-showcase" *ngFor="let reactions of message.reactions; let i = index">
+                        <div (mouseenter)="openReactionInfo(i,j)" (mouseleave)="closeReactionInfo()"
+                            class="user-message-emojis-showcase"
+                            *ngFor="let reactions of message.reactions; let j = index">
                             <div>{{ reactions.reaction }}</div>
                             <span>{{ reactions.amount }}</span>
 
-                            <div class="reactioninfo" *ngIf="reactionInfo && reactionInfoNumber == i">
+                            <div class="reactioninfo"
+                                *ngIf="reactionInfo && reactionInfoNumber == j && reactionInfoMessage == i">
                                 <div>{{ reactions.reaction }}</div>
                                 <h4>{{ reactions.creator }}</h4>
                                 <span>hat reagiert</span>
@@ -108,7 +116,8 @@
                 </div>
 
                 <div class="anon-message-hover-options">
-                    <mat-icon class="material-icons-outlined" (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
+                    <mat-icon class="material-icons-outlined"
+                        (click)="toggleEmojiWindowForMessage(i)">add_reaction</mat-icon>
                 </div>
             </div>
         </div>

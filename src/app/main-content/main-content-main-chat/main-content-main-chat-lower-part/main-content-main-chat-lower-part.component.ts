@@ -41,7 +41,8 @@ export class MainContentMainChatLowerPartComponent {
   mobile: boolean = false;
   reactionInfo: boolean = false;
   reactionInfoNumber!: number;
-
+  reactionInfoMessage!: number;
+  
   constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
       if (selectedChannel) {
@@ -72,9 +73,10 @@ export class MainContentMainChatLowerPartComponent {
     })
   }
 
-  openReactionInfo(i: number) {
+  openReactionInfo(i: number, j: number) {
     this.reactionInfo = true;
-    this.reactionInfoNumber = i;
+    this.reactionInfoMessage = i;
+    this.reactionInfoNumber = j;
   }
 
   closeReactionInfo() {
@@ -283,7 +285,7 @@ export class MainContentMainChatLowerPartComponent {
 
   addReaction($event: any) {
     const currentUserInfo = this.channelService.currentUserInfo$.value
-    
+
     this.reaction.setReaction($event.emoji.native);
     // this.reaction.setCreator(currentUserInfo.name);
     this.messagesService.addReactionToMessage(this.reaction);
