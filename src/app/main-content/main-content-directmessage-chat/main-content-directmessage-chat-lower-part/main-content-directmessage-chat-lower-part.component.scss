@@ -1,5 +1,6 @@
 @import './../../../../styles.scss';
 
+
 .reactioninfo {
     height: 110px;
     width: 160px;
@@ -16,7 +17,7 @@
     margin-top: -170px;
     margin-left: 30px;
     z-index: 4;
-    
+
     div {
         height: 24px;
         font-size: 24px;
@@ -90,6 +91,9 @@
     gap: 16px;
     width: fit-content;
 
+    @media (max-width:500px) {
+        width: 200px;
+    }
     textarea {
         font-size: inherit;
         color: inherit;
@@ -106,6 +110,10 @@
         display: flex;
         justify-content: flex-end;
         gap: 32px;
+
+        @media (max-width:500px) {
+            gap: 12px;
+        }
     }
 }
 
@@ -117,7 +125,14 @@
     font-size: 18px;
     font-weight: 700;
     padding: 12px 25px;
-    border-radius: 50px
+    border-radius: 50px;
+
+    @media (max-width:500px) {
+        font-size: 16px;
+        padding: 8px 10px;
+        border-radius: 50px;
+        width: 100px;
+    }
 }
 
 .btn-save {
@@ -128,7 +143,14 @@
     font-size: 18px;
     font-weight: 700;
     padding: 12px 25px;
-    border-radius: 50px
+    border-radius: 50px;
+
+    @media (max-width:500px) {
+        font-size: 16px;
+        padding: 8px 10px;
+        border-radius: 50px;
+        width: 100px;
+    }
 }
 
 
@@ -243,6 +265,10 @@
     background-color: white;
     transition: 0.1s ease-in;
 
+    @media(max-width:575px) {
+        padding: 5px 30px 5px 30px;
+    }
+
     &:hover {
         background-color: $Bg-color;
         position: relative;
@@ -314,6 +340,10 @@
     justify-content: flex-start;
     background-color: white;
     transition: 0.1s ease-in;
+
+    @media(max-width:575px) {
+        padding: 5px 30px 5px 30px;
+    }
 
     &:hover {
         background-color: $Bg-color;
