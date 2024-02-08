@@ -18,7 +18,7 @@
                 <mat-icon *ngIf="isMobileView">edit_outlined</mat-icon>
                 <span *ngIf="!isMobileView">Bearbeiten</span>
             </p>
-            <p [ngClass]="{'button-disabled-2': isGuestUser || isChannelNameTaken}" class="button" *ngIf="isEditingName">
+            <p [ngClass]="{'button-disabled-2': isGuestUser || isChannelNameTaken || newChannelName == ''}" class="button" *ngIf="isEditingName">
                 <span *ngIf="isChannelNameTaken">Channelname bereits vergeben</span>
                 <mat-icon (click)="saveChanges('name')" *ngIf="isMobileView && !isChannelNameTaken">{{channel?.name !== newChannelName ?  'check_circle_outlined' : 'arrow_back'}}</mat-icon>
                 <span (click)="saveChanges('name')" *ngIf="!isMobileView && !isChannelNameTaken">{{channel?.name !== newChannelName ?  'Speichern' : 'Zurück'}}</span>

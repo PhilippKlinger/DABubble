@@ -62,31 +62,37 @@ export class MainContentSearchbarComponent {
       return;
     }
 
+    const firstChar = this.searchQuery.charAt(0);
     const searchQueryLower = this.searchQuery.toLowerCase();
+    const trimmedSearchQuery = searchQueryLower.slice(1);
 
-    this.channelsService.channels$.subscribe(channels => {
-      this.foundChannels = channels.filter(channel =>
-        channel.name.toLowerCase().includes(searchQueryLower)
-      );
-    });
-
-    if (this.isGuestUser) {
-      this.userService.users$.subscribe(users => {
-        this.foundUsers = users.filter(user =>
-          user.id === this.userService.guestId &&
-          user.name.toLowerCase().includes(searchQueryLower));
+    if (firstChar === '#') {
+      this.channelsService.channels$.subscribe(channels => {
+        this.foundChannels = channels.filter(channel => channel.name.toLowerCase().includes(trimmedSearchQuery));
       });
+      this.foundUsers = [];
+    } else if (firstChar === '@') {
+      this.searchUsers(trimmedSearchQuery);
+      this.foundChannels = [];
     } else {
-      this.userService.users$.subscribe(users => {
-        this.foundUsers = users.filter(user =>
-          user.name.toLowerCase().includes(searchQueryLower));
+
+      this.channelsService.channels$.subscribe(channels => {
+        this.foundChannels = channels.filter(channel => channel.name.toLowerCase().includes(searchQueryLower));
       });
+      this.searchUsers(searchQueryLower);
     }
 
     this.channelsService.messagesInChannels$.subscribe(messages => {
-      this.foundMessages = messages.filter(message =>
-        message.message.toLowerCase().includes(searchQueryLower)
-      );
+      this.foundMessages = messages.filter(message => message.message.toLowerCase().includes(searchQueryLower));
+    });
+  }
+
+  searchUsers(query: string) {
+    this.userService.users$.subscribe(users => {
+      this.foundUsers = users.filter(user => {
+        const isUserAllowed = this.isGuestUser ? user.id === this.userService.guestId : true;
+        return isUserAllowed && user.name.toLowerCase().includes(query);
+      });
     });
   }
 
@@ -129,6 +135,7 @@ export class MainContentSearchbarComponent {
       if (channel && this.channelsService.isCurrentUserChannelMember(channel)) {
         let counter = 0;
         if (this.mobile) {
+          //muss noch sinnvoller geschrieben werden
           this.dataService.thread_open$.next(false);
           this.dataService.new_message_open$.next(false);
           this.dataService.directmessage_open$.next(false);
@@ -160,8 +167,10 @@ export class MainContentSearchbarComponent {
     if (!searchQuery) {
       return text;
     }
-    const re = new RegExp(searchQuery, 'gi');
+    const effectiveSearchQuery = (searchQuery.charAt(0) === '#' || searchQuery.charAt(0) === '@') ? searchQuery.slice(1) : searchQuery;
+    const re = new RegExp(effectiveSearchQuery, 'gi');
     return text.replace(re, match => `<mark>${match}</mark>`);
   }
+
 
 }

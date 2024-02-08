@@ -29,7 +29,7 @@
             <img src="../../../assets/icons/account_circle.svg">
             <span>Vollständiger Name</span>
         </div>
-        <input [disabled]="isGuestUser" [(ngModel)]="newUserName" matInput placeholder="{{currentUser.name}}">
+        <input [disabled]="isGuestUser" [(ngModel)]="newUserName" matInput placeholder="Bitte einen Namen eingeben!">
     </div>
     <div *ngIf="!openAvatarSelection" class="name-input">
         <div class="name">
@@ -41,7 +41,7 @@
     </div>
     <div class="buttons">
         <button *ngIf="!openAvatarSelection" mat-raised-button mat-dialog-close>Abbrechen</button>
-        <button *ngIf="!openAvatarSelection" [disabled]="newUserName === currentUser.name && selectedAvatar === currentUser.avatar" (click)="saveChanges()" mat-raised-button color="primary">Speichern</button>
+        <button *ngIf="!openAvatarSelection" [disabled]="newUserName === currentUser.name && selectedAvatar === currentUser.avatar || newUserName == ''" (click)="saveChanges()" mat-raised-button color="primary">Speichern</button>
         <button (click)="toggleAvatarSelection()" *ngIf="openAvatarSelection" mat-raised-button> Zurück </button>
     </div>
 </div>

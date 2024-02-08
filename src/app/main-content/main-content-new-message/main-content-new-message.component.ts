@@ -101,6 +101,21 @@ export class MainContentNewMessageComponent {
     }
   }
 
+  highlightMatch(text: string, searchQuery: string): string {
+    if (!searchQuery) {
+      return text;
+    }
+    const effectiveSearchQuery = (searchQuery.charAt(0) === '#' || searchQuery.charAt(0) === '@') ? searchQuery.slice(1) : searchQuery;
+    const re = new RegExp(effectiveSearchQuery, 'gi');
+    return text.replace(re, match => `<mark>${match}</mark>`);
+  }
+
+  highlightEmailUser(emailUser: User, searchQuery: string): string {
+    const highlightedEmail = this.highlightMatch(emailUser.email, searchQuery);
+    return `${emailUser.name} <-> ${highlightedEmail}`;
+  }
+  
+
   clearSearchResults() {
     this.foundChannels = [];
     this.foundUsers = [];
@@ -122,7 +137,7 @@ export class MainContentNewMessageComponent {
           counter++;
 
           if (counter === 5) {
-            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+            clearInterval(intervalId); 
           }
         }, 100);
       } else {
@@ -136,7 +151,7 @@ export class MainContentNewMessageComponent {
           counter++;
 
           if (counter === 5) {
-            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+            clearInterval(intervalId); 
           }
         }, 100);
       }

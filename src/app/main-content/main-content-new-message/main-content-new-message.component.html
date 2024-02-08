@@ -9,16 +9,16 @@
 
         <mat-autocomplete #auto="matAutocomplete" [class]="'searchbar-custom-panel'">
             <mat-option *ngFor="let channel of foundChannels" [value]="channel.name" (click)="openChannel(channel)">
-                # {{ channel.name }}
+                <div [innerHTML]="'# ' + highlightMatch(channel.name, searchQuery)"></div>
             </mat-option>
             <mat-divider *ngIf="foundUsers.length > 0 && foundChannels.length > 0"></mat-divider>
             <mat-option *ngFor="let emailUser of foundUsers" [value]="emailUser.email" (click)="openDM(emailUser)">
                 <img [src]="emailUser.avatar" class="user-avatar">
-                {{ emailUser.name }}
+                <div [innerHTML]="highlightMatch(emailUser.name, searchQuery)"></div>
             </mat-option>
             <mat-option *ngFor="let emailUser of foundEmails" [value]="emailUser.email" (click)="openDM(emailUser)">
                 <img [src]="emailUser.avatar" class="user-avatar">
-                {{ emailUser.name }} ({{ emailUser.email }})
+                <div [innerHTML]="highlightEmailUser(emailUser, searchQuery)"></div>
             </mat-option>
         </mat-autocomplete>
     </nav>
