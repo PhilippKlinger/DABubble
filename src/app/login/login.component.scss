@@ -103,7 +103,7 @@ section {
 .create-profile.bottom {
     display: none;
     .submit-buttons {
-        margin-bottom: 100px;
+        margin-bottom: 60px;
     }    
 }
 
@@ -125,7 +125,7 @@ form {
     @include dFlex($fd: column);
     max-width: 606px;
     padding: 50px 60px;
-    margin-bottom: 100px;
+    margin-bottom: 60px;
     border-radius: 30px;
     p {
         @include fonts($fw: 400, $fs: 20px)
@@ -293,7 +293,7 @@ input {
         margin: 0;
     }
     margin-top: 40px;
-    margin-bottom: 30px;
+    margin-bottom: 6px;
 }
 
 .privacy-policy {
@@ -476,6 +476,9 @@ footer {
             font-size: 17px;
         }
     }
+    .container.login {
+        margin-bottom: 30px;
+    }
     .create-profile {
         display: none;
     }
@@ -553,8 +556,13 @@ footer {
     }
 
     .privacy-container {
-        flex-direction: column;
-        margin: 0;
+        margin-top: 0;
+        .privacy-policy {
+            width: fit-content;
+        }
+        p, a {
+            font-size: 14px;
+        }
     }
 }
 
