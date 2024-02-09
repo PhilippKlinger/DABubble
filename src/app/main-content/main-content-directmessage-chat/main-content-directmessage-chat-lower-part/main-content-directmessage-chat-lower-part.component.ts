@@ -155,7 +155,7 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
   async saveEditedMessage() {
     const selectedDirectMessage = this.selectedDirectMessage
     this.messagesService.selectedDirectMessage$.next(selectedDirectMessage);
-    this.setMessageInformations();
+    this.setMessageInformationsForEdit();
     this.messagesService.updateDirectMessage(this.message, selectedDirectMessage);
     this.toggleEditing();
   }
