@@ -8,9 +8,9 @@ import { DataService } from 'src/app/shared-services/data.service';
 })
 export class MainContentWorkspaceHeaderComponent {
 
-  constructor(private dataService: DataService) {
-
-  }
+  constructor(
+    private dataService: DataService
+  ) { }
 
   returnToWorkspace() {
     this.dataService.new_message_open$.next(false);

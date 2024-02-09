@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { DataService } from 'src/app/shared-services/data.service';
 import { Message } from './../../../models/message.class'
 import { ChannelsService } from 'src/app/shared-services/channels.service';
-import { Subscription, timestamp } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
 import { Reaction } from 'src/app/models/reaction.class';
 import { User } from 'src/app/models/user.class';
@@ -22,39 +22,49 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
   @ViewChild('img') img!: ElementRef;
   @ViewChild('chat_content') chat_content!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef;
+  @HostListener('document:click', ['$event'])
+  documentClickHandler(event: MouseEvent): void {
+    if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
+      this.emoji_window_messages_open = false;
+    }
+  }
   message = new Message();
   reaction = new Reaction();
-  selectedChannel!: Channel | null;
-  unsubChannels!: Subscription;
-  chatMessages: any = [];
-  emoji_window_open: boolean = false;
-  emoji_window_messages_open: boolean = false;
-  user: User = null!;
-  hoverOptionEditMessage_open: boolean = false;
   messageReactions: any = [];
   thread_subject: any = [];
-  editingMessage: boolean = false;
-  textareaCols!: number;
+  allUser: User[] = [];
+  filteredUsers: User[] = [];
+  chatMessages: any = [];
+  user: User = null!;
+  selectedChannel!: Channel | null;
+  unsubChannels!: Subscription;
+  uploadedFileLink: string | null = null;
   textAreaContent!: string;
   editedText!: string;
-  uploadedFileLink: string | null = null;
+  textareaCols!: number;
+  reactionInfoNumber!: number;
+  reactionInfoMessage!: number;
+  emoji_window_open: boolean = false;
+  emoji_window_messages_open: boolean = false;
+  hoverOptionEditMessage_open: boolean = false;
+  editingMessage: boolean = false;
   errorUploadFile: boolean = false;
   mobile: boolean = false;
   reactionInfo: boolean = false;
-  reactionInfoNumber!: number;
-  reactionInfoMessage!: number;
-  allUser: User[] = [];
-  filteredUsers: User[] = [];
   showUserList: boolean = false;
-  
-  constructor(private dataService: DataService, private messagesService: MessagesService, private channelService: ChannelsService, public commonService: CommonService, private storageService: StorageService, public userService: UserService) {
+
+  constructor(
+    private dataService: DataService,
+    private messagesService: MessagesService,
+    private channelService: ChannelsService,
+    public commonService: CommonService,
+    public userService: UserService
+  ) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
         this.receiveChatMessages();
         this.focusInputMessage();
-      } else {
-        // console.log('waiting for selected channel');
       }
     });
 
@@ -63,8 +73,6 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
         this.thread_subject = thread_subject;
         this.textAreaContent = this.thread_subject.message;
       } else {
-        //kann noch geändert werden
-        // console.log('waiting for thread subject');
         this.textAreaContent = '';
       }
     });
@@ -76,7 +84,7 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     this.dataService.mobile$.subscribe((value: boolean) => {
       this.mobile = value;
     });
-    
+
     this.userService.users$.subscribe(users => {
       this.allUser = users;
     });
@@ -103,7 +111,6 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
       this.showUserList = showUserList;
     });
   }
-  
 
   openReactionInfo(i: number, j: number) {
     this.reactionInfo = true;
@@ -124,24 +131,19 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
   extractWeekdayAndMonth(date?: string): { weekday: string, month: string } {
     const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
     const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-
     let dateParts = (date ?? '').split(' ');
     let dayMonthYear = dateParts[0].split('-');
     let time = dateParts[1].split(':');
-
     let day = parseInt(dayMonthYear[0], 10);
-    let month = parseInt(dayMonthYear[1], 10) - 1; // Monate im JavaScript Date-Objekt sind 0-basiert
+    let month = parseInt(dayMonthYear[1], 10) - 1;
     let year = parseInt(dayMonthYear[2], 10);
     let hour = parseInt(time[0], 10);
     let minute = parseInt(time[1], 10);
-
     let dateObject = new Date(year, month, day, hour, minute);
     let weekdayIndex = dateObject.getDay();
     let monthIndex = dateObject.getMonth();
-
     let weekday = weekdays[weekdayIndex];
     let monthName = months[monthIndex];
-
     return { weekday, month: monthName };
   }
 
@@ -209,18 +211,15 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
 
   getDatePartsFromFormattedDate(formattedDate?: string): { day: number, month: number, year: number } {
     const parts = (formattedDate ?? '').split(' ')[0].split('-');
-
     const day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10);
     const year = parseInt(parts[2], 10);
-
     return { day, month, year };
   }
 
   checkChannelCreationTime() {
     const selectedChannelTimestamp = this.getDatePartsFromFormattedDate(this.channelService.selectedChannel$.value?.timestamp.toString());
     const timestampNow = this.getDatePartsFromFormattedDate(formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US'));
-
     if (timestampNow.year == selectedChannelTimestamp.year) {
       if (timestampNow.month == selectedChannelTimestamp.month) {
         if (timestampNow.day == selectedChannelTimestamp.day) {
@@ -250,10 +249,9 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     this.editedText = (event.target as HTMLTextAreaElement).value
   }
 
-  async saveEditedMessage() {
+  setMessageInformationsForEdit() {
     const thread_subject = this.messagesService.thread_subject$.value
     const editedText = this.editedText;
-
     this.message.id = thread_subject.id;
     this.message.setMessage(editedText.trim());
     this.message.creator = thread_subject.creator;
@@ -262,7 +260,10 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     this.message.reactions = thread_subject.reactions;
     this.message.answered_number = thread_subject.answered_number;
     this.message.latest_answer = thread_subject.latest_answer;
+  }
 
+  async saveEditedMessage() {
+    this.setMessageInformationsForEdit();
     this.messagesService.updateMessage(this.message);
     this.toggleEditing();
   }
@@ -285,20 +286,12 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     this.editingMessage = !this.editingMessage;
   }
 
-  @HostListener('document:click', ['$event'])
-  documentClickHandler(event: MouseEvent): void {
-    if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
-      this.emoji_window_messages_open = false;
-    }
-  }
-
   toggleHoverOptionEditMessage() {
     this.hoverOptionEditMessage_open = !this.hoverOptionEditMessage_open;
   }
 
   private isClickInsideContainer(event: MouseEvent): boolean {
     let containerElement = document.getElementById('emoji-window-messages');
-
     if (containerElement) {
       return containerElement.contains(event.target as Node);
     }
@@ -307,19 +300,13 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
 
   addPreSelectedReaction(emoji: string, i: number) {
     this.messagesService.selectedMessageMainChat$.next(this.chatMessages[i]);
-    const currentUserInfo = this.channelService.currentUserInfo$.value
-
     this.reaction.setReaction(emoji);
-    // this.reaction.setCreator(currentUserInfo.name);
     this.messagesService.addReactionToMessage(this.reaction);
     this.emoji_window_messages_open = false;
   }
 
   addReaction($event: any) {
-    const currentUserInfo = this.channelService.currentUserInfo$.value
-
     this.reaction.setReaction($event.emoji.native);
-    // this.reaction.setCreator(currentUserInfo.name);
     this.messagesService.addReactionToMessage(this.reaction);
     this.emoji_window_messages_open = false;
   }
@@ -354,14 +341,12 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
         this.messagesService.thread_subject$.next(this.chatMessages[index]);
         this.messagesService.thread_subject_index$.next(index);
         counter++;
-
         if (counter === 6) {
-          clearInterval(intervalId); // Stoppt das Intervall, nachdem es dreimal aufgerufen wurde
+          clearInterval(intervalId);
         }
       }, 30);
     }
     catch {
-      // console.log('Fehler beim Interval');
     }
   }
 
@@ -396,13 +381,17 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     }
   }
 
-  async sendMessageToChannel() {
+  setMessageInformations() {
     const { name, id, avatar } = this.channelService.currentUserInfo$.value;
     this.message.setCreator(name);
     this.message.setCreatorId(id);
     this.message.setAvatar(avatar);
     this.message.setTimestampNow();
     this.message.setAnwers();
+  }
+
+  async sendMessageToChannel() {
+    this.setMessageInformations();
     if (this.uploadedFileLink || this.input_message.nativeElement.value.trim() !== '') {
       if (this.uploadedFileLink) {
         this.message.setImg(this.uploadedFileLink);
@@ -414,9 +403,9 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
       }
       await this.messagesService.pushMessageToChannel(this.message);
       this.updateScroll();
+      this.message.setMessage('');
+      this.message.setImg('');
     }
-    this.message.setMessage('');
-    this.message.setImg('');
   }
 
   ngOnDestroy() {

@@ -14,7 +14,10 @@ export class MainContentThreadChatUpperPartComponent {
   unsubChannels!: Subscription;
   mobile: boolean = false;
 
-  constructor(private dataService: DataService, private ChannelsService: ChannelsService) {
+  constructor(
+    private dataService: DataService,
+    private ChannelsService: ChannelsService
+  ) {
     this.unsubChannels = this.ChannelsService.selectedChannel$.subscribe(selectedChannel => {
       this.selectedChannel = selectedChannel;
     });

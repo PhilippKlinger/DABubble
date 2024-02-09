@@ -13,46 +13,49 @@ import { UserService } from 'src/app/shared-services/user.service';
   selector: 'app-main-content-directmessage-chat-lower-part',
   templateUrl: './main-content-directmessage-chat-lower-part.component.html',
   styleUrls: ['./main-content-directmessage-chat-lower-part.component.scss',
-  '../../../dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component.scss']
+    '../../../dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component.scss']
 })
 export class MainContentDirectmessageChatLowerPartComponent implements AfterViewInit {
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('fileInputDirect') fileInput!: ElementRef
   @ViewChild('chat_content') chat_content!: ElementRef;
-  emoji_window_open: boolean = false;
-  emoji_window_messages_open: boolean = false;
   message = new Message();
   reaction = new Reaction();
   chatMessages: any = [];
   directMessages: any = [];
-  user: User = null!;
-  dm_user: User | null = null!
   thread_subject: any = [];
-  editingMessage: boolean = false;
-  editedText!: string;
-  textareaCols!: number;
-  textAreaContent!: string;
-  hoverOptionEditMessage_open: boolean = false;
-  uploadedFileLinkDirect: string | null = null;
-  errorUploadFileDirect: boolean = false;
   selectedDirectMessage: any = [];
-  reactionInfo: boolean = false;
-  reactionInfoNumber!: number;
-  reactionInfoMessage!: number;
   allUser: User[] = [];
   filteredUsers: User[] = [];
+  uploadedFileLinkDirect: string | null = null;
+  editedText!: string;
+  textAreaContent!: string;
+  textareaCols!: number;
+  reactionInfoNumber!: number;
+  reactionInfoMessage!: number;
+  dm_user: User | null = null!
+  user: User = null!;
+  emoji_window_open: boolean = false;
+  emoji_window_messages_open: boolean = false;
+  editingMessage: boolean = false;
+  hoverOptionEditMessage_open: boolean = false;
+  errorUploadFileDirect: boolean = false;
+  reactionInfo: boolean = false;
   showUserList: boolean = false;
 
-  constructor(public commonService: CommonService, private channelService: ChannelsService, private messagesService: MessagesService, private userService: UserService) {
+  constructor(public commonService: CommonService,
+    private channelService: ChannelsService,
+    private messagesService: MessagesService,
+    private userService: UserService) {
     this.messagesService.dm_user$.subscribe((dm_user) => {
       if (dm_user) {
         this.dm_user = dm_user;
         this.receiveDirectMessages();
         this.focusInputMessage();
       } else {
-        // console.log('waiting for a direct message user')
       }
     });
+
     this.channelService.currentUserInfo$.subscribe((user: User) => {
       this.user = user;
     });
@@ -86,7 +89,7 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
       this.filteredUsers = filteredUsers;
       this.showUserList = showUserList;
     });
-  }  
+  }
 
   openReactionInfo(i: number, j: number) {
     this.reactionInfo = true;
@@ -116,7 +119,6 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
       this.updateScroll();
     } else {
       this.chatMessages = [];
-      // console.log('no conversation available');
     }
   }
 
@@ -153,8 +155,14 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
   async saveEditedMessage() {
     const selectedDirectMessage = this.selectedDirectMessage
     this.messagesService.selectedDirectMessage$.next(selectedDirectMessage);
-    const editedText = this.editedText;
+    this.setMessageInformations();
+    this.messagesService.updateDirectMessage(this.message, selectedDirectMessage);
+    this.toggleEditing();
+  }
 
+  setMessageInformationsForEdit() {
+    const selectedDirectMessage = this.selectedDirectMessage
+    const editedText = this.editedText;
     this.message.id = selectedDirectMessage.id;
     this.message.setMessage(editedText.trim());
     this.message.creator = selectedDirectMessage.creator;
@@ -163,9 +171,6 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     this.message.reactions = selectedDirectMessage.reactions;
     this.message.answered_number = selectedDirectMessage.answered_number;
     this.message.latest_answer = selectedDirectMessage.latest_answer;
-
-    this.messagesService.updateDirectMessage(this.message, selectedDirectMessage);
-    this.toggleEditing();
   }
 
   toggleEditing() {
@@ -179,24 +184,19 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
   extractWeekdayAndMonth(date?: string): { weekday: string, month: string } {
     const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
     const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-
     let dateParts = (date ?? '').split(' ');
     let dayMonthYear = dateParts[0].split('-');
     let time = dateParts[1].split(':');
-
     let day = parseInt(dayMonthYear[0], 10);
-    let month = parseInt(dayMonthYear[1], 10) - 1; // Monate im JavaScript Date-Objekt sind 0-basiert
+    let month = parseInt(dayMonthYear[1], 10) - 1;
     let year = parseInt(dayMonthYear[2], 10);
     let hour = parseInt(time[0], 10);
     let minute = parseInt(time[1], 10);
-
     let dateObject = new Date(year, month, day, hour, minute);
     let weekdayIndex = dateObject.getDay();
     let monthIndex = dateObject.getMonth();
-
     let weekday = weekdays[weekdayIndex];
     let monthName = months[monthIndex];
-
     return { weekday, month: monthName };
   }
 
@@ -264,11 +264,9 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
 
   getDatePartsFromFormattedDate(formattedDate?: string): { day: number, month: number, year: number } {
     const parts = (formattedDate ?? '').split(' ')[0].split('-');
-
     const day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10);
     const year = parseInt(parts[2], 10);
-
     return { day, month, year };
   }
 
@@ -305,7 +303,6 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
 
   private isClickInsideContainer(event: MouseEvent): boolean {
     let containerElement = document.getElementById('emoji-window-messages');
-
     if (containerElement) {
       return containerElement.contains(event.target as Node);
     }
@@ -313,10 +310,7 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
   }
 
   addReaction($event: any) {
-    const currentUserInfo = this.channelService.currentUserInfo$.value
-
     this.reaction.setReaction($event.emoji.native);
-    // this.reaction.setCreator(currentUserInfo.name);
     this.messagesService.addReactionToDM(this.reaction);
     this.emoji_window_messages_open = false;
   }
@@ -324,17 +318,20 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
   addEmoji($event: any) {
     if ($event.emoji.native !== '🫥') {
       this.input_message.nativeElement.value += $event.emoji.native;
-      //console.log($event.emoji);
       this.emoji_window_open = false;
     }
   }
 
-  async sendMessageToUser() {
+  setMessageInformations() {
     const { name, avatar } = this.channelService.currentUserInfo$.value
     this.message.setCreator(name);
     this.message.setAvatar(avatar);
     this.message.setTimestampNow();
     this.message.setAnwers();
+  }
+
+  async sendMessageToUser() {
+    this.setMessageInformations();
     if (this.uploadedFileLinkDirect || this.input_message.nativeElement.value.trim() !== '') {
       if (this.uploadedFileLinkDirect) {
         this.message.setImg(this.uploadedFileLinkDirect);

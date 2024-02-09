@@ -17,28 +17,34 @@ export class MainContentThreadChatLowerPartComponent implements AfterViewInit {
   @ViewChild('answer') input_answer!: ElementRef;
   @ViewChild('fileInputThread') fileInput!: ElementRef
   @ViewChild('chat_content') chat_content!: ElementRef;
-  thread_subject: any = [];
-  thread_subject_time: any;
-  threadAnswers: Message[] = [];
+  @HostListener('document:click', ['$event'])
+  documentClickHandler(event: MouseEvent): void {
+    if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
+      this.emoji_window_messages_open = false;
+    }
+  }
   answer = new Message();
   reaction = new Reaction();
+  thread_subject: any = [];
+  threadAnswers: Message[] = [];
+  selectedAnswerThreadChat: any = [];
+  allUser: User[] = [];
+  filteredUsers: User[] = [];
+  user: User = null!;
+  uploadedFileLinkThread: string | null = null;
+  textAreaContent!: string;
+  editedText!: string;
+  reactionInfoNumber!: number;
+  reactionInfoMessage!: number;
+  textareaCols!: number;
   emoji_window_open: boolean = false;
   hoverOptionEditMessage_open: boolean = false;
   emoji_window_messages_open: boolean = false;
-  user: User = null!;
-  uploadedFileLinkThread: string | null = null;
   errorUploadFileThread: boolean = false;
   editingMessage: boolean = false;
-  textareaCols!: number;
-  textAreaContent!: string;
-  selectedAnswerThreadChat: any = [];
-  editedText!: string;
   reactionInfo: boolean = false;
-  reactionInfoNumber!: number;
-  reactionInfoMessage!: number;
-  allUser: User[] = [];
-  filteredUsers: User[] = [];
   showUserList: boolean = false;
+  thread_subject_time: any;
 
   constructor(private channelsService: ChannelsService, private messagesService: MessagesService, public commonService: CommonService, public storageService: StorageService, public userService: UserService) {
     this.messagesService.thread_subject$.subscribe((value: Message) => {
@@ -95,26 +101,17 @@ export class MainContentThreadChatLowerPartComponent implements AfterViewInit {
     chat.scrollTop = chat.scrollHeight;
   }
 
-  @HostListener('document:click', ['$event'])
-  documentClickHandler(event: MouseEvent): void {
-    if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
-      this.emoji_window_messages_open = false;
-    }
-  }
-
   private isClickInsideContainer(event: MouseEvent): boolean {
     let containerElement = document.getElementById('emoji-window-messages');
-
     if (containerElement) {
       return containerElement.contains(event.target as Node);
     }
     return false;
   }
 
-  async saveEditedMessage() {
+  setMessageInformationsForEdit() {
     const selectedAnswerThreadChat = this.selectedAnswerThreadChat;
     const editedText = this.editedText;
-
     this.answer.id = selectedAnswerThreadChat.id;
     this.answer.setMessage(editedText.trim());
     this.answer.creator = selectedAnswerThreadChat.creator;
@@ -123,11 +120,14 @@ export class MainContentThreadChatLowerPartComponent implements AfterViewInit {
     this.answer.reactions = selectedAnswerThreadChat.reactions;
     this.answer.answered_number = selectedAnswerThreadChat.answered_number;
     this.answer.latest_answer = selectedAnswerThreadChat.latest_answer;
+  }
 
+  async saveEditedMessage() {
+    const selectedAnswerThreadChat = this.selectedAnswerThreadChat;
+    this.setMessageInformationsForEdit();
     this.messagesService.updateAnswer(this.answer, selectedAnswerThreadChat);
     this.toggleEditing();
   }
-
 
   changedTextMessage(event: Event) {
     this.editedText = (event.target as HTMLTextAreaElement).value
@@ -164,8 +164,6 @@ export class MainContentThreadChatLowerPartComponent implements AfterViewInit {
   }
 
   addReaction($event: any) {
-    const currentUserInfo = this.channelsService.currentUserInfo$.value
-
     this.reaction.setReaction($event.emoji.native);
     this.messagesService.addReactionToAnswer(this.reaction);
     this.emoji_window_messages_open = false;
@@ -187,16 +185,30 @@ export class MainContentThreadChatLowerPartComponent implements AfterViewInit {
     this.messagesService.thread_subject_index$.next(index);
   }
 
-  async sendAnswerToThread() {
+  setMessageInformations() {
     const { name, id, avatar } = this.channelsService.currentUserInfo$.value;
-    const selectedChannel = this.channelsService.selectedChannel$.value;
-    const thread_subject = this.messagesService.thread_subject$.value;
-    const thread_subject_index = this.messagesService.thread_subject_index$.value;
-
     this.answer.setCreator(name);
     this.answer.setCreatorId(id);
     this.answer.setTimestampNow();
     this.answer.setAvatar(avatar);
+  }
+
+  async sendAndIncreaseAnswer() {
+    const selectedChannel = this.channelsService.selectedChannel$.value;
+    const thread_subject = this.messagesService.thread_subject$.value;
+    const thread_subject_index = this.messagesService.thread_subject_index$.value;
+
+    await this.messagesService.pushThreadAnswerToMessage(this.answer);
+    await this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
+    this.updateScroll();
+    this.channelsService.setSelectedChannel(selectedChannel!);
+    this.selectMessageForThread(thread_subject_index!);
+    this.answer.setMessage('');
+    this.answer.setImg('');
+  }
+
+  async sendAnswerToThread() {
+    this.setMessageInformations();
     if (this.uploadedFileLinkThread || this.input_answer.nativeElement.value.trim() !== '') {
       if (this.uploadedFileLinkThread) {
         this.answer.setImg(this.uploadedFileLinkThread);
@@ -205,14 +217,8 @@ export class MainContentThreadChatLowerPartComponent implements AfterViewInit {
         this.answer.setMessage(this.input_answer.nativeElement.value.trim());
         this.input_answer.nativeElement.value = '';
       }
-      await this.messagesService.pushThreadAnswerToMessage(this.answer);
-      await this.messagesService.increaseAnswerAndSetLatestAnswer(thread_subject, this.answer);
-      this.updateScroll();
-      this.channelsService.setSelectedChannel(selectedChannel!);
-      this.selectMessageForThread(thread_subject_index!);
+      this.sendAndIncreaseAnswer();
     }
-    this.answer.setMessage('');
-    this.answer.setImg('');
   }
 
   receiveThreadAnswers() {

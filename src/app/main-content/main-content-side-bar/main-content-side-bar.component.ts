@@ -13,27 +13,24 @@ import { MessagesService } from 'src/app/shared-services/messages.service';
   styleUrls: ['./main-content-side-bar.component.scss']
 })
 export class MainContentSideBarComponent {
-  channel_icon: string = 'arrow_drop_down';
-  channels_opened: boolean = true;
-  directmessage_icon: string = 'arrow_drop_down';
-  directmessages_opened: boolean = true;
-
-  mobile: boolean = false;
-
-
   channels: Channel[] = [];
   currentUser!: User;
   users: any[] = [];
   usersWithConversation: any[] = [];
-
-
+  directmessage_icon: string = 'arrow_drop_down';
+  channel_icon: string = 'arrow_drop_down';
+  channels_opened: boolean = true;
+  directmessages_opened: boolean = true;
+  mobile: boolean = false;
   private destroyed$ = new Subject<void>();
 
-  constructor(private dialogService: OpenDialogService,
+  constructor(
+    private dialogService: OpenDialogService,
     private channelsService: ChannelsService,
     private dataService: DataService,
     private userService: UserService,
-    private messagesService: MessagesService,) {
+    private messagesService: MessagesService,
+  ) {
     this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe((currentUser) => {
       this.currentUser = currentUser;
     });
@@ -45,7 +42,7 @@ export class MainContentSideBarComponent {
     this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe((users) => {
       this.users = users;
       this.checkConversations();
-    })
+    });
 
     this.dataService.mobile$.subscribe((value: boolean) => {
       this.mobile = value;
@@ -55,21 +52,18 @@ export class MainContentSideBarComponent {
       if (value) {
         this.checkConversations();
       }
-    })
+    });
   }
- 
 
   async checkConversations() {
     const currentUserInfo = this.userService.userForMessageService;
-
     let users = this.users;
     this.usersWithConversation = [];
-
     for (let i = 0; i < users.length; i++) {
       let user = users[i];
       const dm_user = user;
       if ((await this.messagesService.findConversation(dm_user, currentUserInfo)).available) {
-        this.usersWithConversation.push(user)
+        this.usersWithConversation.push(user);
       }
     }
   }
@@ -91,84 +85,88 @@ export class MainContentSideBarComponent {
   parseDate(timestamp: any) {
     const dateParts = timestamp.split(' ')[0].split('-');
     const timeParts = timestamp.split(' ')[1].split(':');
-
     const year = parseInt(dateParts[2], 10);
-    const month = parseInt(dateParts[1], 10) - 1; // Monate in JavaScript sind 0-basiert
+    const month = parseInt(dateParts[1], 10) - 1;
     const day = parseInt(dateParts[0], 10);
     const hours = parseInt(timeParts[0], 10);
     const minutes = parseInt(timeParts[1], 10);
-
     return new Date(year, month, day, hours, minutes).getTime();
+  }
+
+  navigatetoDMMobile(user: User) {
+    this.dataService.directmessage_open$.next(true);
+    this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
+    this.dataService.workspace_header_open$.next(true);
+    let counter = 0;
+    const intervalId = setInterval(() => {
+      this.messagesService.dm_user$.next(user);
+      counter++;
+      if (counter === 10) {
+        clearInterval(intervalId);
+      }
+    }, 100);
+  }
+
+  navigateToDM(user: User) {
+    this.dataService.directmessage_open$.next(true);
+    this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
+    let counter = 0;
+    const intervalId = setInterval(() => {
+      this.messagesService.dm_user$.next(user);
+      counter++;
+      if (counter === 10) {
+        clearInterval(intervalId);
+      }
+    }, 100);
   }
 
   openDM(user: User) {
     if (this.mobile) {
-      this.dataService.directmessage_open$.next(true);
-      this.dataService.thread_open$.next(false);
-      this.dataService.new_message_open$.next(false);
-      this.dataService.workspace_header_open$.next(true);
-      let counter = 0;
-
-      const intervalId = setInterval(() => {
-        this.messagesService.dm_user$.next(user);
-        counter++;
-
-        if (counter === 10) {
-          clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
-        }
-      }, 100);
+      this.navigatetoDMMobile(user);
     } else {
-      this.dataService.directmessage_open$.next(true);
-      this.dataService.thread_open$.next(false);
-      this.dataService.new_message_open$.next(false);
-      let counter = 0;
-
-      const intervalId = setInterval(() => {
-        this.messagesService.dm_user$.next(user);
-        counter++;
-
-        if (counter === 10) {
-          clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
-        }
-      }, 100);
+      this.navigateToDM(user);
     }
+  }
+
+  navigateToChannelMobile(channel: Channel) {
+    this.dataService.mainchat_mobile_open$.next(true);
+    this.dataService.workspace_header_open$.next(true);
+    this.dataService.directmessage_open$.next(false);
+    this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
+    let counter = 0;
+    const intervalId = setInterval(() => {
+      this.channelsService.setSelectedChannel(channel);
+      counter++;
+      if (counter === 5) {
+        clearInterval(intervalId);
+      }
+    }, 100);
+  }
+
+  navigateToChannel(channel: Channel) {
+    this.dataService.directmessage_open$.next(false);
+    this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
+    let counter = 0;
+    const intervalId = setInterval(() => {
+      this.channelsService.setSelectedChannel(channel);
+      counter++;
+      if (counter === 5) {
+        clearInterval(intervalId);
+      }
+    }, 100);
   }
 
   openChannel(channel: Channel): void {
     if (this.channelsService.isCurrentUserChannelMember(channel)) {
       if (this.mobile) {
-        this.dataService.mainchat_mobile_open$.next(true);
-        this.dataService.workspace_header_open$.next(true);
-        this.dataService.directmessage_open$.next(false);
-        this.dataService.thread_open$.next(false);
-        this.dataService.new_message_open$.next(false);
-        let counter = 0;
-
-        const intervalId = setInterval(() => {
-          this.channelsService.setSelectedChannel(channel);
-          counter++;
-
-          if (counter === 5) {
-            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
-          }
-        }, 100);
+        this.navigateToChannelMobile(channel);
       } else {
-        this.dataService.directmessage_open$.next(false);
-        this.dataService.thread_open$.next(false);
-        this.dataService.new_message_open$.next(false);
-        let counter = 0;
-
-        const intervalId = setInterval(() => {
-          this.channelsService.setSelectedChannel(channel);
-          counter++;
-
-          if (counter === 5) {
-            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
-          }
-        }, 100);
+        this.navigateToChannel(channel);
       }
-    } else {
-
     }
   }
 
@@ -179,7 +177,6 @@ export class MainContentSideBarComponent {
 
   toggleChannels() {
     this.channels_opened = !this.channels_opened;
-
     if (!this.channels_opened) {
       this.channel_icon = 'arrow_right'
     } else {
@@ -189,7 +186,6 @@ export class MainContentSideBarComponent {
 
   toggleDM() {
     this.directmessages_opened = !this.directmessages_opened;
-
     if (!this.directmessages_opened) {
       this.directmessage_icon = 'arrow_right'
     } else {
@@ -201,5 +197,4 @@ export class MainContentSideBarComponent {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
-
 }

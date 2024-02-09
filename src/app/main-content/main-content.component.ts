@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { DataService } from '../shared-services/data.service';
 import { ChannelsService } from '../shared-services/channels.service';
-import { User } from '../models/user.class';
 import { AuthService } from '../shared-services/authentication.service';
 import { OpenDialogService } from '../shared-services/open-dialog.service';
 
@@ -13,6 +12,11 @@ import { OpenDialogService } from '../shared-services/open-dialog.service';
 
 export class MainContentComponent implements OnInit {
   @ViewChild('grid') grid: any;
+  @HostListener('document:click', ['$event'])
+  @HostListener('document:keydown', ['$event'])
+  onUserActivity() {
+    this.resetUserActivityTimer();
+  }
   workspace_open: boolean = true;
   workspace_header_open: boolean = false;
   thread_open!: boolean;
@@ -28,17 +32,15 @@ export class MainContentComponent implements OnInit {
   constructor(private dataService: DataService,
     private channelService: ChannelsService,
     private authService: AuthService,
-    private dialogService: OpenDialogService) {
-    // Hier wird das thread_open boolean aus dem data.service.ts abonniert
+    ) {
     this.dataService.thread_open$.subscribe((value: boolean) => {
-      // bei Veränderung des booleans wird folgende Funktion ausgelöst
       this.thread_open = value;
-      this.resetUserActivityTimer(); // Zurücksetzen des Timers bei Aktivität
+      this.resetUserActivityTimer();
     });
 
     this.dataService.directmessage_open$.subscribe((value: boolean) => {
       this.directmessage_open = value;
-      this.resetUserActivityTimer(); // Zurücksetzen des Timers bei Aktivität
+      this.resetUserActivityTimer();
     });
 
     this.dataService.new_message_open$.subscribe((value: boolean) => {
@@ -103,13 +105,6 @@ export class MainContentComponent implements OnInit {
 
   updateThreadBoolean() {
     this.thread_open = this.dataService.thread_open$.value;
-    this.resetUserActivityTimer();
-  }
-
-
-  @HostListener('document:click', ['$event'])
-  @HostListener('document:keydown', ['$event'])
-  onUserActivity() {
     this.resetUserActivityTimer();
   }
 

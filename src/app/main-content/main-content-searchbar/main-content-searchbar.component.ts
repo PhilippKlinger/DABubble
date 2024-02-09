@@ -14,22 +14,21 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./main-content-searchbar.component.scss']
 })
 export class MainContentSearchbarComponent {
-
-  placeholder: string = 'Code learning durchsuchen'
-  searchQuery: string = '';
   foundChannels: Channel[] = [];
   foundUsers: User[] = [];
   foundMessages: Message[] = [];
+  placeholder: string = 'Code learning durchsuchen'
+  searchQuery: string = '';
   isGuestUser!: boolean;
   mobile: boolean = false;
-
   private destroyed$ = new Subject<void>();
 
   constructor(
     private channelsService: ChannelsService,
     private userService: UserService,
     private dialogService: OpenDialogService,
-    private dataService: DataService) {
+    private dataService: DataService
+  ) {
     dataService.mobile$.subscribe((value: boolean) => {
       this.mobile = value;
       if (value) {
@@ -38,6 +37,7 @@ export class MainContentSearchbarComponent {
         this.placeholder = 'Code learning durchsuchen'
       }
     });
+
     this.userService.isGuestUser$.pipe(
       takeUntil(this.destroyed$)
     ).subscribe(isGuestUser => {
@@ -75,7 +75,6 @@ export class MainContentSearchbarComponent {
       this.searchUsers(trimmedSearchQuery);
       this.foundChannels = [];
     } else {
-
       this.channelsService.channels$.subscribe(channels => {
         this.foundChannels = channels.filter(channel => channel.name.toLowerCase().includes(searchQueryLower));
       });
@@ -108,51 +107,57 @@ export class MainContentSearchbarComponent {
     this.clearSearchQuery();
   }
 
-  openChannelOrMessage(item: Channel | Message): void {
-
-    if (item instanceof Channel && this.channelsService.isCurrentUserChannelMember(item)) {
-      let counter = 0;
-      if (this.mobile) {
-        this.dataService.thread_open$.next(false);
-        this.dataService.new_message_open$.next(false);
-        this.dataService.directmessage_open$.next(false);
-        this.dataService.mainchat_mobile_open$.next(true);
-        this.dataService.workspace_header_open$.next(true);
-      } else {
-        this.dataService.directmessage_open$.next(false);
-        this.dataService.thread_open$.next(false);
-        this.dataService.new_message_open$.next(false);
+  navigateToChannel(item: Channel) {
+    if (this.mobile) {
+      this.dataService.thread_open$.next(false);
+      this.dataService.new_message_open$.next(false);
+      this.dataService.directmessage_open$.next(false);
+      this.dataService.mainchat_mobile_open$.next(true);
+      this.dataService.workspace_header_open$.next(true);
+    } else {
+      this.dataService.directmessage_open$.next(false);
+      this.dataService.thread_open$.next(false);
+      this.dataService.new_message_open$.next(false);
+    }
+    let counter = 0;
+    const intervalId = setInterval(() => {
+      this.channelsService.setSelectedChannel(item);
+      counter++;
+      if (counter === 5) {
+        clearInterval(intervalId);
       }
-      const intervalId = setInterval(() => {
-        this.channelsService.setSelectedChannel(item);
-        counter++;
-        if (counter === 5) {
-          clearInterval(intervalId);
-        }
-      }, 100);
+    }, 100);
+  }
+
+  navigateToMessage(channel: Channel) {
+    if (this.mobile) {
+      this.dataService.thread_open$.next(false);
+      this.dataService.new_message_open$.next(false);
+      this.dataService.directmessage_open$.next(false);
+      this.dataService.mainchat_mobile_open$.next(true);
+      this.dataService.workspace_header_open$.next(true);
+    } else {
+      this.dataService.directmessage_open$.next(false);
+      this.dataService.thread_open$.next(false);
+      this.dataService.new_message_open$.next(false);
+    }
+    let counter = 0;
+    const intervalId = setInterval(() => {
+      this.channelsService.setSelectedChannel(channel);
+      counter++;
+      if (counter === 5) {
+        clearInterval(intervalId);
+      }
+    }, 100);
+  }
+
+  openChannelOrMessage(item: Channel | Message): void {
+    if (item instanceof Channel && this.channelsService.isCurrentUserChannelMember(item)) {
+      this.navigateToChannel(item)
     } else {
       const channel = this.channelsService.getChannelToFindMessage(item.id);
       if (channel && this.channelsService.isCurrentUserChannelMember(channel)) {
-        let counter = 0;
-        if (this.mobile) {
-          //muss noch sinnvoller geschrieben werden
-          this.dataService.thread_open$.next(false);
-          this.dataService.new_message_open$.next(false);
-          this.dataService.directmessage_open$.next(false);
-          this.dataService.mainchat_mobile_open$.next(true);
-          this.dataService.workspace_header_open$.next(true);
-        } else {
-          this.dataService.directmessage_open$.next(false);
-          this.dataService.thread_open$.next(false);
-          this.dataService.new_message_open$.next(false);
-        }
-        const intervalId = setInterval(() => {
-          this.channelsService.setSelectedChannel(channel);
-          counter++;
-          if (counter === 5) {
-            clearInterval(intervalId);
-          }
-        }, 100);
+        this.navigateToChannel(channel)
       }
     }
     this.clearSearchQuery();
@@ -171,6 +176,4 @@ export class MainContentSearchbarComponent {
     const re = new RegExp(effectiveSearchQuery, 'gi');
     return text.replace(re, match => `<mark>${match}</mark>`);
   }
-
-
 }

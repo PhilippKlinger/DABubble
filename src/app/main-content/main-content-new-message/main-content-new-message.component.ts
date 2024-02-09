@@ -12,15 +12,14 @@ import { DataService } from 'src/app/shared-services/data.service';
   styleUrls: ['./main-content-new-message.component.scss']
 })
 export class MainContentNewMessageComponent {
-  emoji_window_open: boolean = false;
   @ViewChild('message') input_message!: ElementRef;
-
-  placeholder: string = 'An: #channel, oder @jemand oder E-Mail Adresse';
-  searchQuery: string = '';
-  isGuestUser!: boolean;
   foundChannels: Channel[] = [];
   foundUsers: User[] = [];
   foundEmails: User[] = [];
+  placeholder: string = 'An: #channel, oder @jemand oder E-Mail Adresse';
+  searchQuery: string = '';
+  emoji_window_open: boolean = false;
+  isGuestUser!: boolean;
   mobile: boolean = false;
 
   constructor(
@@ -37,6 +36,7 @@ export class MainContentNewMessageComponent {
         this.placeholder = 'An: #channel, oder @jemand oder E-Mail Adresse';
       }
     });
+
     this.userService.isGuestUser$.subscribe((isGuestUser) => {
       this.isGuestUser = isGuestUser;
     });
@@ -97,7 +97,6 @@ export class MainContentNewMessageComponent {
           );
         });
       }
-
     }
   }
 
@@ -114,7 +113,7 @@ export class MainContentNewMessageComponent {
     const highlightedEmail = this.highlightMatch(emailUser.email, searchQuery);
     return `${emailUser.name} <-> ${highlightedEmail}`;
   }
-  
+
 
   clearSearchResults() {
     this.foundChannels = [];
@@ -122,57 +121,70 @@ export class MainContentNewMessageComponent {
     this.foundEmails = [];
   }
 
+  navigateToChannelMobile(channel: Channel) {
+    this.dataService.mainchat_mobile_open$.next(true);
+    this.dataService.workspace_header_open$.next(true);
+    this.dataService.directmessage_open$.next(false);
+    this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
+    let counter = 0;
+    const intervalId = setInterval(() => {
+      this.channelsService.setSelectedChannel(channel);
+      counter++;
+
+      if (counter === 5) {
+        clearInterval(intervalId);
+      }
+    }, 100);
+  }
+
+  navigateToChannel(channel: Channel) {
+    this.dataService.directmessage_open$.next(false);
+    this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
+    let counter = 0;
+
+    const intervalId = setInterval(() => {
+      this.channelsService.setSelectedChannel(channel);
+      counter++;
+
+      if (counter === 5) {
+        clearInterval(intervalId);
+      }
+    }, 100);
+  }
+
   openChannel(channel: Channel): void {
     if (this.channelsService.isCurrentUserChannelMember(channel)) {
       if (this.mobile) {
-        this.dataService.mainchat_mobile_open$.next(true);
-        this.dataService.workspace_header_open$.next(true);
-        this.dataService.directmessage_open$.next(false);
-        this.dataService.thread_open$.next(false);
-        this.dataService.new_message_open$.next(false);
-        let counter = 0;
-
-        const intervalId = setInterval(() => {
-          this.channelsService.setSelectedChannel(channel);
-          counter++;
-
-          if (counter === 5) {
-            clearInterval(intervalId); 
-          }
-        }, 100);
+        this.navigateToChannelMobile(channel);
       } else {
-        this.dataService.directmessage_open$.next(false);
-        this.dataService.thread_open$.next(false);
-        this.dataService.new_message_open$.next(false);
-        let counter = 0;
-
-        const intervalId = setInterval(() => {
-          this.channelsService.setSelectedChannel(channel);
-          counter++;
-
-          if (counter === 5) {
-            clearInterval(intervalId); 
-          }
-        }, 100);
+        this.navigateToChannel(channel)
       }
-    } else {
-
     }
     this.clearSearchQuery();
   }
 
+  navigateToDMMobile(user: User) {
+    this.dataService.directmessage_open$.next(true);
+    this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
+    this.messagesService.dm_user$.next(user);
+    this.dataService.workspace_header_open$.next(true);
+  }
+
+  navigatetoDM(user: User) {
+    this.dataService.directmessage_open$.next(true);
+    this.dataService.thread_open$.next(false);
+    this.dataService.new_message_open$.next(false);
+    this.messagesService.dm_user$.next(user);
+  }
+
   openDM(user: User) {
     if (this.mobile) {
-      this.dataService.directmessage_open$.next(true);
-      this.dataService.thread_open$.next(false);
-      this.dataService.new_message_open$.next(false);
-      this.messagesService.dm_user$.next(user);
-      this.dataService.workspace_header_open$.next(true);
+      this.navigateToDMMobile(user);
     } else {
-      this.dataService.directmessage_open$.next(true);
-      this.dataService.thread_open$.next(false);
-      this.dataService.new_message_open$.next(false);
-      this.messagesService.dm_user$.next(user);
+      this.navigatetoDM(user);
     }
     this.clearSearchQuery();
   }
@@ -185,7 +197,6 @@ export class MainContentNewMessageComponent {
   addEmoji($event: any) {
     if ($event.emoji.native !== '🫥') {
       this.input_message.nativeElement.value += $event.emoji.native;
-      //console.log($event.emoji);
       this.emoji_window_open = false;
     }
   }

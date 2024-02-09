@@ -11,12 +11,12 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./main-content-directmessage-chat-upper-part.component.scss']
 })
 export class MainContentDirectmessageChatUpperPartComponent {
+  private destroyed$ = new Subject<void>();
   dm_user: User | null = null!
   isMobileView!: boolean;
-  private destroyed$ = new Subject<void>();
 
-
-  constructor(private messageService: MessagesService,
+  constructor(
+    private messageService: MessagesService,
     private dialogService: OpenDialogService,
     private userService: UserService,
     ) {
@@ -25,6 +25,7 @@ export class MainContentDirectmessageChatUpperPartComponent {
       .subscribe((dm_user) => {
       this.dm_user = dm_user;
     });
+
     this.dialogService.isMobileView$.pipe(
       takeUntil(this.destroyed$)
     ).subscribe(isMobileView => {
@@ -38,12 +39,10 @@ export class MainContentDirectmessageChatUpperPartComponent {
       this.userService.setSelectedUser(user);
       this.dialogService.openDialog('showProfile', false, this.isMobileView);
     }
-    
   }
 
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
-  
 }
