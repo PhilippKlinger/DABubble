@@ -30,7 +30,7 @@ export class MainContentMainChatUpperPartComponent {
       if (selectedChannel?.members !== undefined) {
         this.members = selectedChannel?.members;
       } else {
-        console.log('no selected channel avaialble');
+        // console.log('no selected channel avaialble');
       }
     });
     this.checkMobileView();

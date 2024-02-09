@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Message } from 'src/app/models/message.class';
 import { Reaction } from 'src/app/models/reaction.class';
 import { User } from 'src/app/models/user.class';
@@ -13,7 +13,7 @@ import { UserService } from 'src/app/shared-services/user.service';
   templateUrl: './main-content-thread-chat-lower-part.component.html',
   styleUrls: ['./main-content-thread-chat-lower-part.component.scss']
 })
-export class MainContentThreadChatLowerPartComponent {
+export class MainContentThreadChatLowerPartComponent implements AfterViewInit {
   @ViewChild('answer') input_answer!: ElementRef;
   @ViewChild('fileInputThread') fileInput!: ElementRef
   @ViewChild('chat_content') chat_content!: ElementRef;
@@ -56,6 +56,14 @@ export class MainContentThreadChatLowerPartComponent {
     this.userService.users$.subscribe(users => {
       this.allUser = users;
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.focusInputMessage();
+  }
+
+  focusInputMessage(): void {
+    this.input_answer.nativeElement.focus();
   }
 
   onTextareaInput(event: any) {

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/shared-services/data.service';
 import { Message } from './../../../models/message.class'
 import { ChannelsService } from 'src/app/shared-services/channels.service';
@@ -17,7 +17,7 @@ import { UserService } from 'src/app/shared-services/user.service';
   templateUrl: './main-content-main-chat-lower-part.component.html',
   styleUrls: ['./main-content-main-chat-lower-part.component.scss']
 })
-export class MainContentMainChatLowerPartComponent {
+export class MainContentMainChatLowerPartComponent implements AfterViewInit {
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('img') img!: ElementRef;
   @ViewChild('chat_content') chat_content!: ElementRef;
@@ -52,8 +52,9 @@ export class MainContentMainChatLowerPartComponent {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
         this.receiveChatMessages();
+        this.focusInputMessage();
       } else {
-        console.log('waiting for selected channel');
+        // console.log('waiting for selected channel');
       }
     });
 
@@ -63,7 +64,7 @@ export class MainContentMainChatLowerPartComponent {
         this.textAreaContent = this.thread_subject.message;
       } else {
         //kann noch geändert werden
-        console.log('waiting for thread subject');
+        // console.log('waiting for thread subject');
         this.textAreaContent = '';
       }
     });
@@ -79,6 +80,14 @@ export class MainContentMainChatLowerPartComponent {
     this.userService.users$.subscribe(users => {
       this.allUser = users;
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.focusInputMessage();
+  }
+
+  focusInputMessage(): void {
+    this.input_message.nativeElement.focus();
   }
 
   onTextareaInput(event: any) {
@@ -352,7 +361,7 @@ export class MainContentMainChatLowerPartComponent {
       }, 30);
     }
     catch {
-      console.log('Fehler beim Interval');
+      // console.log('Fehler beim Interval');
     }
   }
 

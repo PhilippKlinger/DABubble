@@ -48,7 +48,7 @@ export class DialogDummyComponent implements OnInit {
 
   deleteChannel(channel: Channel): void {
     this.channelsService.deleteChannel(channel).then(() => {
-      console.log('Channel gelöscht:', channel.id);
+      // console.log('Channel gelöscht:', channel.id);
     }).catch(error => {
       console.error('Fehler beim Löschen des Kanals:', error);
     });
@@ -61,7 +61,7 @@ export class DialogDummyComponent implements OnInit {
 
   deleteUser(user: User): void {
     this.userService.deleteUser('users', user.id).then(() => {
-      console.log('User gelöscht:', user.id);
+      // console.log('User gelöscht:', user.id);
     }).catch(error => {
       console.error('Fehler beim Löschen des Users:', error);
     });

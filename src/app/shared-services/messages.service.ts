@@ -132,7 +132,7 @@ export class MessagesService {
       message.setUniversalId(universalId);
       await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
 
-      console.log('unterhaltung bereits verfügbar, Nachricht wurde gesendet');
+      // console.log('unterhaltung bereits verfügbar, Nachricht wurde gesendet');
     } else if (dm_user && currentUserInfo && (!(await this.findConversation(dm_user, currentUserInfo)).available)) {
 
       this.dm_info.setChatPartner(currentUserInfo?.name!);
@@ -157,9 +157,9 @@ export class MessagesService {
       message.setUniversalId(universalId);
       await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
       this.dataService.update_sidebar$.next(true);
-      console.log('unterhaltung wurde erstellt, Nachricht wurde gesendet');
+      // console.log('unterhaltung wurde erstellt, Nachricht wurde gesendet');
     } else {
-      console.log('kein direct messages user verfügbar');
+      // console.log('kein direct messages user verfügbar');
     }
 
     this.refreshDMChat();
@@ -190,11 +190,11 @@ export class MessagesService {
             try {
               this.directMessages[i].reactions = this.DMReactions;
             } catch {
-              console.log("couldn't set reaction to the message.")
+              // console.log("couldn't set reaction to the message.")
             }
           });
         } else {
-          console.log('die docId der Nachricht ist noch nicht verfügbar, bitte habe etwas gedult');
+          // console.log('die docId der Nachricht ist noch nicht verfügbar, bitte habe etwas gedult');
         }
       }
     }
@@ -211,7 +211,7 @@ export class MessagesService {
         try {
           this.chatMessages[i].reactions = this.messageReactions;
         } catch {
-          console.log("couldn't set reaction to the message.")
+          // console.log("couldn't set reaction to the message.")
         }
       });
     }
@@ -230,12 +230,12 @@ export class MessagesService {
           try {
             this.threadAnswers[i].reactions = this.answerReactions;
           } catch {
-            console.log("couldn't set reaction to the answer.")
+            // console.log("couldn't set reaction to the answer.")
           }
         });
       }
     } else {
-      console.log('no selected channel or thread subject available.');
+      // console.log('no selected channel or thread subject available.');
     }
   }
 
@@ -311,7 +311,7 @@ export class MessagesService {
             }
             return { exists: true, amount: messageReactions[i].amount, id: messageReactions[i].id, alreadyReacted: false, creator: messageReactions[i].creator }
           } else {
-            console.log(messageReactions[i].creator)
+            // console.log(messageReactions[i].creator)
             let creator = messageReactions[i].creator;
             if (creator == currentUserInfo.name) {
               return { exists: true, amount: messageReactions[i].amount, id: messageReactions[i].id, alreadyReacted: true }
@@ -405,12 +405,12 @@ export class MessagesService {
       if ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).available && (await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).available) {
         if (result.exists) {
           if (result.alreadyReacted) {
-            console.log('same user already reacted to this direct message');
+            // console.log('same user already reacted to this direct message');
           } else {
             let creators = result.creator;
             creators.push(currentUserInfo.name);
             reaction.setCreator(creators);
-            console.log(result.id)
+            // console.log(result.id)
             let reaction_amount = result.amount + 1;
             reaction.setAmount(reaction_amount);
             await updateDoc(this.getUpdatedUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId), result.id), reaction.toJSON());
@@ -428,7 +428,7 @@ export class MessagesService {
           docRef = await addDoc(this.getUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId)), reaction.toJSON());
           reaction.setId(docRef.id);
           await updateDoc(this.getUpdatedUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId), docRef.id), reaction.toJSON());
-          console.log('reaktion erstellt');
+          // console.log('reaktion erstellt');
         }
       } else {
         console.error('no message available.');
@@ -449,14 +449,14 @@ export class MessagesService {
     if (selectedChannel && thread_subject && selectedAnswerThreadChat) {
       if (result.exists) {
         if (result.alreadyReacted) {
-          console.log('same user already reacted to this answer');
+          // console.log('same user already reacted to this answer');
         } else {
           let creators = result.creator;
           creators.push(currentUserInfo.name);
           reaction.setCreator(creators);
           let reaction_amount = result.amount + 1;
           reaction.setAmount(reaction_amount);
-          console.log(reaction_amount);
+          // console.log(reaction_amount);
           await updateDoc(this.getUpdateChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat, result.id), reaction.toJSON());
         }
       } else {
@@ -466,7 +466,7 @@ export class MessagesService {
         reaction.setAmount(1);
         const docRef = await addDoc(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat), reaction.toJSON());
         reaction.setId(docRef.id);
-        console.log(docRef.id);
+        // console.log(docRef.id);
         await updateDoc(this.getUpdateChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat, docRef.id), reaction.toJSON());
       }
     } else {
@@ -485,14 +485,14 @@ export class MessagesService {
     if (selectedChannel && selectedMessageMainChat) {
       if (result.exists) {
         if (result.alreadyReacted) {
-          console.log('same user already reacted to this message');
+          // console.log('same user already reacted to this message');
         } else {
           let creators = result.creator;
           creators.push(currentUserInfo.name);
           reaction.setCreator(creators);
           let reaction_amount = result.amount + 1;
           reaction.setAmount(reaction_amount);
-          console.log(reaction_amount);
+          // console.log(reaction_amount);
           await updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, result.id), reaction.toJSON());
         }
       } else {
@@ -502,7 +502,7 @@ export class MessagesService {
         reaction.setAmount(1);
         const docRef = await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
         reaction.setId(docRef.id);
-        console.log(docRef.id);
+        // console.log(docRef.id);
         await updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, docRef.id), reaction.toJSON());
       }
     } else {

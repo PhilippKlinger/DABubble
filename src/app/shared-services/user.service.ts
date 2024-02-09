@@ -60,7 +60,7 @@ export class UserService {
       let docRef = this.getSingleDocRef('users', user.id);
       await updateDoc(docRef, user.toJSON()).catch(
         (err) => {
-          console.log(err);
+          console.error(err);
         }
       );
     }

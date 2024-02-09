@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { DMInfo } from 'src/app/models/DMInfo.class';
 import { Message } from 'src/app/models/message.class';
 import { Reaction } from 'src/app/models/reaction.class';
@@ -12,9 +12,10 @@ import { UserService } from 'src/app/shared-services/user.service';
 @Component({
   selector: 'app-main-content-directmessage-chat-lower-part',
   templateUrl: './main-content-directmessage-chat-lower-part.component.html',
-  styleUrls: ['./main-content-directmessage-chat-lower-part.component.scss']
+  styleUrls: ['./main-content-directmessage-chat-lower-part.component.scss',
+  '../../../dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component.scss']
 })
-export class MainContentDirectmessageChatLowerPartComponent {
+export class MainContentDirectmessageChatLowerPartComponent implements AfterViewInit {
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('fileInputDirect') fileInput!: ElementRef
   @ViewChild('chat_content') chat_content!: ElementRef;
@@ -47,8 +48,9 @@ export class MainContentDirectmessageChatLowerPartComponent {
       if (dm_user) {
         this.dm_user = dm_user;
         this.receiveDirectMessages();
+        this.focusInputMessage();
       } else {
-        console.log('waiting for a direct message user')
+        // console.log('waiting for a direct message user')
       }
     });
     this.channelService.currentUserInfo$.subscribe((user: User) => {
@@ -62,6 +64,14 @@ export class MainContentDirectmessageChatLowerPartComponent {
     this.userService.users$.subscribe(users => {
       this.allUser = users;
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.focusInputMessage();
+  }
+
+  focusInputMessage(): void {
+    this.input_message.nativeElement.focus();
   }
 
   onTextareaInput(event: any) {
@@ -106,7 +116,7 @@ export class MainContentDirectmessageChatLowerPartComponent {
       this.updateScroll();
     } else {
       this.chatMessages = [];
-      console.log('no conversation available');
+      // console.log('no conversation available');
     }
   }
 

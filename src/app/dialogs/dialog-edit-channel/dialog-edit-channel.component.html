@@ -27,7 +27,7 @@
         <div>
             <span class *ngIf="!isEditingName">{{newChannelName}}</span>
             <input (input)="onInput()" [(ngModel)]="newChannelName" *ngIf="isEditingName" matInput 
-            placeholder="{{ newChannelName !== '' ? '{{channel?.name}}' : 'Neuer Channelname'}} ">
+            placeholder="{{ newChannelName !== '' ? '{{channel?.name}}' : 'Bitte Channelname eingeben'}} ">
         </div>
 
     </div>

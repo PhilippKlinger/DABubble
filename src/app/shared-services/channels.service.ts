@@ -163,7 +163,7 @@ export class ChannelsService {
       let docRef = this.getSingleDocRef('channels', channel.id);
       await updateDoc(docRef, channel.toJSON()).catch(
         (err) => {
-          console.log(err);
+          console.error(err);
         }
       );
     }
