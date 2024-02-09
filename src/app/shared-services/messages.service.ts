@@ -6,7 +6,6 @@ import { Firestore, addDoc, collection, doc, getDocs, onSnapshot, query, updateD
 import { Reaction } from '../models/reaction.class';
 import { formatDate } from '@angular/common';
 import { Channel } from '../models/channel.class';
-import { UserService } from './user.service';
 import { User } from '../models/user.class';
 import { DMInfo } from '../models/DMInfo.class';
 import { DataService } from './data.service';
@@ -15,7 +14,8 @@ import { DataService } from './data.service';
   providedIn: 'root'
 })
 export class MessagesService {
-
+  message = new Message();
+  dm_info = new DMInfo();
   chatMessages: Message[] = [];
   threadAnswers: Message[] = [];
   directMessages: any = [];
@@ -24,8 +24,6 @@ export class MessagesService {
   DMReactions = [];
   DMReactions2 = [];
   directMessageReactions = [];
-  message = new Message();
-  dm_info = new DMInfo();
 
   public thread_subject$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public thread_subject_index$: BehaviorSubject<number> = new BehaviorSubject<number>(null!);
@@ -34,36 +32,32 @@ export class MessagesService {
   public selectedDirectMessage$: BehaviorSubject<Message> = new BehaviorSubject<Message>(null!);
   public dm_user$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
-  constructor(private dataService: DataService, private firestore: Firestore, private channelsService: ChannelsService, private userService: UserService) {
-
-  }
+  constructor(
+    private dataService: DataService,
+    private firestore: Firestore,
+    private channelsService: ChannelsService,
+  ) { }
 
   refreshDMChat() {
     let counter = 0;
-
     const intervalId = setInterval(() => {
       this.dm_user$.next(this.dm_user$.value);
       counter++;
-
       if (counter === 10) {
-        clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
+        clearInterval(intervalId);
       }
     }, 100);
   }
 
   async findReaction(dm_user: User, currentUserInfo: User, selectedDirectMessage: Message, reaction: string): Promise<{ available: boolean, docId: string }> {
     const conversationQuery = query(this.getUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId)), where('reaction', '==', reaction));
-
     const querySnapshot = await getDocs(conversationQuery);
-
     let available = false;
     let docId: string = '';
-
     querySnapshot.forEach((doc) => {
       available = true;
       docId = doc.id;
     });
-
     return {
       'available': available,
       'docId': docId,
@@ -72,17 +66,13 @@ export class MessagesService {
 
   async findMessage(dm_user: User, currentUserInfo: User, selectedDirectMessage: Message): Promise<{ available: boolean, docId: string }> {
     const conversationQuery = query(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), where('universalId', '==', selectedDirectMessage.universalId));
-
     const querySnapshot = await getDocs(conversationQuery);
-
     let available = false;
     let docId: string = '';
-
     querySnapshot.forEach((doc) => {
       available = true;
       docId = doc.id;
     });
-
     return {
       'available': available,
       'docId': docId,
@@ -91,80 +81,72 @@ export class MessagesService {
 
   async findConversation(dm_user: User, currentUserInfo: User): Promise<{ DMInfo: DMInfo | null, available: boolean, docId: string }> {
     const querySnapshot = await getDocs(query(this.getUsersDMRef(dm_user), where('chatPartnerId', '==', currentUserInfo.id)));
-
     let dm_info_result: DMInfo | null = null;
     let available = false;
     let docId: string = '';
-
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       dm_info_result = data as DMInfo;
       available = true;
       docId = doc.id
     });
-
     const result = {
       'DMInfo': dm_info_result,
       'available': available,
       'docId': docId,
     };
-
     return result;
+  }
+
+  async prepareMessageForExistingConversation(dm_user: User, currentUserInfo: any, message: Message) {
+    let docRef = await addDoc(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), message.toJSON());
+    let universalId = docRef.id;
+    message.setId(docRef.id);
+    message.setUniversalId(universalId);
+    await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON())
+
+    docRef = await addDoc(this.getUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId)), message.toJSON());
+    message.setId(docRef.id);
+    message.setUniversalId(universalId);
+    await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
+  }
+
+  async createConversationAndPrepareMessage(dm_user: User, currentUserInfo: any, message: Message) {
+    this.dm_info.setChatPartner(currentUserInfo?.name!);
+    this.dm_info.setChatPartnerId(currentUserInfo?.id!);
+    let docRef = await addDoc(this.getUsersDMRef(dm_user), this.dm_info.toJSON());
+    this.dm_info.setDocId(docRef.id);
+    await updateDoc(this.getUpdatedUsersDMRef(dm_user, docRef.id), this.dm_info.toJSON());
+    docRef = await addDoc(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), message.toJSON());
+    let universalId = docRef.id;
+    message.setId(docRef.id);
+    message.setUniversalId(universalId);
+    await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON())
+    this.dm_info.setChatPartner(dm_user?.name!);
+    this.dm_info.setChatPartnerId(dm_user?.id!);
+    docRef = await addDoc(this.getUsersDMRef(currentUserInfo), this.dm_info.toJSON());
+    this.dm_info.setDocId(docRef.id);
+    await updateDoc(this.getUpdatedUsersDMRef(currentUserInfo, docRef.id), this.dm_info.toJSON());
+    docRef = await addDoc(this.getUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId)), message.toJSON());
+    message.setId(docRef.id);
+    message.setUniversalId(universalId);
+    await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
+    this.dataService.update_sidebar$.next(true);
   }
 
   async pushMessageToUser(message: Message): Promise<void> {
     const dm_user = this.dm_user$.value;
     const currentUserInfo = this.channelsService.currentUserInfo$.value;
-
     message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm:ss', 'en-US');
     message.setCreatorId(currentUserInfo.id);
-
     if (dm_user && currentUserInfo && ((await this.findConversation(dm_user, currentUserInfo)).available)) {
-
-      let docRef = await addDoc(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), message.toJSON());
-      let universalId = docRef.id;
-      message.setId(docRef.id);
-      message.setUniversalId(universalId);
-      await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON())
-
-      docRef = await addDoc(this.getUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId)), message.toJSON());
-      message.setId(docRef.id);
-      message.setUniversalId(universalId);
-      await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
-
-      // console.log('unterhaltung bereits verfügbar, Nachricht wurde gesendet');
+      await this.prepareMessageForExistingConversation(dm_user, currentUserInfo, message);
     } else if (dm_user && currentUserInfo && (!(await this.findConversation(dm_user, currentUserInfo)).available)) {
-
-      this.dm_info.setChatPartner(currentUserInfo?.name!);
-      this.dm_info.setChatPartnerId(currentUserInfo?.id!);
-      let docRef = await addDoc(this.getUsersDMRef(dm_user), this.dm_info.toJSON());
-      this.dm_info.setDocId(docRef.id);
-      await updateDoc(this.getUpdatedUsersDMRef(dm_user, docRef.id), this.dm_info.toJSON());
-      docRef = await addDoc(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), message.toJSON());
-      let universalId = docRef.id;
-      message.setId(docRef.id);
-      message.setUniversalId(universalId);
-      await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON())
-
-
-      this.dm_info.setChatPartner(dm_user?.name!);
-      this.dm_info.setChatPartnerId(dm_user?.id!);
-      docRef = await addDoc(this.getUsersDMRef(currentUserInfo), this.dm_info.toJSON());
-      this.dm_info.setDocId(docRef.id);
-      await updateDoc(this.getUpdatedUsersDMRef(currentUserInfo, docRef.id), this.dm_info.toJSON());
-      docRef = await addDoc(this.getUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId)), message.toJSON());
-      message.setId(docRef.id);
-      message.setUniversalId(universalId);
-      await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
-      this.dataService.update_sidebar$.next(true);
-      // console.log('unterhaltung wurde erstellt, Nachricht wurde gesendet');
+      await this.createConversationAndPrepareMessage(dm_user, currentUserInfo, message);
     } else {
-      // console.log('kein direct messages user verfügbar');
     }
-
     this.refreshDMChat();
   }
-
 
   updateThreadAnswersOfSelectedMessage() {
     const selectedChannel = this.channelsService.selectedChannel$.value;
@@ -190,11 +172,9 @@ export class MessagesService {
             try {
               this.directMessages[i].reactions = this.DMReactions;
             } catch {
-              // console.log("couldn't set reaction to the message.")
             }
           });
         } else {
-          // console.log('die docId der Nachricht ist noch nicht verfügbar, bitte habe etwas gedult');
         }
       }
     }
@@ -202,16 +182,13 @@ export class MessagesService {
 
   getReactionsOfMessages() {
     const selectedChannel = this.channelsService.selectedChannel$.value;
-
     for (let i = 0; i < this.chatMessages.length; i++) {
       let message = this.chatMessages[i];
-
       onSnapshot(this.getChannelsMessageReactionColRef(selectedChannel!, message), (snapshot: any) => {
         this.messageReactions = snapshot.docs.map((doc: any) => doc.data());
         try {
           this.chatMessages[i].reactions = this.messageReactions;
         } catch {
-          // console.log("couldn't set reaction to the message.")
         }
       });
     }
@@ -220,29 +197,22 @@ export class MessagesService {
   getReactionsOfAnswers() {
     const thread_subject = this.thread_subject$.value;
     const selectedChannel = this.channelsService.selectedChannel$.value;
-
     if (selectedChannel && thread_subject) {
       for (let i = 0; i < this.threadAnswers.length; i++) {
         let answer = this.threadAnswers[i];
-
         onSnapshot(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, answer), (snapshot: any) => {
           this.answerReactions = snapshot.docs.map((doc: any) => doc.data());
           try {
             this.threadAnswers[i].reactions = this.answerReactions;
           } catch {
-            // console.log("couldn't set reaction to the answer.")
           }
         });
       }
-    } else {
-      // console.log('no selected channel or thread subject available.');
     }
   }
 
-
   updateChatMessageOfSelectedChannel() {
     const selectedChannel = this.channelsService.selectedChannel$.value;
-
     onSnapshot(this.channelsService.getChannelsColRef(selectedChannel!), (snapshot: any) => {
       this.chatMessages = snapshot.docs.map((doc: any) => doc.data());
     });
@@ -311,7 +281,6 @@ export class MessagesService {
             }
             return { exists: true, amount: messageReactions[i].amount, id: messageReactions[i].id, alreadyReacted: false, creator: messageReactions[i].creator }
           } else {
-            // console.log(messageReactions[i].creator)
             let creator = messageReactions[i].creator;
             if (creator == currentUserInfo.name) {
               return { exists: true, amount: messageReactions[i].amount, id: messageReactions[i].id, alreadyReacted: true }
@@ -383,16 +352,40 @@ export class MessagesService {
   parseDate(timestamp: any) {
     const dateParts = timestamp.split(' ')[0].split('-');
     const timeParts = timestamp.split(' ')[1].split(':');
-    const secondsParts = timeParts[2].split(':'); // Neues Array für Sekunden hinzufügen
-
+    const secondsParts = timeParts[2].split(':');
     const year = parseInt(dateParts[2], 10);
-    const month = parseInt(dateParts[1], 10) - 1; // Monate in JavaScript sind 0-basiert
+    const month = parseInt(dateParts[1], 10) - 1;
     const day = parseInt(dateParts[0], 10);
     const hours = parseInt(timeParts[0], 10);
     const minutes = parseInt(timeParts[1], 10);
     const seconds = parseInt(secondsParts[0], 10);
-
     return new Date(year, month, day, hours, minutes, seconds).getTime();
+  }
+
+  async increaseReactionAndAddNewCreatorForDM(result: any, dm_user: User, currentUserInfo: any, selectedDirectMessage: Message, reaction: Reaction) {
+    if (result.alreadyReacted) {
+    } else {
+      let creators = result.creator;
+      creators.push(currentUserInfo.name);
+      reaction.setCreator(creators);
+      let reaction_amount = result.amount + 1;
+      reaction.setAmount(reaction_amount);
+      await updateDoc(this.getUpdatedUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId), result.id), reaction.toJSON());
+      await updateDoc(this.getUpdatedUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId), ((await this.findReaction(currentUserInfo, dm_user, selectedDirectMessage, reaction.reaction)).docId)), reaction.toJSON());
+    }
+  }
+
+  async createReactionAndSetCreatorForDM(dm_user: User, currentUserInfo: any, selectedDirectMessage: Message, reaction: Reaction) {
+    let creators = [];
+    creators.push(currentUserInfo.name);
+    reaction.setCreator(creators);
+    reaction.setAmount(1);
+    let docRef = await addDoc(this.getUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId)), reaction.toJSON());
+    reaction.setId(docRef.id);
+    await updateDoc(this.getUpdatedUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId), docRef.id), reaction.toJSON());
+    docRef = await addDoc(this.getUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId)), reaction.toJSON());
+    reaction.setId(docRef.id);
+    await updateDoc(this.getUpdatedUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId), docRef.id), reaction.toJSON());
   }
 
   async addReactionToDM(reaction: Reaction) {
@@ -400,35 +393,12 @@ export class MessagesService {
     const currentUserInfo = this.channelsService.currentUserInfo$.value
     const selectedDirectMessage = this.selectedDirectMessage$.value;
     let result = this.checkReactionExistenceOnDirectMessage(reaction);
-
     if (dm_user && currentUserInfo) {
       if ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).available && (await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).available) {
         if (result.exists) {
-          if (result.alreadyReacted) {
-            // console.log('same user already reacted to this direct message');
-          } else {
-            let creators = result.creator;
-            creators.push(currentUserInfo.name);
-            reaction.setCreator(creators);
-            // console.log(result.id)
-            let reaction_amount = result.amount + 1;
-            reaction.setAmount(reaction_amount);
-            await updateDoc(this.getUpdatedUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId), result.id), reaction.toJSON());
-            await updateDoc(this.getUpdatedUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId), ((await this.findReaction(currentUserInfo, dm_user, selectedDirectMessage, reaction.reaction)).docId)), reaction.toJSON());
-          }
+          await this.increaseReactionAndAddNewCreatorForDM(result, dm_user, currentUserInfo, selectedDirectMessage, reaction);
         } else {
-          let creators = [];
-          creators.push(currentUserInfo.name);
-          reaction.setCreator(creators);
-          reaction.setAmount(1);
-          let docRef = await addDoc(this.getUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId)), reaction.toJSON());
-          reaction.setId(docRef.id);
-          await updateDoc(this.getUpdatedUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId), docRef.id), reaction.toJSON());
-
-          docRef = await addDoc(this.getUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId)), reaction.toJSON());
-          reaction.setId(docRef.id);
-          await updateDoc(this.getUpdatedUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId), docRef.id), reaction.toJSON());
-          // console.log('reaktion erstellt');
+          await this.createReactionAndSetCreatorForDM(dm_user, currentUserInfo, selectedDirectMessage, reaction);
         }
       } else {
         console.error('no message available.');
@@ -439,35 +409,39 @@ export class MessagesService {
     this.refreshDMChat();
   }
 
+  async increaseReactionAndAddNewCreatorForAnswer(result: any, currentUserInfo: any, thread_subject: Message, selectedChannel: Channel, selectedAnswerThreadChat: Message, reaction: Reaction) {
+    if (result.alreadyReacted) {
+    } else {
+      let creators = result.creator;
+      creators.push(currentUserInfo.name);
+      reaction.setCreator(creators);
+      let reaction_amount = result.amount + 1;
+      reaction.setAmount(reaction_amount);
+      await updateDoc(this.getUpdateChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat, result.id), reaction.toJSON());
+    }
+  }
+
+  async createReactionAndSetCreatorForAnswer(currentUserInfo: any, thread_subject: Message, selectedChannel: Channel, selectedAnswerThreadChat: Message, reaction: Reaction) {
+    let creators = [];
+    creators.push(currentUserInfo.name);
+    reaction.setCreator(creators);
+    reaction.setAmount(1);
+    const docRef = await addDoc(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat), reaction.toJSON());
+    reaction.setId(docRef.id);
+    await updateDoc(this.getUpdateChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat, docRef.id), reaction.toJSON());
+  }
+
   async addReactionToAnswer(reaction: Reaction) {
     const selectedChannel = this.channelsService.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
     const selectedAnswerThreadChat = this.selectedAnswerThreadChat$.value;
     const currentUserInfo = this.channelsService.currentUserInfo$.value
     let result = this.checkReactionExistenceOnAnswer(reaction);
-
     if (selectedChannel && thread_subject && selectedAnswerThreadChat) {
       if (result.exists) {
-        if (result.alreadyReacted) {
-          // console.log('same user already reacted to this answer');
-        } else {
-          let creators = result.creator;
-          creators.push(currentUserInfo.name);
-          reaction.setCreator(creators);
-          let reaction_amount = result.amount + 1;
-          reaction.setAmount(reaction_amount);
-          // console.log(reaction_amount);
-          await updateDoc(this.getUpdateChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat, result.id), reaction.toJSON());
-        }
+        await this.increaseReactionAndAddNewCreatorForAnswer(result, currentUserInfo, thread_subject, selectedChannel, selectedAnswerThreadChat, reaction);
       } else {
-        let creators = [];
-        creators.push(currentUserInfo.name);
-        reaction.setCreator(creators);
-        reaction.setAmount(1);
-        const docRef = await addDoc(this.getChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat), reaction.toJSON());
-        reaction.setId(docRef.id);
-        // console.log(docRef.id);
-        await updateDoc(this.getUpdateChannelsMessageAnswerReactionColRef(selectedChannel, thread_subject, selectedAnswerThreadChat, docRef.id), reaction.toJSON());
+        await this.createReactionAndSetCreatorForAnswer(currentUserInfo, thread_subject, selectedChannel, selectedAnswerThreadChat, reaction);
       }
     } else {
       console.error('No selected channel or selected message available.');
@@ -475,35 +449,38 @@ export class MessagesService {
     this.refreshThreadSubject();
   }
 
+  async increaseReactionAndAddNewCreatorForMessage(result: any, currentUserInfo: any, selectedChannel: Channel, selectedMessageMainChat: Message, reaction: Reaction) {
+    if (result.alreadyReacted) {
+    } else {
+      let creators = result.creator;
+      creators.push(currentUserInfo.name);
+      reaction.setCreator(creators);
+      let reaction_amount = result.amount + 1;
+      reaction.setAmount(reaction_amount);
+      await updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, result.id), reaction.toJSON());
+    }
+  }
+
+  async createReactionAndSetCreatorForMessage(currentUserInfo: any, selectedChannel: Channel, selectedMessageMainChat: Message, reaction: Reaction) {
+    let creators = [];
+    creators.push(currentUserInfo.name);
+    reaction.setCreator(creators);
+    reaction.setAmount(1);
+    const docRef = await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
+    reaction.setId(docRef.id);
+    await updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, docRef.id), reaction.toJSON());
+  }
 
   async addReactionToMessage(reaction: Reaction) {
     const selectedChannel = this.channelsService.selectedChannel$.value;
     const selectedMessageMainChat = this.selectedMessageMainChat$.value;
     const currentUserInfo = this.channelsService.currentUserInfo$.value
     let result = this.checkReactionExistenceOnMessage(reaction);
-
     if (selectedChannel && selectedMessageMainChat) {
       if (result.exists) {
-        if (result.alreadyReacted) {
-          // console.log('same user already reacted to this message');
-        } else {
-          let creators = result.creator;
-          creators.push(currentUserInfo.name);
-          reaction.setCreator(creators);
-          let reaction_amount = result.amount + 1;
-          reaction.setAmount(reaction_amount);
-          // console.log(reaction_amount);
-          await updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, result.id), reaction.toJSON());
-        }
+        await this.increaseReactionAndAddNewCreatorForMessage(result, currentUserInfo, selectedChannel, selectedMessageMainChat, reaction);
       } else {
-        let creators = [];
-        creators.push(currentUserInfo.name);
-        reaction.setCreator(creators);
-        reaction.setAmount(1);
-        const docRef = await addDoc(this.getChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat), reaction.toJSON());
-        reaction.setId(docRef.id);
-        // console.log(docRef.id);
-        await updateDoc(this.getUpdateChannelsMessageReactionColRef(selectedChannel, selectedMessageMainChat, docRef.id), reaction.toJSON());
+        await this.createReactionAndSetCreatorForMessage(currentUserInfo, selectedChannel, selectedMessageMainChat, reaction);
       }
     } else {
       console.error('No selected channel or selected message available.');
@@ -514,7 +491,6 @@ export class MessagesService {
   async pushThreadAnswerToMessage(answer: Message): Promise<void> {
     const selectedChannel = this.channelsService.selectedChannel$.value;
     const thread_subject = this.thread_subject$.value;
-
     answer.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm:ss', 'en-US');
     if (selectedChannel && thread_subject && thread_subject !== undefined) {
       const docRef = await addDoc(this.getChannelsMessageColRef(selectedChannel, thread_subject), answer.toJSON());
@@ -527,18 +503,14 @@ export class MessagesService {
 
   async pushMessageToChannel(message: Message): Promise<void> {
     const selectedChannel = this.channelsService.selectedChannel$.value;
-
     message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm:ss', 'en-US');
-    //try and catch besser ??
     if (selectedChannel) {
       const docRef = await addDoc(this.channelsService.getChannelsColRef(selectedChannel), message.toJSON());
       message.setId(docRef.id);
       await updateDoc(this.channelsService.getUpdatedChannelsColRef(selectedChannel, docRef.id), message.toJSON());
-      // console.log(docRef.id)
     } else {
       console.error('No selected channel available.');
     }
-
     this.channelsService.setSelectedChannel(selectedChannel!);
   }
 
@@ -560,7 +532,6 @@ export class MessagesService {
   async updateMessage(message: Message) {
     const selectedChannel = this.channelsService.selectedChannel$.value;
     const docRef = this.thread_subject$.value;
-
     await updateDoc(this.channelsService.getUpdatedChannelsColRef(selectedChannel!, docRef.id), message.toJSON());
     this.channelsService.setSelectedChannel(selectedChannel!);
   }
@@ -576,7 +547,6 @@ export class MessagesService {
     const dm_user = this.dm_user$.value;
     const currentUserInfo = this.channelsService.currentUserInfo$.value;
     const selectedDirectMessage = this.selectedDirectMessage$.value;
-
     if (dm_user && currentUserInfo) {
       await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON());
       await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId)), message.toJSON());
