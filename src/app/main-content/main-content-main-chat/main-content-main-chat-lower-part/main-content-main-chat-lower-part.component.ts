@@ -11,6 +11,8 @@ import { StorageService } from 'src/app/shared-services/storage.service';
 import { formatDate } from '@angular/common';
 import { MessagesService } from 'src/app/shared-services/messages.service';
 import { UserService } from 'src/app/shared-services/user.service';
+import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-main-content-main-chat-lower-part',
@@ -52,13 +54,17 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
   mobile: boolean = false;
   reactionInfo: boolean = false;
   showUserList: boolean = false;
+  tags: {id: string, name: string}[] = [];
+  isMobileView!: boolean;
+  private destroyed$ = new Subject<void>();
 
   constructor(
     private dataService: DataService,
     private messagesService: MessagesService,
     private channelService: ChannelsService,
     public commonService: CommonService,
-    public userService: UserService
+    public userService: UserService,
+    public dialogService: OpenDialogService,
   ) {
     this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
       if (selectedChannel) {
@@ -88,6 +94,11 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     this.userService.users$.subscribe(users => {
       this.allUser = users;
     });
+    this.dialogService.isMobileView$.pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(isMobileView => {
+      this.isMobileView = isMobileView;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -105,12 +116,54 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     });
   }
 
-  insertUserName(userName: string) {
+  insertUserName(userName: string, userId: string) {
     this.commonService.insertUserName(userName, this.input_message.nativeElement, this.allUser, (filteredUsers, showUserList) => {
       this.filteredUsers = filteredUsers;
       this.showUserList = showUserList;
+      this.tags.push({id: userId, name: userName});
     });
   }
+
+  formatMessageParts(message: Message): (string | {text: string, id: string})[] {
+    const parts: (string | {text: string, id: string})[] = [];
+    let text = message.message;
+  
+    if (Array.isArray(message.tags)) {
+      message.tags.forEach(tag => {
+        let start = text.indexOf(`@${tag.name}`);
+        if (start !== -1) {
+          if (start > 0) parts.push(text.substring(0, start)); 
+          parts.push({text: tag.name, id: tag.id}); 
+          text = text.substring(start + tag.name.length + 1);
+        }
+      });
+    }
+  
+    if (text.length > 0) parts.push(text); 
+    return parts;
+  }
+
+
+  async openProfile(id: string): Promise<void> {
+    try {
+      const userInfo = await this.userService.getUserInfos(id);
+      if (userInfo) {
+        const user = new User(userInfo);
+        this.userService.setSelectedUser(user);
+        this.dialogService.openDialog('showProfile', false, this.isMobileView);
+      } else {
+        console.log("Benutzer nicht gefunden");
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen des Benutzerprofils:', error);
+    }
+  }
+
+ 
+  isPartTag(part: any): part is { text: string; id: string } {
+    return typeof part === 'object' && 'id' in part && 'text' in part;
+  }
+
 
   openReactionInfo(i: number, j: number) {
     this.reactionInfo = true;
@@ -395,8 +448,12 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     if (this.uploadedFileLink || this.input_message.nativeElement.value.trim() !== '') {
       if (this.uploadedFileLink) {
         this.message.setImg(this.uploadedFileLink);
-        this.removeUploadedFile();
+        this.removeUploadedFile();               
       } else if (this.input_message.nativeElement.value.trim() !== '') {
+        if (this.tags.length > 0) {
+          this.message.tags = this.tags;
+          this.tags = []; 
+        }
         const inputMessage = this.input_message.nativeElement.value.trim();
         this.message.setMessage(inputMessage);
         this.input_message.nativeElement.value = '';

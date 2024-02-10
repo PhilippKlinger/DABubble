@@ -10,6 +10,7 @@ export class Message {
     answered_number: number;
     latest_answer: string | number;
     img: string;
+    tags: {id: string, name: string}[] = [];
 
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
@@ -23,6 +24,7 @@ export class Message {
         this.answered_number = obj ? obj.answered_number : '';
         this.latest_answer = obj ? obj.latest_answer : '';
         this.img = obj ? obj.img : '';
+        this.tags = obj && obj.tags ? obj.tags : [];
     }
 
     setUniversalId(id: string): void {
@@ -78,6 +80,7 @@ export class Message {
             answered_number: this.answered_number,
             latest_answer: this.latest_answer,
             img: this.img,
+            tags: this.tags,
         }
     }
 }

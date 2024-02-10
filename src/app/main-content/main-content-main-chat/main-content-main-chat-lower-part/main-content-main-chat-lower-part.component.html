@@ -41,10 +41,16 @@
                         <h3>{{ message.creator }}</h3>
                     </div>
 
-                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)"
-                        class="speech-bubble-user">
-                        {{ message.message }}
-                    </div>
+                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)" class="speech-bubble-user">
+                        <div *ngFor="let part of formatMessageParts(message)"> 
+                            <div *ngIf="isPartTag(part)" (click)="openProfile(part.id)">
+                                <span class="space">_</span>
+                                    <a class="tagUser">{{ part.text }}</a>                   
+                                <span class="space">_</span>
+                            </div>                           
+                            <span *ngIf="!isPartTag(part)" #plainText>{{ part }}</span>
+                        </div>
+                    </div>  
 
                     <div *ngIf="message.img">
                         <button mat-raised-button (click)="this.commonService.downloadImage(message.img)">
@@ -153,7 +159,7 @@
 
 <div class="chat-input-container">
     <div *ngIf="showUserList" class="added-user-list">
-        <div class="selected-user" *ngFor="let user of filteredUsers" (click)="insertUserName(user.name)">
+        <div class="selected-user" *ngFor="let user of filteredUsers" (click)="insertUserName(user.name, user.id)">
             <div class="side-bar-profile">
                 <div class="side-bar-profile-picture">
                     <img src="{{user.avatar}}">

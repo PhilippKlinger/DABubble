@@ -1,8 +1,8 @@
-// @import './../../../../styles.scss';
 @import '../../../dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component.scss';
 
 .added-user-list {
     width: max-content;
+    background-color: $White;
 }
 
 
@@ -540,6 +540,7 @@
     font-size: 18px;
     font-weight: 400 !important;
     line-height: 24.55px;
+    @include dFlex();
 }
 
 .speech-bubble-user-edit {
@@ -903,4 +904,17 @@
 
 .error-txt {
     padding: 20px;
+}
+
+.tagUser {
+    color: #0ff;
+    cursor: pointer;
+    @include fonts($fw: 400, $fs:18px);
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.space {
+    opacity: 0;
 }
