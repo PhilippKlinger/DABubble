@@ -24,7 +24,7 @@ export class ChannelsService {
   constructor(private firestore: Firestore,
     private auth: Auth,
     private dataService: DataService
-    ) {
+  ) {
     this.unsubChannels = this.subChannelsList();
   }
 
@@ -63,8 +63,8 @@ export class ChannelsService {
 
   findNextAvailableChannel(): void {
     this.channels$.pipe(
-      take(1), 
-      map(channels => channels.find(channel => 
+      take(1),
+      map(channels => channels.find(channel =>
         channel.members.some(member => member.id === this.currentUserInfo$.value?.id)) ?? null
       )
     ).subscribe(firstChannelWithmembership => {
@@ -73,15 +73,13 @@ export class ChannelsService {
         this.setSelectedChannelWithFirstMembership(firstChannelWithmembership);
         counter++;
         if (counter === 2) {
-          clearInterval(intervalId); 
+          clearInterval(intervalId);
         }
       }, 100);
     });
     this.isNewChannelCreated = false;
   }
 
- 
-  
 
   setSelectedChannelWithFirstMembership(channel: Channel | null) {
     if (channel) {
@@ -91,7 +89,7 @@ export class ChannelsService {
       this.openNewMessageInput();
     }
   }
-  
+
 
   async refreshMessagesInAccessibleChannels() {
     let allMessages: Message[] = [];
@@ -197,13 +195,14 @@ export class ChannelsService {
     this.dataService.directmessage_open$.next(false);
   }
 
-  
+
   closeNewMessageInput() {
     this.dataService.new_message_open$.next(false);
     this.dataService.thread_open$.next(false);
     this.dataService.directmessage_open$.next(false);
   }
 
+  
   setSelectedChannel(channel: Channel): void {
     this.selectedChannel$.next(channel);
   }

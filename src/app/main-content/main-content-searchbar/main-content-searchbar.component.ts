@@ -45,6 +45,7 @@ export class MainContentSearchbarComponent {
     });
   }
 
+  
   onSearchChange(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     this.searchQuery = inputElement.value;
@@ -56,16 +57,33 @@ export class MainContentSearchbarComponent {
     }
   }
 
+
   searchChannelsAndUsers() {
     if (!this.searchQuery) {
       this.clearSearchResults();
       return;
     }
-
     const firstChar = this.searchQuery.charAt(0);
     const searchQueryLower = this.searchQuery.toLowerCase();
     const trimmedSearchQuery = searchQueryLower.slice(1);
+    this.executeSearch(firstChar, trimmedSearchQuery, searchQueryLower)
+    this.channelsService.messagesInChannels$.subscribe(messages => {
+      this.foundMessages = messages.filter(message => message.message.toLowerCase().includes(searchQueryLower));
+    });
+  }
 
+
+  searchUsers(query: string) {
+    this.userService.users$.subscribe(users => {
+      this.foundUsers = users.filter(user => {
+        const isUserAllowed = this.isGuestUser ? user.id === this.userService.guestId : true;
+        return isUserAllowed && user.name.toLowerCase().includes(query);
+      });
+    });
+  }
+
+
+  executeSearch(firstChar: string, trimmedSearchQuery: string, searchQueryLower: string) {
     if (firstChar === '#') {
       this.channelsService.channels$.subscribe(channels => {
         this.foundChannels = channels.filter(channel => channel.name.toLowerCase().includes(trimmedSearchQuery));
@@ -80,26 +98,15 @@ export class MainContentSearchbarComponent {
       });
       this.searchUsers(searchQueryLower);
     }
-
-    this.channelsService.messagesInChannels$.subscribe(messages => {
-      this.foundMessages = messages.filter(message => message.message.toLowerCase().includes(searchQueryLower));
-    });
   }
 
-  searchUsers(query: string) {
-    this.userService.users$.subscribe(users => {
-      this.foundUsers = users.filter(user => {
-        const isUserAllowed = this.isGuestUser ? user.id === this.userService.guestId : true;
-        return isUserAllowed && user.name.toLowerCase().includes(query);
-      });
-    });
-  }
 
   clearSearchResults() {
     this.foundChannels = [];
     this.foundUsers = [];
     this.foundMessages = [];
   }
+
 
   showSelectedUser(user: User) {
     this.userService.setSelectedUser(user);
