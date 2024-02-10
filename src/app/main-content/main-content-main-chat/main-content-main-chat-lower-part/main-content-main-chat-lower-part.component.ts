@@ -39,7 +39,6 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
   chatMessages: any = [];
   user: User = null!;
   selectedChannel!: Channel | null;
-  unsubChannels!: Subscription;
   uploadedFileLink: string | null = null;
   textAreaContent!: string;
   editedText!: string;
@@ -66,7 +65,7 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     public userService: UserService,
     public dialogService: OpenDialogService,
   ) {
-    this.unsubChannels = this.channelService.selectedChannel$.subscribe(selectedChannel => {
+    this.channelService.selectedChannel$.subscribe(selectedChannel => {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
         this.receiveChatMessages();
@@ -106,8 +105,11 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
   }
 
   focusInputMessage(): void {
-    this.input_message.nativeElement.focus();
+    if (this.input_message && this.input_message.nativeElement) {
+      this.input_message.nativeElement.focus();
+    }
   }
+  
 
   onTextareaInput(event: any) {
     this.commonService.onTextareaInput(event, this.allUser, (filteredUsers, showUserList) => {
@@ -466,7 +468,7 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.unsubChannels.unsubscribe();
+
   }
 
   async handleFileInput(event: any) {

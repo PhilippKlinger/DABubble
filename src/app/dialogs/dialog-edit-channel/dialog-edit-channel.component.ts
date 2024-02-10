@@ -5,7 +5,6 @@ import { User } from 'src/app/models/user.class';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { DataService } from 'src/app/shared-services/data.service';
 import { UserService } from 'src/app/shared-services/user.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
 
@@ -18,7 +17,7 @@ import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
     '../dialog-create-channel/dialog-create-channel.component.scss']
 })
 export class DialogEditChannelComponent {
-  
+
   isEditingName: boolean = false;
   isEditingDescription: boolean = false;
   channel: Channel | null = null;
@@ -31,10 +30,9 @@ export class DialogEditChannelComponent {
   private destroyed$ = new Subject<void>();
 
   constructor(private channelsService: ChannelsService,
-     private dialogRef: MatDialogRef<DialogEditChannelComponent>,
-     private dataService: DataService,
-     private userService: UserService,
-     private dialogService: OpenDialogService) {
+    private dialogRef: MatDialogRef<DialogEditChannelComponent>,
+    private userService: UserService,
+    private dialogService: OpenDialogService) {
     this.channelsService.selectedChannel$.pipe(
       takeUntil(this.destroyed$)
     ).subscribe(channel => {
@@ -59,6 +57,7 @@ export class DialogEditChannelComponent {
     });
   }
 
+
   toggleEditing(field: 'name' | 'description'): void {
     if (field === 'name') {
       this.isEditingName = !this.isEditingName;
@@ -67,69 +66,45 @@ export class DialogEditChannelComponent {
     }
   }
 
+
   saveChanges(field: 'name' | 'description'): void {
     if (!this.isGuestUser) {
-    if (this.channel) {
-      if (field === 'name') {
-        this.channel.name = this.newChannelName;
-        this.isEditingName = false;
-      } else if (field === 'description') {
-        this.channel.description = this.newChannelDescription;
-        this.isEditingDescription = false;
+      if (this.channel) {
+        if (field === 'name') {
+          this.channel.name = this.newChannelName;
+          this.isEditingName = false;
+        } else if (field === 'description') {
+          this.channel.description = this.newChannelDescription;
+          this.isEditingDescription = false;
+        }
+        this.channelsService.updateChannel(this.channel);
       }
-      this.channelsService.updateChannel(this.channel);
     }
   }
-}
+
 
   leaveChannel(): void {
     if (!this.isGuestUser) {
-    if (this.channel && this.currentUser) {
-      this.channel.members = this.channel.members.filter(member => member.id !== this.currentUser.id);
-      this.channelsService.updateChannel(this.channel);
-      if (this.channel.members.length === 0) {
-        this.channelsService.deleteChannel(this.channel).then(() => {
-          this.selectNextAvailableChannel();
-        });
-      } else {
-        this.selectNextAvailableChannel();
-        this.channelsService.setSelectedChannel(this.channel);
+      if (this.channel && this.currentUser) {
+        this.channel.members = this.channel.members.filter(member => member.id !== this.currentUser.id);
+        this.channelsService.updateChannel(this.channel);
+        if (this.channel.members.length === 0) {
+          this.channelsService.deleteChannel(this.channel).then(() => {
+            this.channelsService.findNextAvailableChannel();
+          });
+        } else {
+          this.channelsService.findNextAvailableChannel();
+        }
+        this.dialogRef.close();
       }
-      this.dialogRef.close();
     }
   }
-}
 
-  selectNextAvailableChannel(): void {
-    this.channelsService.channels$.pipe(
-      take(1)
-    ).subscribe(channels => {
-      const firstMemberChannel = channels.find(channel =>
-        this.channelsService.isCurrentUserChannelMember(channel)
-      );
-      if (firstMemberChannel) {
-        let counter = 0;
-        const intervalId = setInterval(() => {
-          this.channelsService.setSelectedChannel(firstMemberChannel);
-          counter++;
-
-          if (counter === 2) {
-            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
-          }
-        }, 100);
-    
-
-
-      } else {
-        this.openNewMessageInput();
-      }
-    });
-  }
 
   onInput() {
     this.checkChannelName();
-    // console.warn('channelname ist already taken', this.isChannelNameTaken)
   }
+
 
   checkChannelName(): void {
     this.channelsService.channels$.pipe(take(1)).subscribe(channels => {
@@ -140,13 +115,7 @@ export class DialogEditChannelComponent {
       }
     });
   }
-  
 
-  openNewMessageInput() {
-    this.dataService.new_message_open$.next(true);
-    this.dataService.thread_open$.next(false);
-    this.dataService.directmessage_open$.next(false);
-  }
 
   ngOnDestroy(): void {
     this.destroyed$.next();

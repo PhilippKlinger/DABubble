@@ -32,10 +32,22 @@ input:focus {
 
     span {
         font-size: 20px;
-        font-style: normal;
         font-weight: 700;
         line-height: normal;
         margin-left: 15px;
+    }
+}
+
+.progress-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    margin-bottom: 50px;
+
+    span {
+        font-size: 20px;
+        font-weight: 700;
     }
 }
 

@@ -49,6 +49,7 @@ export class DialogShowProfileComponent {
     }
   }
 
+  
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, getDocs, query, where, writeBatch } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Channel } from '../models/channel.class';
-import { BehaviorSubject, take } from 'rxjs';
+import { BehaviorSubject, map, take } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { Message } from '../models/message.class';
 import { User } from '../models/user.class';
@@ -23,9 +23,11 @@ export class ChannelsService {
 
   constructor(private firestore: Firestore,
     private auth: Auth,
-    private dataService: DataService) {
+    private dataService: DataService
+  ) {
     this.unsubChannels = this.subChannelsList();
   }
+
 
   subChannelsList() {
     return onSnapshot(this.getChannelsRef(), (querySnapshot) => {
@@ -33,8 +35,6 @@ export class ChannelsService {
         const data = doc.data() as Channel;
         return new Channel({ ...data, id: doc.id });
       });
-
-
       channels = this.filterChannelsBasedOnUserType(channels);
       this.channels$.next(channels);
       if (!this.isNewChannelCreated) {
@@ -44,56 +44,72 @@ export class ChannelsService {
   }
 
 
-  findNextAvailableChannel(): void {
-    const channels = this.channels$.getValue();
-    const currentUser = this.currentUserInfo$.value;
-    if (currentUser) {
-      const firstMemberChannel = channels.find(channel =>
-        channel.members.some(member => member.id === currentUser.id)
-      );
-      if (firstMemberChannel) {
-        let counter = 0;
-
-        const intervalId = setInterval(() => {
-          this.setSelectedChannel(firstMemberChannel);
-          counter++;
-
-          if (counter === 2) {
-            clearInterval(intervalId); // Stoppt das Intervall, nachdem es fünf aufgerufen wurde
-          }
-        }, 100);
-       
-        this.closeNewMessageInput();
-      } else {
-        this.openNewMessageInput();
-      }
+  async createChannel(channel: Channel, colId: 'channels'): Promise<void> {
+    const collectionRef = collection(this.firestore, colId);
+    channel.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
+    try {
+      const docRef = await addDoc(collectionRef, channel.toJSON());
+      channel.id = docRef.id;
+      this.updateChannel(channel);
+      this.isNewChannelCreated = true;
+      this.closeNewMessageInput()
+      this.setSelectedChannel(channel);
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
+  }
+
+
+  findNextAvailableChannel(): void {
+    this.channels$.pipe(
+      take(1),
+      map(channels => channels.find(channel =>
+        channel.members.some(member => member.id === this.currentUserInfo$.value?.id)) ?? null
+      )
+    ).subscribe(firstChannelWithmembership => {
+      let counter = 0;
+      const intervalId = setInterval(() => {
+        this.setSelectedChannelWithFirstMembership(firstChannelWithmembership);
+        counter++;
+        if (counter === 2) {
+          clearInterval(intervalId);
+        }
+      }, 100);
+    });
     this.isNewChannelCreated = false;
   }
+
+
+  setSelectedChannelWithFirstMembership(channel: Channel | null) {
+    if (channel) {
+      this.setSelectedChannel(channel);
+      this.closeNewMessageInput();
+    } else {
+      this.openNewMessageInput();
+    }
+  }
+
 
   async refreshMessagesInAccessibleChannels() {
     let allMessages: Message[] = [];
     const accessibleChannels = this.channels$.value.filter(channel =>
       this.isCurrentUserChannelMember(channel)
     );
-
     for (const channel of accessibleChannels) {
       const messages = await this.getMessagesToFindChannel(channel);
       messages.forEach(message => this.messageChannelMap.set(message.id, channel));
       allMessages = [...allMessages, ...messages];
     }
-
     this.messagesInChannels$.next(allMessages);
   }
 
 
   async updateUserNameInAllMessages(userId: string, newName: string, newAvatar: string) {
     const channels = this.channels$.value;
-
     for (const channel of channels) {
       const messagesRef = this.getChannelsColRef(channel);
       const querySnapshot = await getDocs(messagesRef);
-
       querySnapshot.forEach(async (doc) => {
         const message = doc.data() as Message;
         if (message.creatorId === userId) {
@@ -110,17 +126,14 @@ export class ChannelsService {
     if (!currentUser) {
       return [];
     }
-
     const filteredChannels = channels.filter(channel =>
       channel.members.some(member => member.id === currentUser)
     );
-
     if (filteredChannels.length === 0) {
       this.openNewMessageInput();
     } else {
       this.closeNewMessageInput();
     }
-
     return filteredChannels;
   }
 
@@ -128,38 +141,34 @@ export class ChannelsService {
   async refreshChannelsAfterEditingProfile() {
     const querySnapshot = await getDocs(this.getChannelsRef());
     const selectedChannel = this.selectedChannel$.getValue();
+    const currentUser = this.currentUserInfo$.value;
     let channels = querySnapshot.docs.map((doc) => {
       const data = doc.data() as Channel;
       return new Channel({ ...data, id: doc.id });
     });
-
-    const currentUser = this.currentUserInfo$.value;
     channels = channels.filter(channel =>
       channel.members.some(member => member.id === currentUser.id)
     );
-
     this.channels$.next(channels);
     this.selectedChannel$.next(selectedChannel);
   }
 
 
-  async createChannel(channel: Channel, colId: 'channels'): Promise<void> {
-    const collectionRef = collection(this.firestore, colId);
-    channel.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm', 'en-US');
-    try {
-      const docRef = await addDoc(collectionRef, channel.toJSON());
-      channel.id = docRef.id;
-      this.updateChannel(channel);
-      this.isNewChannelCreated = true;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+  async deleteGuestMessages(): Promise<void> {
+    const demoChannelId = 'aDusoQEpfWO6oWyth9fE';
+    const messagesRef = collection(this.firestore, `channels/${demoChannelId}/messages`);
+    const querySnapshot = await getDocs(messagesRef);
+    const batch = writeBatch(this.firestore);
+    querySnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
   }
 
 
   async updateChannel(channel: Channel | null) {
     if (channel && channel.id) {
+      this.isNewChannelCreated = true;
       let docRef = this.getSingleDocRef('channels', channel.id);
       await updateDoc(docRef, channel.toJSON()).catch(
         (err) => {
@@ -186,13 +195,14 @@ export class ChannelsService {
     this.dataService.directmessage_open$.next(false);
   }
 
+
   closeNewMessageInput() {
     this.dataService.new_message_open$.next(false);
     this.dataService.thread_open$.next(false);
     this.dataService.directmessage_open$.next(false);
   }
 
-
+  
   setSelectedChannel(channel: Channel): void {
     this.selectedChannel$.next(channel);
   }
@@ -239,23 +249,5 @@ export class ChannelsService {
   ngOnDestroy() {
     this.unsubChannels();
   }
-
-
-  async deleteGuestMessages(): Promise<void> {
-    const demoChannelId = 'aDusoQEpfWO6oWyth9fE'; 
- // Referenz auf die Nachrichten im Demo-Channel
- const messagesRef = collection(this.firestore, `channels/${demoChannelId}/messages`);
- const querySnapshot = await getDocs(messagesRef);
-
- // Durchlaufen aller Nachrichten in der Collection und deren Löschung
- const batch = writeBatch(this.firestore); 
-
- querySnapshot.forEach((doc) => {
-   batch.delete(doc.ref); // Hinzufügen der Löschoperation zur Batch
- });
-
- await batch.commit(); // Ausführen der Batch-Operation
-  }
-  
 
 }

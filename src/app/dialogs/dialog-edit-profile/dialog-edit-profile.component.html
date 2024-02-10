@@ -5,15 +5,20 @@
             <mat-icon>close</mat-icon>
         </button>
     </div>
-    <div class="avatar buttons">
+    <div *ngIf="!isSavingNewData" class="avatar buttons">
         <img src="{{selectedAvatar}}">
         <button mat-raised-button *ngIf="!openAvatarSelection" (click)="toggleAvatarSelection()">Avatar ändern</button>
+    </div>
+
+    <div *ngIf="isSavingNewData" class="progress-spinner">
+      <span>Änderungen werden gespeichert!</span>
+       <mat-spinner></mat-spinner>
     </div>
 
     <div *ngIf="openAvatarSelection" class="avatar-selection">
         <div [ngClass]="{'button-disabled': isGuestUser}" class="file-upload buttons">
             <button [disabled]="isGuestUser"  matTooltip="Dateigröße darf 1.5mb nicht überschreiten!" matTooltipPosition="above" mat-raised-button color="primary" (click)="fileInput.click()">Custom Avatar</button>
-            <input [disabled]="isGuestUser" #fileInput type="file" (change)="onFileSelected($event)" 
+            <input [disabled]="isGuestUser" #fileInput type="file" (change)="uploadAvatar($event)" 
                    accept="image/jpeg, image/jpg, image/png" 
                    hidden>
           </div>
@@ -29,7 +34,7 @@
             <img src="../../../assets/icons/account_circle.svg">
             <span>Vollständiger Name</span>
         </div>
-        <input [disabled]="isGuestUser" [(ngModel)]="newUserName" matInput placeholder="Bitte einen Namen eingeben!">
+        <input [disabled]="isGuestUser || isSavingNewData" [(ngModel)]="newUserName" matInput placeholder="Bitte einen Namen eingeben!">
     </div>
     <div *ngIf="!openAvatarSelection" class="name-input">
         <div class="name">
@@ -41,7 +46,7 @@
     </div>
     <div class="buttons">
         <button *ngIf="!openAvatarSelection" mat-raised-button mat-dialog-close>Abbrechen</button>
-        <button *ngIf="!openAvatarSelection" [disabled]="newUserName === currentUser.name && selectedAvatar === currentUser.avatar || newUserName == ''" (click)="saveChanges()" mat-raised-button color="primary">Speichern</button>
+        <button [ngClass]="{'button-disabled': isSavingNewData}" *ngIf="!openAvatarSelection" [disabled]="newUserName === currentUser.name && selectedAvatar === currentUser.avatar || isSavingNewData || newUserName == ''" (click)="saveChanges()" mat-raised-button color="primary">Speichern</button>
         <button (click)="toggleAvatarSelection()" *ngIf="openAvatarSelection" mat-raised-button> Zurück </button>
     </div>
 </div>

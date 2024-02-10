@@ -6,8 +6,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { User } from 'src/app/models/user.class';
 import { UserService } from 'src/app/shared-services/user.service';
 import { Subject, takeUntil } from 'rxjs';
-import { take } from 'rxjs/operators';
-
 
 @Component({
   selector: 'app-dialog-show-channelmembers',
@@ -21,6 +19,7 @@ export class DialogShowChannelmembersComponent {
   private destroyed$ = new Subject<void>();
   channel: Channel | null = null;
 
+
   constructor(private dialogService: OpenDialogService, private channelsService: ChannelsService, private userService: UserService, private dialogRef: MatDialogRef<DialogShowChannelmembersComponent>) {
     this.channelsService.selectedChannel$.pipe(
       takeUntil(this.destroyed$)
@@ -33,6 +32,7 @@ export class DialogShowChannelmembersComponent {
       this.isMobileView = isMobileView;
     });
   }
+
 
   showSelectedUser(user: User) {
     this.userService.setSelectedUser(user);
@@ -49,11 +49,13 @@ export class DialogShowChannelmembersComponent {
     }
   }
 
+
   openDialogMobile(componentKey: string): void {
     this.dialogService.setNeedToAddMoreMembers(true);
     this.dialogService.openDialog(componentKey, false, this.isMobileView);
   }
 
+  
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();

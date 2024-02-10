@@ -17,10 +17,12 @@ export class DialogMenuProfileComponent {
   isLoggedInWithGoogle: boolean = false;
   private destroyed$ = new Subject<void>();
 
+
   constructor(private channelService: ChannelsService, private FbAuth: Auth, private dialogService: OpenDialogService, private dialogRef: MatDialogRef<DialogMenuProfileComponent>) {
     this.channelService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe((currentUser) => { this.currentUser = currentUser });
     this.checkAuthenticationProvider();
   }
+
 
   async checkAuthenticationProvider() {
     try {
@@ -33,6 +35,7 @@ export class DialogMenuProfileComponent {
     }
   }
 
+
   openEditProfile() {
     if (!this.isLoggedInWithGoogle) {
       this.dialogRef.close();
@@ -40,12 +43,11 @@ export class DialogMenuProfileComponent {
     } else {
       window.open("https://myaccount.google.com/")
     }
-
   }
+
 
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
-
 }
