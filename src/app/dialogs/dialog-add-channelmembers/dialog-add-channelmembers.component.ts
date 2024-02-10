@@ -22,7 +22,7 @@ export class DialogAddChannelmembersComponent {
   selectedUsers: User[] = [];
   isGuestUser!: boolean;
   needToAddMoreMembers: boolean = false;
-  addLastUser:boolean = false;
+  addLastUser: boolean = false;
   areUsersAvailable: boolean = true;
   channel: Channel | null = null;
   users: User[] = [];
@@ -38,14 +38,16 @@ export class DialogAddChannelmembersComponent {
     this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe(users => { this.users = users; });
     this.dialogService.needToAddMoreMembers$.pipe(takeUntil(this.destroyed$)).subscribe(state => { this.needToAddMoreMembers = state; });
     this.channelsService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe(user => { this.currentUser = user; });
-    this.userService.isGuestUser$.pipe(takeUntil(this.destroyed$)).subscribe(isGuestUser => {  this.isGuestUser = isGuestUser;});
+    this.userService.isGuestUser$.pipe(takeUntil(this.destroyed$)).subscribe(isGuestUser => { this.isGuestUser = isGuestUser; });
     this.updateUsersAvailability();
   }
+
 
   onInput() {
     this.filterUsers();
     this.updateUsersAvailability();
   }
+
 
   updateUsersAvailability() {
     const currentMemberCount = this.channel ? this.channel.members.length : 0;
@@ -54,32 +56,23 @@ export class DialogAddChannelmembersComponent {
     this.areUsersAvailable = ((currentMemberCount + selectedUserCount) < totalUserCount);
     this.addLastUser = (currentMemberCount < totalUserCount);
   }
-  
+
+
   filterUsers() {
-    if (this.channel) {
-      const channelMembers = this.channel.members || [];
-      this.filteredUsers = this.users.filter(user => {
-        const isGuestUser = user.id === this.userService.guestId; 
-        const userIncluded = channelMembers.some(channelUser => channelUser.id === user.id);
-        return (
-          user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
-          !this.selectedUsers.includes(user) &&
-          !userIncluded &&
-          !isGuestUser 
-        );
-      });
-    } else {
-      this.filteredUsers = this.users.filter(user => {
-        const isGuestUser = user.id === this.userService.guestId; 
-        return (
-          user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase()) &&
-          !this.selectedUsers.includes(user) &&
-          !isGuestUser 
-        );
-      });
-    }
+    this.filteredUsers = this.users.filter(user => {
+      const isGuestUser = user.id === this.userService.guestId;
+      const userAlreadySelected = this.selectedUsers.includes(user);
+      const userMatchesInput = user.name.toLowerCase().includes(this.specificMemberInput.toLowerCase());
+      if (isGuestUser || userAlreadySelected) return false;
+      if (this.channel) {
+        const isUserInChannel = this.channel.members.some(channelUser => channelUser.id === user.id);
+        return userMatchesInput && !isUserInChannel;
+      }
+      return userMatchesInput;
+    });
   }
-  
+
+
   selectUser(user: User) {
     this.selectedUsers.push(user);
     this.specificMemberInput = '';
@@ -87,43 +80,50 @@ export class DialogAddChannelmembersComponent {
     this.updateUsersAvailability();
   }
 
+
   removeUser(user: User) {
     this.selectedUsers = this.selectedUsers.filter(u => u !== user);
     this.filterUsers();
     this.updateUsersAvailability();
   }
 
-  addChannelMembers() {  
-    if (this.channel) {
-      let newMembers: { id: string; name: string; email: string; avatar: string; onlineStatus: boolean; }[] = [];
-  
-      if (!this.needToAddMoreMembers) {
-        if (this.selectedOption === 'allMembers') {
-          newMembers = this.users
-            .filter(user => user.id !== this.currentUser.id && user.id !== this.userService.guestId) 
-            .map(user => user.toJSON());
-        } else if (this.selectedOption === 'specificMembers') {
-          newMembers = this.selectedUsers
-            .filter(user => user.id !== this.userService.guestId) 
-            .map(user => user.toJSON());
-        }
-      } else {
-        newMembers = this.selectedUsers
-          .filter(user => user.id !== this.userService.guestId)
-          .map(user => user.toJSON());
-      }
-  
-      const uniqueMembers = [...new Set([...this.channel.members, ...newMembers])];
-      this.channel.members = uniqueMembers;
-  
-      this.channelsService.setSelectedChannel(this.channel);
-      this.channelsService.updateChannel(this.channel);
-      this.channelsService.selectedChannel$.next(this.channel);
-      this.dialogRef.close();
-      this.dialogService.setNeedToAddMoreMembers(false);
+
+  addChannelMembers() {
+    if (!this.channel) {
+      return;
     }
+    const newMembers = this.startAddingMember();
+    const updatedMembers: User[] = [...this.channel.members, ...newMembers]
+      .filter((member, index, self) => index === self.findIndex(t => t.id === member.id));
+
+    this.completeAddingMember(this.channel, updatedMembers)
   }
 
+
+  startAddingMember() {
+    let newMembers: { id: string; name: string; email: string; avatar: string; onlineStatus: boolean; }[] = [];
+    if (this.needToAddMoreMembers || this.selectedOption === 'specificMembers') {
+      newMembers = this.selectedUsers
+        .filter(user => user.id !== this.userService.guestId)
+        .map(user => user.toJSON());
+    } else if (this.selectedOption === 'allMembers') {
+      newMembers = this.users
+        .filter(user => user.id !== this.currentUser.id && user.id !== this.userService.guestId)
+        .map(user => user.toJSON());
+    }
+    return newMembers;
+  }
+
+
+  completeAddingMember(channel: Channel, updatedMembers: User[]) {
+    channel.members = updatedMembers;
+    this.channelsService.updateChannel(this.channel);
+    this.channelsService.selectedChannel$.next(this.channel);
+    this.dialogRef.close();
+    this.dialogService.setNeedToAddMoreMembers(false);
+  }
+
+  
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();

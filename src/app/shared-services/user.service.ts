@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, updateDoc, deleteDoc, setDoc, query, where, getDocs, getDoc, addDoc, CollectionReference, DocumentData } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, updateDoc, deleteDoc, setDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
 import { User } from '../models/user.class';
 import { BehaviorSubject } from 'rxjs';
-import { Message } from '../models/message.class';
-import { formatDate } from '@angular/common';
-import { ChannelsService } from './channels.service';
-import { DMInfo } from '../models/DMInfo.class';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 
 @Injectable({
@@ -16,14 +12,14 @@ export class UserService {
   public users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   public selectedUserforProfileView$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   public isGuestUser$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
+  public currentUser$ = new BehaviorSubject<User | null>(null);
   public userForMessageService!: User;
 
-  private unsubUsers;
+
   public guestId: string = 'kMsZHupMksQU5xS5goyZboGicFy2exit';
 
-  constructor(private firestore: Firestore, private auth: Auth, private channelsService: ChannelsService) {
-    this.unsubUsers = this.subUsersList();
+  constructor(private firestore: Firestore, private auth: Auth) {
+    this.subscribeToUsers();
     this.monitorAuthState();
   }
 
@@ -37,12 +33,10 @@ export class UserService {
     }
   }
 
-  subUsersList() {
-    return onSnapshot(this.getUsersRef(), (querySnapshot) => {
-      let users = querySnapshot.docs.map((doc) => {
-        let data = doc.data() as User;
-        return new User({ ...data, id: doc.id });
-      });
+  private subscribeToUsers(): void {
+    const usersRef = collection(this.firestore, 'users');
+    onSnapshot(usersRef, snapshot => {
+      const users = snapshot.docs.map(doc => new User({ ...doc.data(), id: doc.id }));
       this.users$.next(users);
     });
   }
@@ -66,18 +60,7 @@ export class UserService {
     }
   }
 
-  getUsersRef() {
-    return collection(this.firestore, 'users');
-  }
-
-  getSingleDocRef(coldId: string, docID: string) {
-    return doc(collection(this.firestore, coldId), docID)
-  }
-
-  ngOnDestroy() {
-    this.unsubUsers();
-  }
-
+  
   async setUserOnlineStatus(userId: string, onlineStatus: boolean): Promise<void> {
     let docRef = this.getSingleDocRef('users', userId);
     await updateDoc(docRef, { onlineStatus }).catch((error) => {
@@ -85,15 +68,18 @@ export class UserService {
     });
   }
 
+
   setSelectedUser(user: User): void {
     this.selectedUserforProfileView$.next(user);
   }
+
 
   async userExistsByEmail(email: string): Promise<boolean> {
     const q = query(this.getUsersRef(), where('email', '==', email));
     const querySnapshot = await getDocs(q);
     return !querySnapshot.empty;
   }
+
 
   async getUserInfos(userId: string): Promise<any> {
     const userDocRef = doc(this.firestore, 'users', userId);
@@ -112,14 +98,29 @@ export class UserService {
 
 
   monitorAuthState(): void {
-    onAuthStateChanged(this.auth, (firebaseUser) => {
+    onAuthStateChanged(this.auth, async firebaseUser => {
       if (firebaseUser) {
+        const newUser = new User({ id: firebaseUser.uid });
         this.isGuestUser$.next(firebaseUser.uid === this.guestId);
-        this.userForMessageService = new User({ id: firebaseUser.uid }); ;
+        this.currentUser$.next(newUser);
+        this.userForMessageService = newUser;
       } else {
         this.isGuestUser$.next(false);
+        this.currentUser$.next(null);
       }
     });
   }
-}
 
+
+  getUsersRef() {
+    return collection(this.firestore, 'users');
+  }
+
+  getSingleDocRef(coldId: string, docID: string) {
+    return doc(collection(this.firestore, coldId), docID)
+  }
+
+  ngOnDestroy() {
+ 
+  }
+}
