@@ -33,7 +33,7 @@
                 <span>{{ returnPartingLineValue(i).text }}</span>
             </div>
 
-            <div class="user-message" *ngIf="message.creator == this.user.name">
+            <div class="user-message" *ngIf="message.creatorId == this.user.id">
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div class="flex-end">
                     <div class="user-message-time-name">
@@ -107,7 +107,7 @@
                 </div>
             </div>
 
-            <div class="anon-user-message" *ngIf="message.creator !== this.user.name">
+            <div class="anon-user-message" *ngIf="message.creatorId !== this.user.id">
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div>
                     <div class="anon-user-message-time-name">

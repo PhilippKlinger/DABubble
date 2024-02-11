@@ -30,7 +30,7 @@
                 <span>{{ returnPartingLineValue(i).text }}</span>
             </div>
 
-            <div class="user-message" *ngIf="message.creator == this.user.name">
+            <div class="user-message" *ngIf="message.creatorId == this.user.id">
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div class="flex-end">
                     <div class="user-message-time-name">
@@ -38,7 +38,7 @@
                         <h3>{{ message.creator }}</h3>
                     </div>
 
-                    <div *ngIf="((thread_subject?.id !== message.id || !editingMessage) && message.message)" class="speech-bubble-user">
+                    <div *ngIf="((selectedDirectMessage?.id !== message.id || !editingMessage) && message.message)" class="speech-bubble-user">
                         <div *ngFor="let part of formatMessageParts(message)"> 
                             <div *ngIf="isPartTag(part)" (click)="openProfile(part.id)">
                                 <span class="space">_</span>
@@ -94,7 +94,7 @@
                 </div>
             </div>
 
-            <div class="anon-user-message" *ngIf="message.creator !== this.user.name">
+            <div class="anon-user-message" *ngIf="message.creatorId !== this.user.id">
                 <img class="user-message-avatar" src="{{ message.avatar }}">
                 <div>
                     <div class="anon-user-message-time-name">

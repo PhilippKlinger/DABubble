@@ -111,6 +111,14 @@ export class MessagesService {
     await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), docRef.id), message.toJSON())
   }
 
+  async sendMessageToOwnChat(dm_user: User, currentUserInfo: any, message: Message) {
+    let docRef = await addDoc(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), message.toJSON());
+    let universalId = docRef.id;
+    message.setId(docRef.id);
+    message.setUniversalId(universalId);
+    await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON());
+  }
+
   async createConversationAndPrepareMessage(dm_user: User, currentUserInfo: any, message: Message) {
     this.dm_info.setChatPartner(currentUserInfo?.name!);
     this.dm_info.setChatPartnerId(currentUserInfo?.id!);
@@ -134,15 +142,37 @@ export class MessagesService {
     this.dataService.update_sidebar$.next(true);
   }
 
+  async createOwnChat(dm_user: User, currentUserInfo: any, message: Message) {
+    this.dm_info.setChatPartner(currentUserInfo?.name!);
+    this.dm_info.setChatPartnerId(currentUserInfo?.id!);
+    let docRef = await addDoc(this.getUsersDMRef(dm_user), this.dm_info.toJSON());
+    this.dm_info.setDocId(docRef.id);
+    await updateDoc(this.getUpdatedUsersDMRef(dm_user, docRef.id), this.dm_info.toJSON());
+    docRef = await addDoc(this.getUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId)), message.toJSON());
+    let universalId = docRef.id;
+    message.setId(docRef.id);
+    message.setUniversalId(universalId);
+    await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON());
+    this.dataService.update_sidebar$.next(true);
+  }
+
   async pushMessageToUser(message: Message): Promise<void> {
     const dm_user = this.dm_user$.value;
     const currentUserInfo = this.channelsService.currentUserInfo$.value;
     message.timestamp = formatDate(new Date(), 'dd-MM-yyyy HH:mm:ss', 'en-US');
     message.setCreatorId(currentUserInfo.id);
     if (dm_user && currentUserInfo && ((await this.findConversation(dm_user, currentUserInfo)).available)) {
-      await this.prepareMessageForExistingConversation(dm_user, currentUserInfo, message);
+      if (dm_user.id !== currentUserInfo.id) {
+        await this.prepareMessageForExistingConversation(dm_user, currentUserInfo, message);
+      } else {
+        await this.sendMessageToOwnChat(dm_user, currentUserInfo, message);
+      }
     } else if (dm_user && currentUserInfo && (!(await this.findConversation(dm_user, currentUserInfo)).available)) {
-      await this.createConversationAndPrepareMessage(dm_user, currentUserInfo, message);
+      if (dm_user.id !== currentUserInfo.id) {
+        await this.createConversationAndPrepareMessage(dm_user, currentUserInfo, message);
+      } else {
+        await this.createOwnChat(dm_user, currentUserInfo, message);
+      }
     } else {
     }
     this.refreshDMChat();
@@ -388,6 +418,16 @@ export class MessagesService {
     await updateDoc(this.getUpdatedUsersDMConversationReactionRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId), docRef.id), reaction.toJSON());
   }
 
+  async createReactioninOwnChat(dm_user: User, currentUserInfo: any, selectedDirectMessage: Message, reaction: Reaction) {
+    let creators = [];
+    creators.push(currentUserInfo.name);
+    reaction.setCreator(creators);
+    reaction.setAmount(1);
+    let docRef = await addDoc(this.getUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId)), reaction.toJSON());
+    reaction.setId(docRef.id);
+    await updateDoc(this.getUpdatedUsersDMConversationReactionRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).docId), docRef.id), reaction.toJSON());
+  }
+
   async addReactionToDM(reaction: Reaction) {
     const dm_user = this.dm_user$.value;
     const currentUserInfo = this.channelsService.currentUserInfo$.value
@@ -395,10 +435,16 @@ export class MessagesService {
     let result = this.checkReactionExistenceOnDirectMessage(reaction);
     if (dm_user && currentUserInfo) {
       if ((await this.findMessage(dm_user, currentUserInfo, selectedDirectMessage)).available && (await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).available) {
-        if (result.exists) {
-          await this.increaseReactionAndAddNewCreatorForDM(result, dm_user, currentUserInfo, selectedDirectMessage, reaction);
+        if (dm_user?.id !== currentUserInfo.id) {
+          if (result.exists) {
+            await this.increaseReactionAndAddNewCreatorForDM(result, dm_user, currentUserInfo, selectedDirectMessage, reaction);
+          } else {
+            await this.createReactionAndSetCreatorForDM(dm_user, currentUserInfo, selectedDirectMessage, reaction);
+          }
         } else {
-          await this.createReactionAndSetCreatorForDM(dm_user, currentUserInfo, selectedDirectMessage, reaction);
+          if (!result.exists) {
+            await this.createReactioninOwnChat(dm_user, currentUserInfo, selectedDirectMessage, reaction);
+          }
         }
       } else {
         console.error('no message available.');
@@ -521,6 +567,7 @@ export class MessagesService {
       this.message.message = thread_subject.message;
       this.message.id = thread_subject.id;
       this.message.creator = thread_subject.creator;
+      this.message.creatorId = thread_subject.creatorId;
       this.message.avatar = thread_subject.avatar;
       this.message.reactions = thread_subject.reactions;
       this.message.answered_number = (thread_subject.answered_number + 1);
@@ -548,8 +595,12 @@ export class MessagesService {
     const currentUserInfo = this.channelsService.currentUserInfo$.value;
     const selectedDirectMessage = this.selectedDirectMessage$.value;
     if (dm_user && currentUserInfo) {
-      await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON());
-      await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId)), message.toJSON());
+      if (dm_user.id !== currentUserInfo.id) {
+        await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON());
+        await updateDoc(this.getUpdatedUsersDMConversationRef(currentUserInfo, ((await this.findConversation(currentUserInfo, dm_user)).docId), ((await this.findMessage(currentUserInfo, dm_user, selectedDirectMessage)).docId)), message.toJSON());
+      } else {
+        await updateDoc(this.getUpdatedUsersDMConversationRef(dm_user, ((await this.findConversation(dm_user, currentUserInfo)).docId), docRef.id), message.toJSON());
+      }
     }
     this.refreshDMChat();
   }

@@ -168,6 +168,7 @@ export class MainContentThreadChatLowerPartComponent implements AfterViewInit {
     this.answer.id = selectedAnswerThreadChat.id;
     this.answer.setMessage(editedText.trim());
     this.answer.creator = selectedAnswerThreadChat.creator;
+    this.answer.creatorId = selectedAnswerThreadChat.creatorId;
     this.answer.avatar = selectedAnswerThreadChat.avatar;
     this.answer.timestamp = selectedAnswerThreadChat.timestamp;
     this.answer.reactions = selectedAnswerThreadChat.reactions;
