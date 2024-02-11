@@ -735,6 +735,9 @@
     &:hover {
         text-decoration: underline;
     }
+    &.anon {
+        color: $Purple-1;
+    }
 }
 
 .space {

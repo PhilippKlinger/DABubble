@@ -621,6 +621,7 @@
     font-size: 18px;
     font-weight: 400 !important;
     line-height: 24.55px;
+    @include dFlex();
 }
 
 .user-message-avatar {
@@ -904,6 +905,9 @@
     @include fonts($fw: 400, $fs:18px);
     &:hover {
         text-decoration: underline;
+    }
+    &.anon {
+        color: $Purple-1;
     }
 }
 

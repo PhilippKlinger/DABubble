@@ -126,8 +126,21 @@
                             <span>{{ getFormattedTime(answer) }}</span>
                             <h3>{{ answer.creator }}</h3>
                         </div>
-                        <div class="anon-speech-bubble-user" >
-                            {{ answer.message }}
+                        <div *ngIf="((selectedAnswerThreadChat?.id !== answer.id || !editingMessage) && answer.message)" class="anon-speech-bubble-user">
+                            <div *ngFor="let part of formatMessageParts(answer)"> 
+                                <div *ngIf="isPartTag(part)" (click)="openProfile(part.id)">
+                                    <span class="space">_</span>
+                                        <a class="tagUser anon">{{ part.text }}</a>                   
+                                    <span class="space">_</span>
+                                </div>                           
+                                <span *ngIf="!isPartTag(part)" #plainText>{{ part }}</span>
+                            </div>
+                        </div>
+
+                        <div *ngIf="answer.img">
+                            <button mat-raised-button (click)="this.commonService.downloadImage(answer.img)">
+                                <mat-icon>file_download</mat-icon> Download
+                            </button>
                         </div>
                         <div class="anon-user-message-emojis">
                             <div (mouseenter)="openReactionInfo(i,j)" (mouseleave)="closeReactionInfo()"  class="user-message-emojis-showcase" *ngFor="let reactions of answer.reactions; let j = index">
