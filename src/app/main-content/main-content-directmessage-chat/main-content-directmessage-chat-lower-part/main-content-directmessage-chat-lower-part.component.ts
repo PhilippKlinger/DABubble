@@ -21,6 +21,12 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
   @ViewChild('message') input_message!: ElementRef;
   @ViewChild('fileInputDirect') fileInput!: ElementRef
   @ViewChild('chat_content') chat_content!: ElementRef;
+  @HostListener('document:click', ['$event'])
+  documentClickHandler(event: MouseEvent): void {
+    if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
+      this.emoji_window_messages_open = false;
+    }
+  }
   message = new Message();
   reaction = new Reaction();
   chatMessages: any = [];
@@ -103,7 +109,6 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     });
   }
 
-
   formatMessageParts(message: Message): (string | { text: string, id: string })[] {
     const parts: (string | { text: string, id: string })[] = [];
     let text = message.message;
@@ -123,7 +128,10 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     return parts;
   }
 
-
+  /**
+   * this function redirects the user to the selected Profile
+   * @param id this is the user-id
+   */
   async openProfile(id: string): Promise<void> {
     try {
       const userInfo = await this.userService.getUserInfos(id);
@@ -139,28 +147,40 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     }
   }
 
-
   isPartTag(part: any): part is { text: string; id: string } {
     return typeof part === 'object' && 'id' in part && 'text' in part;
   }
 
-
+  /**
+   * this function filters which info window will be displayed if hovered on a reaction
+   * @param i the index of the message
+   * @param j the index of the reaction in the message
+   */
   openReactionInfo(i: number, j: number) {
     this.reactionInfo = true;
     this.reactionInfoMessage = i;
     this.reactionInfoNumber = j;
   }
 
+  /**
+   * this function closes the info window
+   */
   closeReactionInfo() {
     this.reactionInfo = false;
   }
 
+  /**
+   * this function scrolls the chat all the way to the bottom
+   */
   updateScroll() {
     setTimeout(() => {
       this.chat_content.nativeElement.scrollTop = this.chat_content.nativeElement.scrollHeight;
     }, 0);
   }
 
+  /**
+   * this function receives the chat of the direct messages
+   */
   async receiveDirectMessages() {
     const dm_user = this.messagesService.dm_user$.value;
     const currentUserInfo = this.channelService.currentUserInfo$.value;
@@ -176,6 +196,11 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     }
   }
 
+  /**
+   * this function edits the messages, that is selected
+   * @param text the text that will be edited
+   * @param i the index of the message
+   */
   editMessage(text: string, i: number) {
     this.selectedDirectMessage = this.chatMessages[i];
     this.textAreaContent = this.chatMessages[i].message;
@@ -186,15 +211,26 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     }, 100);
   }
 
+  /**
+   * this functions helps deciding how big the edit window will be sized
+   * @param text the text to measure the length
+   */
   updateTextareaSize(text: string) {
     const lines = text.split('\n');
     this.textareaCols = Math.max(...lines.map(line => line.length));
   }
 
+  /**
+   * this function opens the window with the message ('Nachricht bearbeiten'). it's used to toggle editing.
+   */
   toggleHoverOptionEditMessage() {
     this.hoverOptionEditMessage_open = !this.hoverOptionEditMessage_open;
   }
 
+  /**
+   * this functions toggles the window where you can choose your emoji from.
+   * @param index index of the message
+   */
   toggleEmojiWindowForMessage(index: number) {
     this.selectDirectMessage(index);
     setTimeout(() => {
@@ -202,10 +238,17 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     }, 50);
   }
 
+  /**
+   * this function sets a new value for an observable. it's used to select a message that can be used for other purposes
+   * @param index index of the message
+   */
   selectDirectMessage(index: number) {
     this.messagesService.selectedDirectMessage$.next(this.chatMessages[index]);
   }
 
+  /**
+   * this function saves the edited message
+   */
   async saveEditedMessage() {
     const selectedDirectMessage = this.selectedDirectMessage
     this.messagesService.selectedDirectMessage$.next(selectedDirectMessage);
@@ -214,6 +257,9 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     this.toggleEditing();
   }
 
+  /**
+   * this functions fills all the neccesary key's with the correct informations
+   */
   setMessageInformationsForEdit() {
     const selectedDirectMessage = this.selectedDirectMessage
     const editedText = this.editedText;
@@ -228,14 +274,26 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     this.message.latest_answer = selectedDirectMessage.latest_answer;
   }
 
+  /**
+   * this function toggles the editingMessage variable between true or false.
+   */
   toggleEditing() {
     this.editingMessage = !this.editingMessage;
   }
 
+  /**
+   * this function displays the edited text
+   * @param event 
+   */
   changedTextMessage(event: Event) {
     this.editedText = (event.target as HTMLTextAreaElement).value
   }
 
+  /**
+   * this function splits the date between weekdays and months and returns the values. it is used for displaying the chat history date.
+   * @param date the date of the messages
+   * @returns weekday and month
+   */
   extractWeekdayAndMonth(date?: string): { weekday: string, month: string } {
     const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
     const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
@@ -255,6 +313,11 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     return { weekday, month: monthName };
   }
 
+  /**
+   * this function the correct date that will be displayed in the parting line between messages.
+   * @param index index of the message
+   * @returns the correct date and the availability
+   */
   returnPartingLineValue(index: number): { text: string, boolean: boolean } {
     let chatMessages = this.chatMessages;
     let currentMessageTimestamp = this.getDatePartsFromFormattedDate(chatMessages[index].timestamp);
@@ -317,6 +380,11 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     }
   }
 
+  /**
+   * this function extracts the correct number values for the date, month and year. it's a helpful function to extract the date for the parting line values
+   * @param formattedDate the date
+   * @returns day, month and year as numbers
+   */
   getDatePartsFromFormattedDate(formattedDate?: string): { day: number, month: number, year: number } {
     const parts = (formattedDate ?? '').split(' ')[0].split('-');
     const day = parseInt(parts[0], 10);
@@ -325,6 +393,11 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     return { day, month, year };
   }
 
+  /**
+   * this function returns the correct values for the time
+   * @param message the message that you need the time of
+   * @returns hour and minutes
+   */
   getFormattedTime(message: any) {
     const timeParts = message.timestamp.split(' ')[1].split(':');
     const hours = timeParts[0];
@@ -332,6 +405,10 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     return `${hours}:${minutes}`;
   }
 
+  /**
+   * this function gives the next value for an obersable used to select the correct message that will be displayed in the thread-chat
+   * @param index 
+   */
   selectMessageForThread(index: number) {
     let counter = 0;
     const intervalId = setInterval(() => {
@@ -345,17 +422,18 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     }, 30);
   }
 
+  /**
+   * this functions toggles the variable emoji_window_open that is used to open the window where you can choose the emoji from
+   */
   toggleEmojiWindow() {
     this.emoji_window_open = !this.emoji_window_open;
   }
 
-  @HostListener('document:click', ['$event'])
-  documentClickHandler(event: MouseEvent): void {
-    if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
-      this.emoji_window_messages_open = false;
-    }
-  }
-
+  /**
+   * this function listens if someone clicked inside or outside an the emoji-window. if clicked outside the window gets closed
+   * @param event click
+   * @returns either false or the container that was clicked
+   */
   private isClickInsideContainer(event: MouseEvent): boolean {
     let containerElement = document.getElementById('emoji-window-messages');
     if (containerElement) {
@@ -364,12 +442,20 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     return false;
   }
 
+  /**
+   * this function adds a reaction to the message
+   * @param $event the emoji, that was selected
+   */
   addReaction($event: any) {
     this.reaction.setReaction($event.emoji.native);
     this.messagesService.addReactionToDM(this.reaction);
     this.emoji_window_messages_open = false;
   }
 
+  /**
+   * this functions adds the selected emoji in the input where you write your messages
+   * @param $event the emoji, that was selected
+   */
   addEmoji($event: any) {
     if ($event.emoji.native !== '🫥') {
       this.input_message.nativeElement.value += $event.emoji.native;
@@ -377,6 +463,9 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     }
   }
 
+  /**
+   * this function sets the correct information to the neccesary keys
+   */
   setMessageInformations() {
     const { name, avatar } = this.channelService.currentUserInfo$.value
     this.message.setCreator(name);
@@ -385,6 +474,9 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     this.message.setAnwers();
   }
 
+  /**
+   * this function saves the message
+   */
   async sendMessageToUser() {
     this.setMessageInformations();
     if (this.uploadedFileLinkDirect || this.input_message.nativeElement.value.trim() !== '') {
@@ -406,6 +498,10 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     }
   }
 
+  /**
+   * this function uploads the image that was selected
+   * @param event 
+   */
   async handleFileInputDirect(event: any) {
     const input = event.target as HTMLInputElement;
     this.errorUploadFileDirect = !this.commonService.checkFileSize(input);
@@ -414,6 +510,9 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
     }
   }
 
+  /**
+   * this function removes the image
+   */
   removeUploadedFileDirect() {
     if (this.fileInput && this.fileInput.nativeElement) {
       this.fileInput.nativeElement.value = '';

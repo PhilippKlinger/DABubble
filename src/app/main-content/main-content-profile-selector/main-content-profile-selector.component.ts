@@ -30,15 +30,25 @@ export class MainContentProfileSelectorComponent {
     });
   }
 
+  /**
+   * this function opens the menu options
+   */
   toggleProfilemenu() {
     this.profilemenu_open = !this.profilemenu_open;
   }
 
+  /**
+   * this function the profile of the logged in user
+   * @param componentKey the dialog to open
+   */
   openDialog(componentKey: string): void {
     this.dialogService.openDialog(componentKey);
     this.profilemenu_open = false;
   }
 
+  /**
+   * this function logs the user off
+   */
   logout() {
     this.authService.logout();
   }

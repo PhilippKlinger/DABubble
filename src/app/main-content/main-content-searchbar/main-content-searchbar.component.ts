@@ -45,7 +45,6 @@ export class MainContentSearchbarComponent {
     });
   }
 
-  
   onSearchChange(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     this.searchQuery = inputElement.value;
@@ -56,7 +55,6 @@ export class MainContentSearchbarComponent {
       this.clearSearchResults();
     }
   }
-
 
   searchChannelsAndUsers() {
     if (!this.searchQuery) {
@@ -72,7 +70,6 @@ export class MainContentSearchbarComponent {
     });
   }
 
-
   searchUsers(query: string) {
     this.userService.users$.subscribe(users => {
       this.foundUsers = users.filter(user => {
@@ -81,7 +78,6 @@ export class MainContentSearchbarComponent {
       });
     });
   }
-
 
   executeSearch(firstChar: string, trimmedSearchQuery: string, searchQueryLower: string) {
     if (firstChar === '#') {
@@ -100,20 +96,29 @@ export class MainContentSearchbarComponent {
     }
   }
 
-
+  /**
+   * this function clears the search
+   */
   clearSearchResults() {
     this.foundChannels = [];
     this.foundUsers = [];
     this.foundMessages = [];
   }
 
-
+  /**
+   * this functions opens the profile of the selected user
+   * @param user the selected user
+   */
   showSelectedUser(user: User) {
     this.userService.setSelectedUser(user);
     this.dialogService.openDialog('showProfile');
     this.clearSearchQuery();
   }
 
+  /**
+   * this function navigates to the selected channel
+   * @param item the channel
+   */
   navigateToChannel(item: Channel) {
     if (this.mobile) {
       this.dataService.thread_open$.next(false);
@@ -136,6 +141,10 @@ export class MainContentSearchbarComponent {
     }, 100);
   }
 
+  /**
+   * this function navigates to the selected message
+   * @param channel the channel where the message is inside of
+   */
   navigateToMessage(channel: Channel) {
     if (this.mobile) {
       this.dataService.thread_open$.next(false);
@@ -158,6 +167,10 @@ export class MainContentSearchbarComponent {
     }, 100);
   }
 
+  /**
+   * this function opens the selected message or channel
+   * @param item 
+   */
   openChannelOrMessage(item: Channel | Message): void {
     if (item instanceof Channel && this.channelsService.isCurrentUserChannelMember(item)) {
       this.navigateToChannel(item)
@@ -170,11 +183,20 @@ export class MainContentSearchbarComponent {
     this.clearSearchQuery();
   }
 
+  /**
+   * this function clears the search query
+   */
   clearSearchQuery() {
     this.searchQuery = '';
     this.clearSearchResults();
   }
 
+  /**
+   * this function highlights the matching parts of the search result
+   * @param text
+   * @param searchQuery 
+   * @returns 
+   */
   highlightMatch(text: string, searchQuery: string): string {
     if (!searchQuery) {
       return text;
