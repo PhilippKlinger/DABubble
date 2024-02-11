@@ -1,23 +1,12 @@
-// @import './../../../../styles.scss';
-@import '../../../dialogs/dialog-show-channelmembers/dialog-show-channelmembers.component.scss';
-
-.added-user-list {
-    width: max-content;
-    background-color: $White;
-}
-
+@import '../../main-content-main-chat/main-content-main-chat-lower-part/main-content-main-chat-lower-part.component.scss';
 
 .reactioninfo {
+    @include dFlex($fd: column, $g: 5px);
     height: 110px;
     width: 160px;
     border-radius: 30px 30px 30px 0px;
     background-color: $Purple-1;
-    gap: 5px;
     color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     padding: 15px 10px;
     position: absolute;
     margin-top: -170px;
@@ -46,16 +35,12 @@
 }
 
 .short-reactioninfo {
+    @include dFlex($fd: column, $g: 5px);
     height: 110px;
     width: 140px;
     border-radius: 30px 30px 30px 0px;
     background-color: #444DF2;
-    gap: 5px;
     color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     padding: 15px 10px;
     position: absolute;
     margin-top: -170px;
