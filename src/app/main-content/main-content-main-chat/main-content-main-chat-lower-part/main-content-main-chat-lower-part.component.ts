@@ -310,6 +310,7 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     this.message.id = thread_subject.id;
     this.message.setMessage(editedText.trim());
     this.message.creator = thread_subject.creator;
+    this.message.creatorId = thread_subject.creatorId
     this.message.avatar = thread_subject.avatar;
     this.message.timestamp = thread_subject.timestamp;
     this.message.reactions = thread_subject.reactions;
