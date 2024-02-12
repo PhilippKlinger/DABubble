@@ -13,8 +13,22 @@
                     <span>{{ thread_subject_time }}</span>
                     <h3>{{ thread_subject?.creator }}</h3>
                 </div>
-                <div class="anon-speech-bubble-user">
-                    {{ thread_subject?.message }}
+    
+                <div *ngIf="thread_subject?.message" class="speech-bubble-user">
+                    <div *ngFor="let part of formatMessageParts(thread_subject)"> 
+                        <div *ngIf="isPartTag(part)" (click)="openProfile(part.id)">
+                            <span class="space">_</span>
+                                <a class="tagUser">{{ part.text }}</a>                   
+                            <span class="space">_</span>
+                        </div>                           
+                        <span *ngIf="!isPartTag(part)" #plainText>{{ part }}</span>
+                    </div>
+                </div>
+                
+                <div *ngIf="thread_subject?.img">
+                    <button mat-raised-button (click)="this.commonService.downloadImage(thread_subject?.img)">
+                        <mat-icon>file_download</mat-icon> Download
+                    </button>
                 </div>
                 <div class="anon-user-message-emojis">
                     <div class="user-message-emojis-showcase" *ngFor="let reactions of thread_subject?.reactions">
@@ -32,8 +46,16 @@
                     <span>{{ thread_subject_time }}</span>
                     <h3>{{ thread_subject?.creator }}</h3>
                 </div>
+
                 <div *ngIf="thread_subject?.message" class="speech-bubble-user">
-                    {{ thread_subject?.message }}
+                    <div *ngFor="let part of formatMessageParts(thread_subject)"> 
+                        <div *ngIf="isPartTag(part)" (click)="openProfile(part.id)">
+                            <span class="space">_</span>
+                                <a class="tagUser">{{ part.text }}</a>                   
+                            <span class="space">_</span>
+                        </div>                           
+                        <span *ngIf="!isPartTag(part)" #plainText>{{ part }}</span>
+                    </div>
                 </div>
 
                 <div *ngIf="thread_subject?.img">

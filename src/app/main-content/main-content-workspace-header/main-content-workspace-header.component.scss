@@ -21,6 +21,9 @@ section {
         letter-spacing: 0;
         padding-right: 20px;
         text-wrap: nowrap;
+        @media (max-width: 370px) {
+            font-size: 14px;
+        }
     }
 
     div {

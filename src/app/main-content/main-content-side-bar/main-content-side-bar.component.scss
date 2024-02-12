@@ -17,7 +17,7 @@ section {
         display: flex;
         flex-direction: column;
         padding: 0px 20px;
-        gap: 40px;
+        gap: 30px;
 
         @media(max-width:1000px) {
             padding-right: 50px;
@@ -95,6 +95,9 @@ section {
     display: flex;
     flex-direction: column;
     gap: 30px;
+    @media (max-height: 800px) {
+        gap: 0;
+    }
 }
 
 .side-bar-channels-header {
@@ -162,7 +165,7 @@ section {
     max-height: 36vh;
 
     @media (min-height: 400px) {
-        max-height: 10vh;
+        max-height: 24vh;
     }
 
     @media (min-height: 800px) {
@@ -212,7 +215,8 @@ section {
     max-height: 36vh;
 
     @media (min-height: 400px) {
-        max-height: 10vh;
+        max-height: 24vh;
+        gap: 0;
     }
 
     @media (min-height: 800px) {

@@ -239,6 +239,9 @@
     &::-webkit-scrollbar {
         display: none
     }
+    @media (max-height: 800px) {
+        height: calc(100% - 144px);
+    }
 }
 
 .user-message-hover-options {
@@ -630,10 +633,17 @@
     border-radius: 100%;
 }
 
+.user-message-emojis-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
 .user-message-emojis {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-end;
+    flex-direction: column;
     padding: 5px 0px;
     gap: 10px;
 
@@ -658,8 +668,9 @@
 
 .anon-user-message-emojis {
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
     padding: 5px 0px;
     gap: 10px;
 
@@ -702,7 +713,7 @@
     gap: 14px;
     margin-right: 20px;
 
-    @media(max-width:570px) {
+    @media(max-width:420px) {
         display: block !important;
         margin-right: 0px;
     }
@@ -777,6 +788,9 @@
     margin: 30px;
     border-radius: 20px;
     border: 1px solid #ADB0D9;
+    @media (max-height: 800px) {
+        min-height: 130px;
+    }
 }
 
 .chat-input-lower-position {
@@ -785,6 +799,9 @@
     align-items: center;
     padding: 20px;
     width: -webkit-fill-available;
+    @media (max-height: 800px) {
+        padding: 8px;
+    }
 }
 
 .chat-input-send {
@@ -841,6 +858,9 @@
 
     &::-webkit-scrollbar {
         display: none
+    }
+    @media (max-height: 800px) {
+        margin: 8px;
     }
 }
 

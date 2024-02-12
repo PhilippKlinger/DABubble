@@ -20,6 +20,10 @@ nav {
         border-top-right-radius: 0;
         border-top-left-radius: 0;
     }
+
+    @media (max-height: 800px) {
+        height: 65px;
+    }
 }
 
 

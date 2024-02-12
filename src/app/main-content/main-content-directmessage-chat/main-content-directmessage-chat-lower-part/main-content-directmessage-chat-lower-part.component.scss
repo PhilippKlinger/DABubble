@@ -597,6 +597,9 @@
     margin: 30px;
     border-radius: 20px;
     border: 1px solid #ADB0D9;
+    @media (max-height: 800px) {
+        min-height: 130px;
+    }
 }
 
 .chat-input-lower-position {
@@ -605,6 +608,9 @@
     align-items: center;
     padding: 20px;
     width: -webkit-fill-available;
+    @media (max-height: 800px) {
+        padding: 8px;
+    }
 }
 
 .chat-input-send {
@@ -661,6 +667,9 @@
 
     &::-webkit-scrollbar {
         display: none
+    }
+    @media (max-height: 800px) {
+        margin: 8px;
     }
 }
 
