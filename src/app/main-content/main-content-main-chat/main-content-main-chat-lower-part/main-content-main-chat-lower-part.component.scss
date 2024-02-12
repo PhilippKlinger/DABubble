@@ -275,6 +275,11 @@
         width: 270px;
         height: 60px;
         border-radius: 0px 30px 30px 30px;
+        @media (max-width: 520px) {
+            border-radius: 30px;
+            margin-left: 50px;
+            margin-top: 115px;
+        }
     }
 
     div {
@@ -535,7 +540,8 @@
     font-size: 18px;
     font-weight: 400 !important;
     line-height: 24.55px;
-    @include dFlex();
+    @include dFlex($jc: flex-start);
+    flex-wrap: wrap;
 }
 
 .speech-bubble-user-edit {
@@ -551,10 +557,6 @@
     flex-direction: column;
     gap: 16px;
     width: fit-content;
-
-    @media (max-width:500px) {
-        width: 200px;
-    }
 
     textarea {
         font-size: inherit;
@@ -574,6 +576,7 @@
         gap: 32px;
 
         @media (max-width:500px) {
+            flex-direction: column-reverse;
             gap: 12px;
         }
     }
@@ -624,7 +627,8 @@
     font-size: 18px;
     font-weight: 400 !important;
     line-height: 24.55px;
-    @include dFlex();
+    @include dFlex($jc: flex-start);
+    flex-wrap: wrap;
 }
 
 .user-message-avatar {

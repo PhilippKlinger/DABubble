@@ -38,6 +38,10 @@ section {
         width: 30px;
         font-size: 30px;
     }
+
+    @media (max-width: 1180px) {
+        padding-top: 8px;
+    }
 }
 
 .profile-selector-avatar {

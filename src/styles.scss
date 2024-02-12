@@ -54,6 +54,10 @@ body {
   overflow-x: hidden;
 }
 
+textarea {
+  resize: none !important;
+}
+
 .mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 30px !important;
 }

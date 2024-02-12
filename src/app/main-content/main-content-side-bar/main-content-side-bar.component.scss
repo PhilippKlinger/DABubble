@@ -216,7 +216,6 @@ section {
 
     @media (min-height: 400px) {
         max-height: 24vh;
-        gap: 0;
     }
 
     @media (min-height: 800px) {
@@ -253,6 +252,10 @@ section {
 
     @media (min-height: 1600px) {
         max-height: 36vh;
+    }
+
+    @media (max-height: 800px) {
+        gap: 0;
     }
 
     div {
