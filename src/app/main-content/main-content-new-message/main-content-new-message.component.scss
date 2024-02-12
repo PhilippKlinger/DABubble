@@ -8,7 +8,7 @@ section {
     display: flex;
     flex-direction: column;
 
-    @media (max-width: 1000px) {
+    @media (max-width: 1180px) {
         border-radius: 0px;
     }
 }
@@ -36,7 +36,7 @@ nav {
     gap: 20px;
     padding: 32px 45px 20px 45px;
 
-    @media (max-width: 1000px) {
+    @media (max-width: 1180px) {
         border-top-right-radius: 0;
         border-top-left-radius: 0;
     }

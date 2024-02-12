@@ -21,7 +21,7 @@ export class DataService {
 
   checkScreenSize() {
     const bildBreite = window.innerWidth;
-    if (bildBreite <= 1000) {
+    if (bildBreite <= 1180) {
       this.mobile$.next(true);
     }
   }
@@ -29,7 +29,7 @@ export class DataService {
   checkScreenResize() {
     window.addEventListener('resize', () => {
       const bildBreite = window.innerWidth;
-      if (bildBreite <= 1000) {
+      if (bildBreite <= 1180) {
         this.mobile$.next(true);
       } else {
         this.mobile$.next(false);

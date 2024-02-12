@@ -726,7 +726,7 @@
         color: $Purple-3;
         cursor: pointer;
 
-        @media (max-width:1000px) {
+        @media (max-width:1180px) {
             white-space: nowrap;
         }
 
@@ -740,7 +740,7 @@
         letter-spacing: 0;
         cursor: default;
 
-        @media (max-width: 1000px) {
+        @media (max-width: 1180px) {
             white-space: nowrap;
         }
     }
