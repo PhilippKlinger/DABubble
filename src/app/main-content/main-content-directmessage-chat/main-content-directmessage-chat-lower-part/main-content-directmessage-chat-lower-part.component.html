@@ -18,7 +18,7 @@
             </div>
             <div class="dm-chat-start-msg">
                 <span>Diese Unterhaltung findet nur zwischen</span>
-                <h4>@{{ dm_user?.name }}</h4>
+                <h4>{{ "@" + dm_user?.name }}</h4>
                 <span>und dir statt</span>
             </div>
         </div>
@@ -38,16 +38,17 @@
                         <h3>{{ message.creator }}</h3>
                     </div>
 
-                    <div *ngIf="((selectedDirectMessage?.id !== message.id || !editingMessage) && message.message)" class="speech-bubble-user">
-                        <div *ngFor="let part of formatMessageParts(message)"> 
+                    <div *ngIf="((selectedDirectMessage?.id !== message.id || !editingMessage) && message.message)"
+                        class="speech-bubble-user">
+                        <div *ngFor="let part of formatMessageParts(message)">
                             <div *ngIf="isPartTag(part)" (click)="openProfile(part.id)">
                                 <span class="space">_</span>
-                                    <a class="tagUser">{{ part.text }}</a>                   
+                                <a class="tagUser">{{ part.text }}</a>
                                 <span class="space">_</span>
-                            </div>                           
+                            </div>
                             <span *ngIf="!isPartTag(part)" #plainText>{{ part }}</span>
                         </div>
-                    </div>  
+                    </div>
 
                     <div *ngIf="message.img">
                         <button mat-raised-button (click)="this.commonService.downloadImage(message.img)">
@@ -101,16 +102,17 @@
                         <span>{{ getFormattedTime(message) }}</span>
                         <h3>{{ message.creator }}</h3>
                     </div>
-                    <div *ngIf="((selectedDirectMessage?.id !== message.id || !editingMessage) && message.message)" class="anon-speech-bubble-user">
-                        <div *ngFor="let part of formatMessageParts(message)"> 
+                    <div *ngIf="((selectedDirectMessage?.id !== message.id || !editingMessage) && message.message)"
+                        class="anon-speech-bubble-user">
+                        <div *ngFor="let part of formatMessageParts(message)">
                             <div *ngIf="isPartTag(part)" (click)="openProfile(part.id)">
                                 <span class="space">_</span>
-                                    <a class="tagUser anon">{{ part.text }}</a>                   
+                                <a class="tagUser anon">{{ part.text }}</a>
                                 <span class="space">_</span>
-                            </div>                           
+                            </div>
                             <span *ngIf="!isPartTag(part)" #plainText>{{ part }}</span>
                         </div>
-                    </div>  
+                    </div>
 
                     <div *ngIf="message.img">
                         <button mat-raised-button (click)="this.commonService.downloadImage(message.img)">
@@ -157,8 +159,9 @@
         </div>
     </div>
     <div class="chat-input">
-        <textarea *ngIf="!uploadedFileLinkDirect && !errorUploadFileDirect" (keyup.enter)="sendMessageToUser()" (input)="onTextareaInput($event)" #message
-            class="chat-input-design" placeholder="Nachricht an {{ dm_user?.name }} "></textarea>
+        <textarea *ngIf="!uploadedFileLinkDirect && !errorUploadFileDirect" (keyup.enter)="sendMessageToUser()"
+            (input)="onTextareaInput($event)" #message class="chat-input-design"
+            placeholder="Nachricht an {{ dm_user?.name }} "></textarea>
         <!-- Test for File upload -->
         <div *ngIf="uploadedFileLinkDirect" class="submit-buttons d-flex-standard">
             <button class="btn-submit" mat-button>
@@ -173,8 +176,8 @@
             <div class="chat-input-options">
                 <div>
                     <!-- Test for File upload -->
-                    <input #fileInputDirect id="fileInput-direct" (change)="handleFileInputDirect($event)" class="d-none"
-                        type="file" accept=".jpg,.jpeg,.png,.pdf" />
+                    <input #fileInputDirect id="fileInput-direct" (change)="handleFileInputDirect($event)"
+                        class="d-none" type="file" accept=".jpg,.jpeg,.png,.pdf" />
                     <mat-icon (click)="this.commonService.triggerFileInput('fileInput-direct')">add</mat-icon>
                 </div>
 

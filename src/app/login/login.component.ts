@@ -69,7 +69,7 @@ export class LoginComponent implements OnInit{
 
   loginGuest() {
     this.loginErrorUser = false;
-    this.authService.login('guestLogin@guest.com', 'Guestlogin')
+    this.authService.login('guestLogin@guest.com', 'bK7L&Ee2P&4gscPn&3Li82he')
       .then((userCredential) => {
         this.channelsService.deleteGuestMessages();
         this.loginUser(userCredential);
