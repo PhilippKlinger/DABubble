@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AuthService } from '../shared-services/authentication.service';
 import { User } from '../models/user.class';
 import { UserService } from '../shared-services/user.service';
@@ -12,13 +12,17 @@ import { ChannelsService } from '../shared-services/channels.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit{
+  @ViewChild('registerBg')
+  registerBg!: ElementRef;
+
   user: User = new User();
   isCheckboxChecked: boolean = false;
   selectedAvatar = 'assets/avatars/avatar_0.svg';
   selectedAvatarIndex: number = -1;
   avatarFile: File | null = null;
   errorUploadFile: boolean = false;
-  hideAfterAnimation: boolean =false;
+  hideAfterAnimation: boolean = false;
+  showSpinner: boolean = false;
   avatarPaths = [
     'assets/avatars/avatar_1.svg',
     'assets/avatars/avatar_2.svg',
@@ -91,11 +95,25 @@ export class LoginComponent implements OnInit{
     }
   }
 
-  loginUser(userCredential: UserCredential) {
-    this.setUserOnline(userCredential);
-    this.commonService.showPopup('login');
-    this.commonService.routeTo('main-content', 2000);
+
+  async loginUser(userCredential: UserCredential) {    
+    await this.setUserOnline(userCredential);
+    const userId = userCredential.user.uid;
+    const userInfo = await this.userService.getUserInfos(userId);
+
+    if (userInfo) {
+      try {
+        await this.channelsService.addUserToChannelIfNotMember(userInfo);
+        this.commonService.showPopup('login');
+        this.commonService.routeTo('main-content', 2000);
+      } catch (error) {
+        console.error('Fehler beim Hinzufügen des Benutzers zum Kanal:', error);
+      }
+    } else {
+      console.log('Benutzerinformationen konnten nicht abgerufen werden.');
+    }
   }
+
 
   async setUserOnline(userCredential: UserCredential) {
     let userId = userCredential.user.uid;
@@ -167,6 +185,10 @@ export class LoginComponent implements OnInit{
 
   async register() {
     this.loginErrorUser = false;
+    if (this.registerBg) {
+      this.registerBg.nativeElement.classList.remove("d-none");
+    }
+    this.showSpinner = true;
     if (this.avatarFile) {
       this.selectedAvatar = await this.storageService.uploadFile(this.avatarFile);
     }
@@ -178,12 +200,14 @@ export class LoginComponent implements OnInit{
       console.log(error);
     }
   }
+  
 
   createNormalUser(userCredential: UserCredential) {
     this.user.id = userCredential.user.uid;
     this.user.onlineStatus = false;
     this.user.avatar = this.selectedAvatar;
     this.userService.createUser(this.user, 'users');
+    this.showSpinner = false;
     this.commonService.showPopup('register');
     this.switchLogin('register')
   }

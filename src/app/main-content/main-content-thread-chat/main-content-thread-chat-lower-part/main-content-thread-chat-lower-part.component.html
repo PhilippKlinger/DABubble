@@ -14,7 +14,7 @@
                     <h3>{{ thread_subject?.creator }}</h3>
                 </div>
     
-                <div *ngIf="thread_subject?.message" class="speech-bubble-user">
+                <div *ngIf="thread_subject?.message" class="anon-speech-bubble-user">
                     <div *ngFor="let part of formatMessageParts(thread_subject)"> 
                         <div *ngIf="isPartTag(part)" (click)="openProfile(part.id)">
                             <span class="space">_</span>
@@ -107,11 +107,11 @@
 
                         <div *ngIf="(selectedAnswerThreadChat?.id == answer.id && editingMessage)"
                             class="speech-bubble-user-edit">
-                            <textarea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="2"
+                            <textarea #textArea (input)="changedTextMessage($event)" [attr.cols]="textareaCols" [attr.rows]="2"
                                 value="{{ textAreaContent }}"></textarea>
                             <div>
                                 <button (click)="toggleEditing()" class="btn-cancel">Abbrechen</button>
-                                <button (click)="saveEditedMessage()" class="btn-save">Speichern</button>
+                                <button (click)="saveEditedMessage()" [disabled]="!textArea.value.trim()" class="btn-save">Speichern</button>
                             </div>
                         </div>
                         
@@ -227,6 +227,7 @@
                 </div>
 
                 <mat-icon (click)="toggleEmojiWindow()">sentiment_satisfied</mat-icon>
+                <mat-icon (click)="addAtSymbolToTextarea()">alternate_email</mat-icon>
             </div>
             <mat-icon class="chat-input-send" (click)="sendAnswerToThread()">send</mat-icon>
         </div>

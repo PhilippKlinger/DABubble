@@ -1,6 +1,5 @@
-import { formatDate } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { DMInfo } from 'src/app/models/DMInfo.class';
+import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { Message } from 'src/app/models/message.class';
 import { Reaction } from 'src/app/models/reaction.class';
 import { User } from 'src/app/models/user.class';
@@ -9,7 +8,9 @@ import { CommonService } from 'src/app/shared-services/common.service';
 import { MessagesService } from 'src/app/shared-services/messages.service';
 import { UserService } from 'src/app/shared-services/user.service';
 import { OpenDialogService } from 'src/app/shared-services/open-dialog.service';
-import { Subject, takeUntil } from 'rxjs';
+import { DataService } from 'src/app/shared-services/data.service';
+import { formatDate } from '@angular/common';
+
 
 @Component({
   selector: 'app-main-content-directmessage-chat-lower-part',
@@ -19,8 +20,9 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class MainContentDirectmessageChatLowerPartComponent implements AfterViewInit {
   @ViewChild('message') input_message!: ElementRef;
-  @ViewChild('fileInputDirect') fileInput!: ElementRef
+  @ViewChild('fileInputDirect') fileInput!: ElementRef;
   @ViewChild('chat_content') chat_content!: ElementRef;
+  @ViewChild('message') messageTextArea!: ElementRef;
   @HostListener('document:click', ['$event'])
   documentClickHandler(event: MouseEvent): void {
     if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
@@ -41,7 +43,7 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
   textareaCols!: number;
   reactionInfoNumber!: number;
   reactionInfoMessage!: number;
-  dm_user: User | null = null!
+  dm_user: User | null = null!;
   user: User = null!;
   emoji_window_open: boolean = false;
   emoji_window_messages_open: boolean = false;
@@ -54,41 +56,51 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
   isMobileView!: boolean;
   private destroyed$ = new Subject<void>();
 
-  constructor(public commonService: CommonService,
+  constructor(
+    public commonService: CommonService,
     private channelService: ChannelsService,
     private messagesService: MessagesService,
     private userService: UserService,
-    public dialogService: OpenDialogService,) {
-    this.messagesService.dm_user$.subscribe((dm_user) => {
+    public dialogService: OpenDialogService,
+    public dataService: DataService,
+  ) {}
+
+  ngAfterViewInit(): void {
+    this.subscribeToServices();
+    this.focusInputMessage();
+  }
+
+  private subscribeToServices(): void {
+    this.messagesService.dm_user$.pipe(takeUntil(this.destroyed$)).subscribe(dm_user => {
       if (dm_user) {
         this.dm_user = dm_user;
         this.receiveDirectMessages();
         this.focusInputMessage();
-      } else {
       }
     });
 
-    this.channelService.currentUserInfo$.subscribe((user: User) => {
+    this.channelService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe(user => {
       this.user = user;
     });
 
-    this.messagesService.selectedDirectMessage$.subscribe((message: Message) => {
+    this.messagesService.selectedDirectMessage$.pipe(takeUntil(this.destroyed$)).subscribe(message => {
       this.selectedDirectMessage = message;
     });
 
-    this.userService.users$.subscribe(users => {
+    this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe(users => {
       this.allUser = users;
     });
-    this.dialogService.isMobileView$.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(isMobileView => {
+
+    this.dialogService.isMobileView$.pipe(takeUntil(this.destroyed$)).subscribe(isMobileView => {
       this.isMobileView = isMobileView;
     });
   }
 
-  ngAfterViewInit(): void {
-    this.focusInputMessage();
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
+
 
   focusInputMessage(): void {
     this.input_message.nativeElement.focus();
@@ -126,6 +138,17 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
 
     if (text.length > 0) parts.push(text);
     return parts;
+  }
+
+  addAtSymbolToTextarea() {
+    const textarea: HTMLTextAreaElement = this.messageTextArea.nativeElement;
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const textBefore = textarea.value.substring(0, startPos);
+    const textAfter = textarea.value.substring(endPos, textarea.value.length);
+    textarea.value = textBefore + '@' + textAfter;
+    textarea.focus();
+    textarea.dispatchEvent(new Event('input'));    
   }
 
   /**
@@ -478,6 +501,7 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
    * this function saves the message
    */
   async sendMessageToUser() {
+    this.dataService.showSpinner(true);
     this.setMessageInformations();
     if (this.uploadedFileLinkDirect || this.input_message.nativeElement.value.trim() !== '') {
       if (this.uploadedFileLinkDirect) {
@@ -496,6 +520,7 @@ export class MainContentDirectmessageChatLowerPartComponent implements AfterView
       this.message.setMessage('');
       this.message.setImg('');
     }
+    this.dataService.showSpinner(false);
   }
 
   /**

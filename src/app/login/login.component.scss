@@ -254,23 +254,6 @@ input {
     }
 }
 
-// .checkbox {
-//     width: 24px;
-//     height: 24px;
-//     background-image: url('/angular-projects/dabubble/assets/icons/checkbox.svg');
-//     background-image: url('/angular-projects/dabubble/assets/icons/checkbox.svg');
-//     &:hover {
-//         background-image: url('/angular-projects/dabubble/assets/icons/checkbox-hover.svg');
-//     }
-// }
-
-// .checkbox.checked {
-//     background-image: url('/angular-projects/dabubble/assets/icons/checked.svg');
-//     &:hover {
-//         background-image: url('/angular-projects/dabubble/assets/icons/checked-hover.svg');
-//     }
-// }
-
 .checkbox {
     width: 24px;
     height: 24px;
@@ -354,7 +337,7 @@ h2 {
 .popup {
     @include dFlex($g: 18px);
     @include posAbs($t: 50%, $l: 50%);  
-    transform: translate(-50%, -50%);  
+    transform: translate(-50%, -50%); 
     width: fit-content;
     height: fit-content;
     padding: 20px 30px 20px 30px;
@@ -369,6 +352,18 @@ h2 {
     &.animate-in {
         animation: slideInFromRight 0.5s ease-out forwards;
     }
+    @media (max-width: 726px) {
+        @include posAbs($t: 50%, $l: unset);  
+        transform: translate(0, 0);
+        &.animate-in {
+            animation: slideInToTop 0.5s ease-out forwards;
+        }
+    }
+}
+
+.matspinner {
+    position: absolute;
+    z-index: 2;
 }
 
 footer {
@@ -380,12 +375,23 @@ footer {
 
 @keyframes slideInFromRight {
     0% {
-      transform: translateX(100%);
+        transform: translateX(100%);
     }
     100% {
-      transform: translateX(0);
+        transform: translateX(0);
     }
-  }
+}
+
+@keyframes slideInToTop {
+    0% {
+        transform: translate(50%, 50%);
+        transform: translateY(0);
+    }
+    100% {
+        transform: translate(50%, 50%);
+        transform: translateY(-100%);
+    }
+}
 
 @keyframes moveImage {
     0% {
@@ -552,7 +558,7 @@ footer {
     }
 
     input,.submit-buttons button {
-        font-size: 13px;
+        font-size: 16px;
     }
 
     .privacy-container {
@@ -569,5 +575,8 @@ footer {
 @media (max-width: 380px) {
     .container {
         padding: 50px 6px;
+    }
+    .submit-buttons button {
+        font-size: 14px;
     }
 }

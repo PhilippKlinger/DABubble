@@ -374,13 +374,16 @@
 
 .emoji-window-messages {
     position: absolute;
-    z-index: 2;
+    z-index: 4;
 }
 
 .emoji-window {
     position: absolute;
     margin-top: -430px;
     margin-left: 84px;
+    @media (max-width: 500px) {
+        margin-left: -46px;
+    }    
 }
 
 .d-none {
@@ -609,6 +612,14 @@
     font-weight: 700;
     padding: 12px 25px;
     border-radius: 50px;
+    &:disabled {
+        cursor: not-allowed !important;
+        background-color: $Purple-2;        
+        &:hover {
+          background-color: $Purple-2;
+          cursor: not-allowed !important;
+        }
+    }
 
     @media (max-width:500px) {
         font-size: 16px;
@@ -849,7 +860,8 @@
 .chat-input-design {
     width: -webkit-fill-available;
     margin: 20px;
-    min-height: -webkit-fill-available;
+    min-height: 100%;
+    /* min-height: -webkit-fill-available; */
     overflow-y: scroll;
     font-size: 18px;
     font-weight: 400;
@@ -888,6 +900,14 @@
         font-family: 'Nunito', sans-serif !important;
     }
 
+    @media (max-width: 470px) {
+        gap: 6px;
+        button {
+            padding: 15px;
+            font-size: 12px;
+        }
+    }
+    
     .btn-submit {
         background-color: $Purple-1;
         cursor: pointer;

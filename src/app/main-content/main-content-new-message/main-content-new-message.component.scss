@@ -60,7 +60,7 @@ nav {
 
 .emoji-window-messages {
     position: absolute;
-    z-index: 2;
+    z-index: 4;
 }
 
 .emoji-window {
@@ -149,7 +149,8 @@ nav {
     margin-bottom: 80px;
     position: absolute;
     bottom: 0;
-    min-height: -webkit-fill-available;
+    min-height: 100%;
+    /* min-height: -webkit-fill-available; */
     overflow-y: scroll;
     font-size: 18px;
     font-weight: 400;
@@ -167,6 +168,7 @@ nav {
 
 .user-avatar {
     width: 40px;
+    height: 40px;
     border-radius: 100%;
     object-fit: cover;
     margin-right: 10px;

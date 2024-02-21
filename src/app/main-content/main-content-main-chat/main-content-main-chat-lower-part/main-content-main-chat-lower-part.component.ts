@@ -1,13 +1,11 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/shared-services/data.service';
-import { Message } from './../../../models/message.class'
+import { Message } from './../../../models/message.class';
 import { ChannelsService } from 'src/app/shared-services/channels.service';
-import { Subscription } from 'rxjs';
 import { Channel } from 'src/app/models/channel.class';
 import { Reaction } from 'src/app/models/reaction.class';
 import { User } from 'src/app/models/user.class';
 import { CommonService } from 'src/app/shared-services/common.service';
-import { StorageService } from 'src/app/shared-services/storage.service';
 import { formatDate } from '@angular/common';
 import { MessagesService } from 'src/app/shared-services/messages.service';
 import { UserService } from 'src/app/shared-services/user.service';
@@ -24,6 +22,7 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
   @ViewChild('img') img!: ElementRef;
   @ViewChild('chat_content') chat_content!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef;
+  @ViewChild('message') messageTextArea!: ElementRef;
   @HostListener('document:click', ['$event'])
   documentClickHandler(event: MouseEvent): void {
     if (this.emoji_window_messages_open && !this.isClickInsideContainer(event)) {
@@ -64,8 +63,18 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
     public commonService: CommonService,
     public userService: UserService,
     public dialogService: OpenDialogService,
-  ) {
-    this.channelService.selectedChannel$.subscribe(selectedChannel => {
+  ) {}
+
+  ngOnInit(): void {
+    this.subscribeToObservables();
+  }
+
+  ngAfterViewInit(): void {
+    this.focusInputMessage();
+  }
+
+  private subscribeToObservables(): void {
+    this.channelService.selectedChannel$.pipe(takeUntil(this.destroyed$)).subscribe(selectedChannel => {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
         this.receiveChatMessages();
@@ -73,7 +82,7 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
       }
     });
 
-    this.messagesService.thread_subject$.subscribe((thread_subject: Message) => {
+    this.messagesService.thread_subject$.pipe(takeUntil(this.destroyed$)).subscribe(thread_subject => {
       if (thread_subject) {
         this.thread_subject = thread_subject;
         this.textAreaContent = this.thread_subject.message;
@@ -82,26 +91,26 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
       }
     });
 
-    this.channelService.currentUserInfo$.subscribe((user: User) => {
+    this.channelService.currentUserInfo$.pipe(takeUntil(this.destroyed$)).subscribe(user => {
       this.user = user;
     });
 
-    this.dataService.mobile$.subscribe((value: boolean) => {
+    this.dataService.mobile$.pipe(takeUntil(this.destroyed$)).subscribe(value => {
       this.mobile = value;
     });
 
-    this.userService.users$.subscribe(users => {
+    this.userService.users$.pipe(takeUntil(this.destroyed$)).subscribe(users => {
       this.allUser = users;
     });
-    this.dialogService.isMobileView$.pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(isMobileView => {
+
+    this.dialogService.isMobileView$.pipe(takeUntil(this.destroyed$)).subscribe(isMobileView => {
       this.isMobileView = isMobileView;
     });
   }
 
-  ngAfterViewInit(): void {
-    this.focusInputMessage();
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   focusInputMessage(): void {
@@ -142,6 +151,18 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
 
     if (text.length > 0) parts.push(text);
     return parts;
+  }
+
+
+  addAtSymbolToTextarea() {
+    const textarea: HTMLTextAreaElement = this.messageTextArea.nativeElement;
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const textBefore = textarea.value.substring(0, startPos);
+    const textAfter = textarea.value.substring(endPos, textarea.value.length);
+    textarea.value = textBefore + '@' + textAfter;
+    textarea.focus();
+    textarea.dispatchEvent(new Event('input'));    
   }
 
   /**
@@ -562,6 +583,7 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
    * this function sends the message to the channel
    */
   async sendMessageToChannel() {
+    this.dataService.showSpinner(true);
     this.setMessageInformations();
     if (this.uploadedFileLink || this.input_message.nativeElement.value.trim() !== '') {
       if (this.uploadedFileLink) {
@@ -581,6 +603,7 @@ export class MainContentMainChatLowerPartComponent implements AfterViewInit {
       this.message.setMessage('');
       this.message.setImg('');
     }
+    this.dataService.showSpinner(false);
   }
 
   /**
